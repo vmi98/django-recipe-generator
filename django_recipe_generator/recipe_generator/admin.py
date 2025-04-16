@@ -12,6 +12,7 @@ class RecipeIngredientInline(admin.TabularInline):  # For inline editing
     extra = 1  # Number of empty forms to show
     # Optional: show ingredient names in dropdown
     autocomplete_fields = ['ingredient']
+    fields = ('ingredient', 'quantity')
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
