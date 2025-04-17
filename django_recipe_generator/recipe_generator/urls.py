@@ -5,18 +5,17 @@ from django.views.generic import TemplateView
 
     
 
-# Create a router and register our ViewSets with it.
+
 router = DefaultRouter()
 router.register(r'recipes', views.RecipeViewSet, basename='recipe')
 
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name="recipe_generator/index.html"), name='index'), 
-    path('recipes/new/', views.RecipeCreateView.as_view(), name='add_recipe'),  # Add new recipe
-    #not edited
-    #path('recipes/', views.search_recipe, name='recipes_list'),  # Search page/all recipes by default
-    #path('', RecipeView.as_view(), name='recipe'), 
-    
+    path('recipes/new/', views.RecipeCreateView.as_view(), name='add_recipe'),  
+    path('recipes/<int:pk>/edit', views.RecipeEditView.as_view(), name='recipe_edit'),
+    path('recipes/<int:pk>/', views.RecipeDetailView.as_view(), name='recipe_detail'),
+    #path('recipes/', views.search_recipe, name='recipes_list'),  # Search page/all recipes by default   
     path('api/', include(router.urls)),
 ]
 

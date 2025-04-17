@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Recipe</title>
+    <style>
+        .form-control { margin-bottom: 10px; width: 300px; }
+    </style>
+</head>
+<body>
+    <h1>Edit Recipe</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <h3>Recipe</h3>
+        {{ form.as_p }}
+
+        <h3>Ingredients</h3>
+        {{ formset.management_form }}
+        {% for form in formset %}
+            <div class="ingredient-form">
+                {{ form.as_p }}
+            </div>
+        {% endfor %}
+
+        <button type="submit">Save Recipe</button>
+    </form>
+</body>
+</html>

@@ -9,7 +9,8 @@ from rest_framework.filters import SearchFilter
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.reverse import reverse
 from rest_framework.permissions import AllowAny
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic import DetailView
 from .forms import RecipeForm, RecipeIngredientFormSet
 
 
@@ -34,6 +35,36 @@ class RecipeCreateView(CreateView):
             return redirect('index')  # or any other page
 
         return render(request, self.template_name, {'form': form, 'formset': formset})
+
+class RecipeDetailView(DetailView):
+    model = Recipe  
+    template_name = 'recipe_generator/recipe_detail.html'  
+    context_object_name = 'recipe'
+
+
+class RecipeEditView(UpdateView):
+    model = Recipe  
+    form_class = RecipeForm
+    template_name = 'recipe_generator/recipe_edit.html'  
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['formset'] = RecipeIngredientFormSet(self.request.POST, instance=self.object)
+        else:
+            context['formset'] = RecipeIngredientFormSet(instance=self.object)
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        formset = context['formset']
+        if formset.is_valid():
+            self.object = form.save()
+            formset.instance = self.object
+            formset.save()
+            return redirect(reverse('recipe_detail', kwargs={'pk': self.object.pk}))
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
 
 
 # API logic    

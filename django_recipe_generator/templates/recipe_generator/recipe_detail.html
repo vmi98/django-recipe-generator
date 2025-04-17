@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recipe  Generator</title>
+</head>
+<body>
+   <h1>{{ recipe.name }}</h1>  <!-- context_object_name used here -->
+<p>Cooking Time: {{ recipe.cooking_time }} minutes</p>
+
+<h2>Ingredients</h2>
+<ul>
+  {% for ingredient in recipe.ingredients.all %}
+    <li>{{ ingredient.name }}</li>
+  {% endfor %}
+</ul> 
+<p>Instructions: {{ recipe.instructions }}</p>
+<a href="{% url 'recipe_edit' recipe.id %}">Edit recipe</a>
+</body>
+</html>
