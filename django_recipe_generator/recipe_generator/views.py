@@ -10,7 +10,8 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.reverse import reverse
 from rest_framework.permissions import AllowAny
 from django.views.generic.edit import CreateView, UpdateView
-from django.views.generic import DetailView
+from django.views.generic import DetailView, DeleteView
+from django.urls import reverse_lazy
 from .forms import RecipeForm, RecipeIngredientFormSet
 
 
@@ -32,7 +33,7 @@ class RecipeCreateView(CreateView):
             recipe = form.save()
             formset.instance = recipe
             formset.save()
-            return redirect('index')  # or any other page
+            return redirect(reverse('recipe_detail', kwargs={'pk': recipe.pk}))
 
         return render(request, self.template_name, {'form': form, 'formset': formset})
 
@@ -66,6 +67,11 @@ class RecipeEditView(UpdateView):
         else:
             return self.render_to_response(self.get_context_data(form=form))
 
+
+class RecipeDeleteView(DeleteView):
+    model = Recipe
+    template_name = 'recipe_generator/recipe_delete.html'
+    success_url = reverse_lazy('index')
 
 # API logic    
 class RecipeViewSet(viewsets.ModelViewSet):

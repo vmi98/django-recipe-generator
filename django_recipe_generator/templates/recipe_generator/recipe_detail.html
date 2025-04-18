@@ -15,5 +15,6 @@
 </ul> 
 <p>Instructions: {{ recipe.instructions }}</p>
 <a href="{% url 'recipe_edit' recipe.id %}">Edit recipe</a>
+<a href="{% url 'recipe_delete' recipe.id %}">Delete recipe</a>
 </body>
 </html>
