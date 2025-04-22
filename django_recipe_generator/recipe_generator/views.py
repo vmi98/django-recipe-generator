@@ -10,7 +10,7 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.reverse import reverse
 from rest_framework.permissions import AllowAny
 from django.views.generic.edit import CreateView, UpdateView
-from django.views.generic import DetailView, DeleteView
+from django.views.generic import DetailView, DeleteView, ListView
 from django.urls import reverse_lazy
 from .forms import RecipeForm, RecipeIngredientFormSet
 
@@ -18,7 +18,7 @@ from .forms import RecipeForm, RecipeIngredientFormSet
 class RecipeCreateView(CreateView):
     model = Recipe
     form_class = RecipeForm 
-    template_name = "recipe_generator/create.html"
+    template_name = 'recipe_generator/create.html'
     
     def get(self, request, *args, **kwargs):
         form = self.form_class()
@@ -72,6 +72,51 @@ class RecipeDeleteView(DeleteView):
     model = Recipe
     template_name = 'recipe_generator/recipe_delete.html'
     success_url = reverse_lazy('index')
+
+
+class RecipeList(ListView): # search filters
+    model = Recipe 
+    paginate_by = 15  
+    template_name = "recipe_generator/recipe_list.html"
+    context_object_name = 'recipes'
+    
+    def get_queryset(self):
+        query_ingredients = [int(i) for i in self.request.GET.getlist('query_ingredients') if i.isdigit()]
+        exclude_ingredients = [int(i) for i in self.request.GET.getlist('exclude_ingredients') if i.isdigit()]
+        query_name = self.request.GET.get('query_name', '')
+        time_filter = self.request.GET.get('cooking_time')
+
+        qs = Recipe.objects.search(query_name=query_name,query_ingredients=query_ingredients, time_filter=time_filter,
+            exclude_ingredients=exclude_ingredients).prefetch_related('ingredients')
+
+        ingredient_lookup_query = {i.id: i.name for i in Ingredient.objects.filter(id__in=query_ingredients)}
+
+        for recipe in qs:
+            recipe_ingredient_ids = set(recipe.ingredients.values_list('id', flat=True))
+            matching_ids = recipe_ingredient_ids.intersection(set(query_ingredients))
+            missing_ids = set(recipe_ingredient_ids) - set(query_ingredients)
+
+            ingredient_lookup_recipe = {i.id: i.name for i in Ingredient.objects.filter(id__in=missing_ids)}
+
+            recipe.matching_ingredient_ids = list(matching_ids)
+            recipe.missing_ingredient_ids = list(missing_ids)
+
+            recipe.matching_ingredient_names = [ingredient_lookup_query[i] for i in matching_ids]
+            recipe.missing_ingredient_names = [ingredient_lookup_recipe[i] for i in missing_ids]
+
+        return qs
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current_cooking_time'] = self.request.GET.get('cooking_time', '')
+        context['all_ingredients'] = Ingredient.objects.all()
+        context['query_ingredients'] = self.request.GET.getlist('query_ingredients', '')
+        context['query_name'] = self.request.GET.get('query_name', '')
+        context['exclude_ingredients'] = self.request.GET.getlist('exclude_ingredients')
+
+        return context
+
+
 
 # API logic    
 class RecipeViewSet(viewsets.ModelViewSet):

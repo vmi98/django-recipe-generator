@@ -1,4 +1,29 @@
 name,instructions,cooking_time
-"Classic Spaghetti Carbonara","1. Cook pasta\n2. Fry pancetta\n3. Mix eggs and cheese\n4. Combine all ingredients",20
-"Vegetable Stir Fry","1. Chop vegetables\n2. Heat oil\n3. Stir-fry veggies\n4. Add sauce",15
-"Beef Bourguignon","1. Sear beef\n2. Sauté vegetables\n3. Deglaze with wine\n4. Slow cook for 3 hours",180
+"Chicken Tikka Masala","1. Marinate chicken\n2. Grill chicken\n3. Prepare sauce\n4. Combine and simmer",40
+"Beef Lasagna","1. Cook ground beef\n2. Prepare cheese mixture\n3. Layer pasta sheets\n4. Bake in oven",60
+"Greek Salad","1. Chop vegetables\n2. Add feta cheese\n3. Mix with olive oil",10
+"Homemade Pizza","1. Prepare dough\n2. Add toppings\n3. Bake at high temperature",25
+"Chocolate Chip Cookies","1. Mix dry ingredients\n2. Cream butter and sugar\n3. Combine and bake",30
+"Vegetable Soup","1. Sauté vegetables\n2. Add broth\n3. Simmer for 20 minutes",30
+"Grilled Salmon","1. Season salmon\n2. Grill for 5 minutes per side\n3. Serve with lemon",15
+"Avocado Toast","1. Toast bread\n2. Mash avocado\n3. Add toppings",5
+"Beef Burger","1. Form patties\n2. Grill burgers\n3. Assemble with buns",20
+"Fruit Smoothie","1. Add fruits to blender\n2. Pour milk/yogurt\n3. Blend until smooth",5
+"Shrimp Scampi","1. Sauté garlic\n2. Cook shrimp\n3. Add white wine\n4. Toss with pasta",25
+"Chicken Noodle Soup","1. Boil chicken\n2. Add vegetables\n3. Add noodles\n4. Simmer",35
+"Pancakes","1. Mix batter\n2. Cook on griddle\n3. Flip when bubbly",15
+"Caesar Salad","1. Chop romaine\n2. Make dressing\n3. Add croutons\n4. Toss with cheese",10
+"Beef Stew","1. Brown beef\n2. Add vegetables\n3. Simmer for 2 hours",120
+"Garlic Bread","1. Mix butter and garlic\n2. Spread on bread\n3. Bake until golden",10
+"Omelette","1. Beat eggs\n2. Cook in pan\n3. Add fillings\n4. Fold",10
+"Tuna Salad","1. Mix tuna with mayo\n2. Add celery\n3. Season to taste",5
+"Chocolate Cake","1. Mix ingredients\n2. Pour in pan\n3. Bake at 350F\n4. Frost when cool",45
+"Fried Rice","1. Cook rice\n2. Scramble eggs\n3. Stir-fry with vegetables",20
+"Baked Potatoes","1. Wash potatoes\n2. Rub with oil\n3. Bake for 1 hour",60
+"Guacamole","1. Mash avocados\n2. Add lime juice\n3. Mix with vegetables",10
+"Chicken Curry","1. Brown chicken\n2. Add curry paste\n3. Simmer with coconut milk",35
+"French Toast","1. Dip bread in egg mixture\n2. Cook on griddle\n3. Serve with syrup",15
+"Pasta Pesto","1. Cook pasta\n2. Blend pesto\n3. Toss together",15
+"Roast Chicken","1. Season chicken\n2. Roast at 375F\n3. Baste occasionally",90
+"Hummus","1. Blend chickpeas\n2. Add tahini\n3. Season to taste",10
+"Vegetable Curry","1. Sauté vegetables\n2. Add curry sauce\n3. Simmer for 20 minutes",25

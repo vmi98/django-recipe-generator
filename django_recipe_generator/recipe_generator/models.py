@@ -1,4 +1,45 @@
 from django.db import models
+from django.db.models import Q, F, Count, Case, When, ExpressionWrapper, IntegerField, Value
+
+
+class RecipeManager(models.Manager):
+    def search(self, query_name=None, query_ingredients=None,time_filter=None, exclude_ingredients=None):
+        qs = self.get_queryset()
+
+        if query_name:
+            qs = qs.filter(name__icontains=query_name)
+        '''
+        if query_ingredients:
+            qs = qs.annotate(
+                matching=Count('ingredients', filter=Q(ingredients__id__in=query_ingredients), distinct=True),
+                missing=ExpressionWrapper(
+                    Value(len(query_ingredients)) - F('matching'),
+                    output_field=IntegerField()
+                )
+            ).filter(matching__gt=0).order_by('missing')
+        '''
+
+        if query_ingredients:
+            qs = qs.annotate(
+                total=Count('ingredients', distinct=True),
+                matching=Count('ingredients', filter=Q(ingredients__id__in=query_ingredients), distinct=True)
+            ).annotate(
+                missing=ExpressionWrapper(F('total') - F('matching'), output_field=IntegerField())
+            ).filter(matching__gt=0).order_by('missing')
+                      
+
+        if time_filter == 'quick':
+            qs = qs.filter(cooking_time__lt=20)
+        elif time_filter == 'standard':
+            qs = qs.filter(cooking_time__range=(20, 45))
+        elif time_filter == 'long':
+            qs = qs.filter(cooking_time__gt=45)
+
+        if exclude_ingredients:
+            qs = qs.exclude(ingredients__id__in=exclude_ingredients).distinct()
+
+        return qs
+
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=100)
@@ -13,6 +54,8 @@ class Recipe(models.Model):
     instructions = models.TextField()
     cooking_time = models.IntegerField()  # in minutes
     ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient')
+
+    objects = RecipeManager()
 
     def __str__(self):
         return self.name
@@ -36,3 +79,5 @@ class Macro(models.Model):
 
     def __str__(self):
         return f"Macros for {self.recipe}"
+
+

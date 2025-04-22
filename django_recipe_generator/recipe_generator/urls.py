@@ -16,7 +16,8 @@ urlpatterns = [
     path('recipes/<int:pk>/edit', views.RecipeEditView.as_view(), name='recipe_edit'),
     path('recipes/<int:pk>/delete', views.RecipeDeleteView.as_view(), name='recipe_delete'),
     path('recipes/<int:pk>/', views.RecipeDetailView.as_view(), name='recipe_detail'),
-    #path('recipes/', views.search_recipe, name='recipes_list'),  # Search page/all recipes by default   
+    path('recipes/', views.RecipeList.as_view(), name='recipe_list'),  # Search page/all recipes by default   
+    
     path('api/', include(router.urls)),
 ]
 
