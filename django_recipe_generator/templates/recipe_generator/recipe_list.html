@@ -1,83 +1,157 @@
-<!-- Filters and search -->
-<form method="get" action=".">
-    <label for="query_name">Search by name:</label>
-    <input type="text" name="query_name" id="query_name" value="{{ request.GET.query_name }}">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recipes</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <style>
+    body {
+      background-color: #f6f4fb; /* pale lilac */
+    }
+    .pastel-box {
+      background-color: #ffffff;
+      border: 1px solid #dcd9f0;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    h1, h2 {
+      color: #6c63ff; /* soft lilac-blue */
+    }
+    .button.is-pastel {
+      background-color: #e0e7ff;
+      color: #3c3c3c;
+      border: none;
+    }
+    .button.is-light {
+      background-color: #f0f4ff;
+      color: #3c3c3c;
+    }
+    select, input {
+      margin-bottom: 1rem;
+    }
+    .pagination-info {
+      display: block;
+      text-align: center;
+      margin-top: 1rem;
+      color: #6c63ff;
+    }
+  </style>
+</head>
 
-    <label for="query_ingredients">Search by ingredients:</label>
-   
-    <select name="query_ingredients" id="query_ingredients" multiple>
-        {% for ingredient in all_ingredients %}
-            <option value="{{ ingredient.id }}"
-                {% if ingredient.id|stringformat:"s" in query_ingredients %}selected{% endif %}>
-                {{ ingredient.name }}
-            </option>
-        {% endfor %}
-    </select>
+<body>
+    <a href="{% url 'index' %}"" class="button is-pastel">Go Back to Home page</a>
+<section class="section">
+  <div class="container">
+    <div class="box pastel-box">
+    <h1 class="title is-3">Search Recipes</h1>
+      <form method="get" action=".">
+        <div class="field">
+          <label class="label" for="query_name">Search by name</label>
+          <div class="control">
+            <input class="input" type="text" name="query_name" id="query_name" value="{{ request.GET.query_name }}">
+          </div>
+        </div>
 
+        <div class="field">
+          <label class="label" for="query_ingredients">Search by ingredients</label>
+          <div class="control">
+            <div class="select is-multiple is-fullwidth">
+              <select name="query_ingredients" id="query_ingredients" multiple size="5">
+                {% for ingredient in all_ingredients %}
+                  <option value="{{ ingredient.id }}"
+                    {% if ingredient.id|stringformat:"s" in query_ingredients %}selected{% endif %}>
+                    {{ ingredient.name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
 
-    <label for="cooking_time">Cooking Time:</label>
-    <select name="cooking_time" id="cooking_time">
-        <option value="">All Cooking Times</option>
-        <option value="quick" {% if request.GET.cooking_time == 'quick' %}selected{% endif %}>
-            Quick meals (under 20 mins)
-        </option>
-        <option value="standard" {% if request.GET.cooking_time == 'standard' %}selected{% endif %}>
-            Standard meals (20–45 mins)
-        </option>
-        <option value="long" {% if request.GET.cooking_time == 'long' %}selected{% endif %}>
-            Long recipes (over 45 mins)
-        </option>
-    </select>
+        <div class="field">
+          <label class="label" for="cooking_time">Cooking Time</label>
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select name="cooking_time" id="cooking_time">
+                <option value="">All Cooking Times</option>
+                <option value="quick" {% if request.GET.cooking_time == 'quick' %}selected{% endif %}>
+                  Quick meals (under 20 mins)
+                </option>
+                <option value="standard" {% if request.GET.cooking_time == 'standard' %}selected{% endif %}>
+                  Standard meals (20–45 mins)
+                </option>
+                <option value="long" {% if request.GET.cooking_time == 'long' %}selected{% endif %}>
+                  Long recipes (over 45 mins)
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-    <label for="exclude_ingredients">Exclude Ingredients: (Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</label>
+        <div class="field">
+          <label class="label" for="exclude_ingredients">Exclude Ingredients</label>
+          <div class="control">
+            <div class="select is-multiple is-fullwidth">
+              <select name="exclude_ingredients" id="exclude_ingredients" multiple size="5">
+                {% for ingredient in all_ingredients %}
+                  <option value="{{ ingredient.id }}"
+                    {% if ingredient.id|stringformat:"s" in exclude_ingredients %}selected{% endif %}>
+                    {{ ingredient.name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
 
-    <select name="exclude_ingredients" id="exclude_ingredients" multiple>
-        {% for ingredient in all_ingredients %}
-            <option value="{{ ingredient.id }}"
-                {% if ingredient.id|stringformat:"s" in exclude_ingredients %}selected{% endif %}>
-                {{ ingredient.name }}
-            </option>
-        {% endfor %}
-    </select>
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-pastel" type="submit">Search</button>
+          </div>
+          <div class="control">
+            <a href="." class="button is-light">Reset</a>
+          </div>
+        </div>
+      </form>
+    </div>
 
+    <div class="content mt-6">
+      <h1 class="title is-4">Recipes</h1>
+      {% for recipe in recipes %}
+        <div class="box pastel-box">
+          <a href="{% url 'recipe_detail' recipe.id %}">
+            <h2 class="subtitle is-4">{{ recipe.name }}</h2>
+          </a>
+          <p><strong>Ingredients:</strong></p>
+          <ul>
+            {% for ingredient in recipe.ingredients.all %}
+              <li>{{ ingredient.name }}</li>
+            {% endfor %}
+          </ul>
+          <p><strong>Cooking time:</strong> {{ recipe.cooking_time }}</p>
+          {% if request.GET.query_ingredients %}
+            <ul>
+              <li><strong>You have:</strong> {{ recipe.matching_ingredient_names|join:", " }}</li>
+              <li><strong>You're missing:</strong> {{ recipe.missing_ingredient_names|join:", " }}</li>
+            </ul>
+          {% endif %}
+        </div>
+      {% endfor %}
 
-    <button type="submit">Search</button> 
-    <a href="." style="margin-left: 10px;">Reset</a>
-</form>
-
-<!-- Results -->
-<h1>Recipes</h1>
-
-{% for recipe in recipes %}
-    <a href="{% url 'recipe_detail' recipe.id %}"><h2>{{ recipe.name }}</h2></a>
-    <p>Ingredients:</p>
-    <ul>
-        {% for ingredient in recipe.ingredients.all %}
-        <li>{{ ingredient.name }}</li>
-        {% endfor %}
-      </ul> 
-    <p>Cooking time: {{ recipe.cooking_time }}</p>
-    <ul>
-        <li><strong>You have:</strong> {{ recipe.matching_ingredient_names|join:", " }}</li>
-        <li><strong>You're missing following  ingredients:</strong> {{ recipe.missing_ingredient_names|join:", " }}</li>
-    </ul>
-{% endfor %}
-
-<!-- Pagination controls -->
-<div class="pagination">
-    <span class="step-links">
+      <nav class="pagination is-centered mt-4" role="navigation" aria-label="pagination">
         {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+          <a class="pagination-previous" href="?page=1">First</a>
+          <a class="pagination-previous" href="?page={{ page_obj.previous_page_number }}">Previous</a>
         {% endif %}
-
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
-
+        <span class="pagination-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
         {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+          <a class="pagination-next" href="?page={{ page_obj.next_page_number }}">Next</a>
+          <a class="pagination-next" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
         {% endif %}
-    </span>
-</div>
+      </nav>
+    </div>
+  </div>
+</section>
+</body>
+</html>
+
