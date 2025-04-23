@@ -11,7 +11,7 @@ router.register(r'recipes', views.RecipeViewSet, basename='recipe')
 
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name="recipe_generator/index.html"), name='index'), 
+    path('', views.index_view, name='index'), 
     path('recipes/new/', views.RecipeCreateView.as_view(), name='add_recipe'),  
     path('recipes/<int:pk>/edit', views.RecipeEditView.as_view(), name='recipe_edit'),
     path('recipes/<int:pk>/delete', views.RecipeDeleteView.as_view(), name='recipe_delete'),
