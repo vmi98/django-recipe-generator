@@ -1,33 +1,29 @@
 from django.db import models
 from django.db.models import Q, F, Count, Case, When, ExpressionWrapper, IntegerField, Value
 
-
-class RecipeManager(models.Manager):
-    def search(self, query_name=None, query_ingredients=None,time_filter=None, exclude_ingredients=None):
-        qs = self.get_queryset()
-
+class RecipeQuerySet(models.QuerySet):
+    def search(self, query_name=None, query_ingredients=None):
+        qs = self
+        
         if query_name:
             qs = qs.filter(name__icontains=query_name)
-        '''
-        if query_ingredients:
-            qs = qs.annotate(
-                matching=Count('ingredients', filter=Q(ingredients__id__in=query_ingredients), distinct=True),
-                missing=ExpressionWrapper(
-                    Value(len(query_ingredients)) - F('matching'),
-                    output_field=IntegerField()
-                )
-            ).filter(matching__gt=0).order_by('missing')
-        '''
 
         if query_ingredients:
             qs = qs.annotate(
                 total=Count('ingredients', distinct=True),
-                matching=Count('ingredients', filter=Q(ingredients__id__in=query_ingredients), distinct=True)
+                matching=Count('ingredients', 
+                             filter=Q(ingredients__id__in=query_ingredients), 
+                             distinct=True)
             ).annotate(
-                missing=ExpressionWrapper(F('total') - F('matching'), output_field=IntegerField())
+                missing=ExpressionWrapper(F('total') - F('matching'), 
+                                        output_field=IntegerField())
             ).filter(matching__gt=0).order_by('missing')
-                      
-
+        
+        return qs
+    
+    def filter_recipes(self, time_filter=None, exclude_ingredients=None):
+        qs = self
+        
         if time_filter == 'quick':
             qs = qs.filter(cooking_time__lt=20)
         elif time_filter == 'standard':
@@ -37,8 +33,18 @@ class RecipeManager(models.Manager):
 
         if exclude_ingredients:
             qs = qs.exclude(ingredients__id__in=exclude_ingredients).distinct()
+            
+        return qs    
 
-        return qs
+class RecipeManager(models.Manager):
+    def get_queryset(self):
+        return RecipeQuerySet(self.model, using=self._db)
+    
+    def search(self, query_name=None, query_ingredients=None):
+        return self.get_queryset().search(query_name, query_ingredients)
+    
+    def filter_recipes(self, time_filter=None, exclude_ingredients=None):
+        return self.get_queryset().filter_recipes(time_filter, exclude_ingredients)
 
 
 class Ingredient(models.Model):

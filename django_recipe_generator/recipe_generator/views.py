@@ -86,7 +86,7 @@ class RecipeList(ListView): # search filters
         query_name = self.request.GET.get('query_name', '')
         time_filter = self.request.GET.get('cooking_time')
 
-        qs = Recipe.objects.search(query_name=query_name,query_ingredients=query_ingredients, time_filter=time_filter,
+        qs = Recipe.objects.search(query_name=query_name,query_ingredients=query_ingredients).filter_recipes(time_filter=time_filter,
             exclude_ingredients=exclude_ingredients).prefetch_related('ingredients')
 
         ingredient_lookup_query = {i.id: i.name for i in Ingredient.objects.filter(id__in=query_ingredients)}
