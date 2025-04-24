@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Recipe, Ingredient
+from .models import Recipe, Ingredient,RecipeIngredient
 from .serializers import RecipeSerializer
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -39,9 +39,14 @@ class RecipeCreateView(CreateView):
         return render(request, self.template_name, {'form': form, 'formset': formset})
 
 class RecipeDetailView(DetailView):
-    model = Recipe  
+    model = Recipe 
     template_name = 'recipe_generator/recipe_detail.html'  
     context_object_name = 'recipe'
+
+    def get_queryset(self):
+        return super().get_queryset().prefetch_related(
+            'ingredients__recipeingredient_set'
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

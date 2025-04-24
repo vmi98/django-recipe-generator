@@ -73,7 +73,7 @@ class RecipeIngredient(models.Model):
     quantity = models.CharField(max_length=50)  
 
     def __str__(self):
-        return f"{self.quantity} of {self.ingredient} for {self.recipe}"
+        return self.quantity
     
 
 class Macro(models.Model):

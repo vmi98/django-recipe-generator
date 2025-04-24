@@ -44,8 +44,8 @@
 
       <h2 class="subtitle is-4 mt-4">Ingredients</h2>
       <ul>
-        {% for ingredient in recipe.ingredients.all %}
-          <li>{{ ingredient.name }}</li>
+        {% for ingredient in recipe.recipeingredient_set.all %}
+          <li>{{ ingredient.ingredient.name }} - {{ ingredient.quantity }}</li>
         {% endfor %}
       </ul>
 
