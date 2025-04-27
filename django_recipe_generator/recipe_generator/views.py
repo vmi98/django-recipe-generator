@@ -1,17 +1,8 @@
 from django.shortcuts import render, redirect
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .models import Recipe, Ingredient,RecipeIngredient
-from .serializers import RecipeSerializer
-from rest_framework import viewsets
-from rest_framework.decorators import action
-from rest_framework.filters import SearchFilter
-from rest_framework.renderers import TemplateHTMLRenderer
-from rest_framework.reverse import reverse
-from rest_framework.permissions import AllowAny
+from .models import Recipe, Ingredient
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, DeleteView, ListView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from .forms import RecipeForm, RecipeIngredientFormSet
 
 
@@ -163,10 +154,7 @@ def index_view(request):
         del request.session['came_from_search']
     return render(request, 'recipe_generator/index.html')
 
-# API logic    
-class RecipeViewSet(viewsets.ModelViewSet):
-    queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
+
 
 
  

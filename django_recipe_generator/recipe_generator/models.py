@@ -1,5 +1,6 @@
 from django.db import models
-from django.db.models import Q, F, Count, Case, When, ExpressionWrapper, IntegerField, Value
+from django.db.models import Q, F, Count,ExpressionWrapper, IntegerField
+
 
 class RecipeQuerySet(models.QuerySet):
     def search(self, query_name=None, query_ingredients=None):
@@ -85,5 +86,3 @@ class Macro(models.Model):
 
     def __str__(self):
         return f"Macros for {self.recipe}"
-
-
