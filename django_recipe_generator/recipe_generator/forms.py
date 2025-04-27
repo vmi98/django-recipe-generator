@@ -7,8 +7,8 @@ class RecipeIngredientForm(forms.ModelForm):
         model = RecipeIngredient
         fields = ('ingredient', 'quantity')
         widgets = {
-            'ingredient': forms.Select(attrs={'class': 'form-control'}), #class is bootstarp, delete if not used
-            'quantity': forms.TextInput(attrs={'class': 'form-control'}),
+            'ingredient': forms.Select(), 
+            'quantity': forms.TextInput(),
         }
 
 
@@ -18,7 +18,7 @@ class RecipeForm(forms.ModelForm):
         model = Recipe
         exclude = ['ingredients']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(),
             'instructions': forms.Textarea(attrs={'rows': 4, 'maxlength': 2000}),
             'cooking_time': forms.NumberInput(attrs={'min': 1})
         }
