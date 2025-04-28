@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django_recipe_generator.recipe_generator.models import Recipe, Ingredient,RecipeIngredient
-from django_recipe_generator.recipe_generator.serializers import RecipeSerializer, IngredientSerializer
+from django_recipe_generator.recipe_generator.serializers import RecipeSerializer, IngredientSerializer, UserSerializer
 from rest_framework import viewsets
 from rest_framework import generics
 from rest_framework.decorators import action
@@ -10,7 +10,7 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.reverse import reverse
 from rest_framework.permissions import AllowAny
 from django.urls import reverse_lazy
-from django_recipe_generator.recipe_generator.forms import RecipeForm, RecipeIngredientFormSet
+from django.contrib.auth.models import User
 
 
    
@@ -74,4 +74,9 @@ class RecipeFormDataView(generics.ListAPIView):
     """
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
+
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
