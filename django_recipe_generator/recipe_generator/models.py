@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MinLengthValidator
 from django.db.models import Q, F, Count,ExpressionWrapper, IntegerField
 
 
@@ -57,9 +58,9 @@ class Ingredient(models.Model):
     
 
 class Recipe(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, validators=[MinLengthValidator(3)])
     instructions = models.TextField()
-    cooking_time = models.IntegerField()  # in minutes
+    cooking_time = models.IntegerField(validators=[MinValueValidator(1)])  # in minutes
     ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient')
 
     objects = RecipeManager()
