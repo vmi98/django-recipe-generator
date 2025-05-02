@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
-from .models import Recipe, Ingredient
+from urllib.parse import parse_qs, urlencode
+from .models import Recipe, Ingredient,RecipeIngredient
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, DeleteView, ListView
 from django.urls import reverse_lazy, reverse
+from django.db.models import Prefetch
 from .forms import RecipeForm, RecipeIngredientFormSet
 
+ALLOWED_SEARCH_PARAMS = ['q', 'query_ingredients', 'time_filter', 'exclude_ingredients', 'query_name']
 
 class RecipeCreateView(CreateView):
     model = Recipe
@@ -36,8 +39,11 @@ class RecipeDetailView(DetailView):
 
     def get_queryset(self):
         return super().get_queryset().prefetch_related(
-            'ingredients__recipeingredient_set'
+        Prefetch(
+            'recipeingredient_set',
+            queryset=RecipeIngredient.objects.select_related('ingredient')
         )
+    ) 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -46,12 +52,26 @@ class RecipeDetailView(DetailView):
         # Determine the correct back URL
         if request.session.get('came_from_search'):
             if request.session.get('was_editing'):
-                # After editing - return to search with saved filters
-                context['back_url'] = (
-                    reverse('recipe_list') + 
-                    f"?{request.session.get('search_query', '')}"
-                )
-                # Clear editing flag since we're handling it now
+                # Clean and validate search query before use
+                search_query = request.session.get('search_query', '')
+                try:
+                    params = parse_qs(search_query)
+                    # Filter out empty parameters
+                    clean_params = {
+                        k: v for k, v in params.items() 
+                        if k and any(v) and k in ALLOWED_SEARCH_PARAMS  
+                    }
+                    if clean_params:
+                        context['back_url'] = (
+                            reverse('recipe_list') + 
+                            f"?{urlencode(clean_params, doseq=True)}" if clean_params else ""
+                        )
+                    else:
+                        context['back_url'] = reverse('recipe_list')
+                except Exception:
+                    context['back_url'] = reverse('recipe_list')
+                
+                # Clear editing flag
                 if 'was_editing' in request.session:
                     del request.session['was_editing']
             else:
