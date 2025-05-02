@@ -1,4 +1,6 @@
 from django.urls import path, include
+from django.conf import settings
+from django.urls import path, include
 from django_recipe_generator.recipe_generator import views
 
 
@@ -13,4 +15,10 @@ urlpatterns = [
     # API endpoints
     path('api/', include('django_recipe_generator.recipe_generator.api.urls')),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
 
