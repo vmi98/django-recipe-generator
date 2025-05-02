@@ -70,18 +70,7 @@ class RecipeModelTests(TestCase):
 
 
 
-""""
-    def test_product_listing(self): - integration
-        response = self.client.get(reverse('product-list'))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.product.name)
-        
-    def test_product_detail(self): - integration
-        url = reverse('product-detail', args=[self.product.id])
-        response = self.client.get(url)
-        self.assertTemplateUsed(response, 'products/detail.html')
-        self.assertEqual(response.context['product'], self.product)
-"""
+
    
 
 
