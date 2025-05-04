@@ -11,7 +11,7 @@ ALLOWED_SEARCH_PARAMS = ['q', 'query_ingredients', 'time_filter', 'exclude_ingre
 
 class RecipeCreateView(CreateView):
     model = Recipe
-    form_class = RecipeForm 
+    form_class = RecipeForm
     template_name = 'recipe_generator/create.html'
     
     def get(self, request, *args, **kwargs):
@@ -109,8 +109,11 @@ class RecipeEditView(UpdateView):
             formset.save()
             self.request.session['was_editing'] = True
             return redirect(reverse('recipe_detail', kwargs={'pk': self.object.pk}))
-        else:
-            return self.render_to_response(self.get_context_data(form=form))
+        return self.form_invalid(form)
+    
+    def form_invalid(self, form): 
+        context = self.get_context_data(form=form)
+        return self.render_to_response(context)
 
 
 class RecipeDeleteView(DeleteView):
