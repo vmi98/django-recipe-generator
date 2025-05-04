@@ -46,14 +46,40 @@
 
         <h3 class="subtitle is-4">Recipe</h3>
         <div class="form-control">
-          {{ form.as_p }}
+          {% for field in form %}
+          <div class="field">
+            {{ field.label_tag }}
+
+            <div class="control">
+              {{ field }}
+            </div>
+
+            {% if field.errors %}
+              {% for error in field.errors %}
+                <p class="help is-danger">{{ error }}</p>
+              {% endfor %}
+            {% endif %}
+          </div>
+        {% endfor %}
         </div>
 
         <h3 class="subtitle is-4">Ingredients</h3>
         {{ formset.management_form }}
+
+        {% if formset.non_form_errors %}
+        <div class="notification is-danger">
+          {% for error in formset.non_form_errors %}
+            <p>{{ error }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+
         {% for form in formset %}
           <div class="ingredient-form">
-            {{ form.as_p }}
+            {{ form.id }}
+            {{ form.ingredient }}
+            {{ form.quantity }}
+            {{ form.DELETE }} Delete
           </div>
         {% endfor %}
 
