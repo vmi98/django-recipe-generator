@@ -141,7 +141,7 @@ class RecipeList(ListView): # search filters
 
 
         qs = Recipe.objects.search(query_name=query_name,query_ingredients=query_ingredients).filter_recipes(time_filter=time_filter,
-            exclude_ingredients=exclude_ingredients).prefetch_related('ingredients')
+            exclude_ingredients=exclude_ingredients).prefetch_related('ingredients').order_by('id')
         
         if query_ingredients:
             ingredient_lookup_query = {i.id: i.name for i in Ingredient.objects.filter(id__in=query_ingredients)}
