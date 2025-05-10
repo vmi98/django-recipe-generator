@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import Recipe, Ingredient, RecipeIngredient
 from django.contrib.auth.models import User
+from .models import Recipe, Ingredient, RecipeIngredient
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -9,10 +9,12 @@ class IngredientSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
         read_only_fields = ['id']
 
-class RecipeIngredientSerializer(serializers.ModelSerializer):
-    ingredient = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
 
-    
+class RecipeIngredientSerializer(serializers.ModelSerializer):
+    ingredient = serializers.PrimaryKeyRelatedField(
+        queryset=Ingredient.objects.all()
+    )
+
     class Meta:
         model = RecipeIngredient
         fields = ['ingredient', 'quantity']
@@ -32,10 +34,10 @@ class RecipeFormDataSerializer(serializers.Serializer):
     """Main serializer for the form initialization endpoint"""
     ingredients = IngredientSerializer(many=True)
 
-    
+
 class RecipeSerializer(serializers.ModelSerializer):
     ingredients = RecipeIngredientSerializer(
-        many=True, 
+        many=True,
         source='recipeingredient_set'
     )
 
@@ -46,30 +48,38 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         """
-        Dynamically adds matching/missing ingredient fields 
+        Dynamically adds matching/missing ingredient fields
         ONLY when called from filter_search endpoint
         """
         representation = super().to_representation(instance)
-        
+
         # Check for the context flag from filter_search
         if self.context.get('include_ingredient_analysis', False):
-            representation.update({
-                'matching_ingredient_names': getattr(instance, 'matching_ingredient_names', []),
-                'missing_ingredient_names': getattr(instance, 'missing_ingredient_names', []),
-            })
-        
+            representation.update(
+                {
+                    'matching_ingredient_names': getattr(
+                        instance,
+                        'matching_ingredient_names', []
+                    ),
+                    'missing_ingredient_names': getattr(
+                        instance,
+                        'missing_ingredient_names', []
+                    ),
+                }
+            )
+
         return representation
 
     def validate_cooking_time(self, value):
         if value < 0:
             raise serializers.ValidationError("Time must be positive!")
         return value
-    
+
     def validate_name(self, value):
         if len(value) < 3:
             raise serializers.ValidationError("Name too short!")
         return value
-    
+
     def create(self, validated_data):
         ingredients_data = validated_data.pop('recipeingredient_set')
         recipe = Recipe.objects.create(**validated_data)
@@ -82,14 +92,17 @@ class RecipeSerializer(serializers.ModelSerializer):
             )
 
         return recipe
-    
+
     def update(self, instance, validated_data):
         # Extract ingredients data
         ingredients_data = validated_data.pop('recipeingredient_set', [])
 
         # Update basic fields of the recipe
         instance.name = validated_data.get('name', instance.name)
-        instance.cooking_time = validated_data.get('cooking_time', instance.cooking_time)
+        instance.cooking_time = validated_data.get(
+            'cooking_time',
+            instance.cooking_time
+        )
         instance.save()
 
         # Update or create related RecipeIngredient objects
@@ -97,9 +110,11 @@ class RecipeSerializer(serializers.ModelSerializer):
             ingredient = ingredient_data['ingredient']
             quantity = ingredient_data['quantity']
 
-            # Check if the RecipeIngredient already exists (match by recipe and ingredient)
+            # Check if the RecipeIngredient already exists
             try:
-                recipe_ingredient = instance.recipeingredient_set.get(ingredient=ingredient)
+                recipe_ingredient = instance.recipeingredient_set.get(
+                    ingredient=ingredient
+                )
                 # Update the quantity
                 recipe_ingredient.quantity = quantity
                 recipe_ingredient.save()
@@ -112,7 +127,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                 )
 
         return instance
-    
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

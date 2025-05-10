@@ -1,6 +1,11 @@
-from django.test import TestCase
 from django.core.exceptions import ValidationError
-from django_recipe_generator.recipe_generator.models import Recipe, Ingredient, Macro, RecipeIngredient
+from django.test import TestCase
+
+from django_recipe_generator.recipe_generator.models import (
+    Ingredient,
+    Macro,
+    Recipe,
+)
 
 
 class RecipeModelTests(TestCase):
@@ -22,7 +27,13 @@ class RecipeModelTests(TestCase):
         )
         cls.recipe.ingredients.set([cls.ingredient1, cls.ingredient2])
         cls.recipe1.ingredients.set([cls.ingredient1, cls.ingredient3])
-        Macro.objects.create(recipe=cls.recipe, calories=300, protein=10, carbs=50, fat=5)
+        Macro.objects.create(
+            recipe=cls.recipe,
+            calories=300,
+            protein=10,
+            carbs=50,
+            fat=5
+        )
 
     def test_model_creation(self):
         self.assertEqual(Recipe.objects.count(), 2)
@@ -31,7 +42,7 @@ class RecipeModelTests(TestCase):
     def test_str_representation(self):
         self.assertEqual(str(self.recipe), "test_pizza")
 
-    def test_cooking_time_cannot_be_negative(self): 
+    def test_cooking_time_cannot_be_negative(self):
         self.recipe.cooking_time = -10
         with self.assertRaises(ValidationError):
             self.recipe.full_clean()
@@ -53,8 +64,13 @@ class RecipeModelTests(TestCase):
         results = Recipe.objects.search(query_name="piz")
         self.assertEqual(results.count(), 1)
 
-    def test_search_by_ingredients(self): 
-        results = Recipe.objects.search(query_ingredients=[self.ingredient1.id, self.ingredient2.id ])
+    def test_search_by_ingredients(self):
+        results = Recipe.objects.search(
+            query_ingredients=[
+                self.ingredient1.id,
+                self.ingredient2.id
+            ]
+        )
         self.assertEqual(results.count(), 2)
         self.assertEqual(results[0], self.recipe)
 
@@ -65,13 +81,9 @@ class RecipeModelTests(TestCase):
         self.assertEqual(standard.count(), 1)
 
     def test_filter_exclude(self):
-        results = Recipe.objects.filter_recipes(exclude_ingredients=[self.ingredient1.id])
+        results = Recipe.objects.filter_recipes(
+            exclude_ingredients=[
+                self.ingredient1.id
+            ]
+        )
         self.assertEqual(results.count(), 0)
-
-
-
-
-   
-
-
-

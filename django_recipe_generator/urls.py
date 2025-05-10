@@ -15,13 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
-#from django_recipe_generator import views
+from django.urls import path
+from django.urls import include
+from django.views.generic import TemplateView
+
 
 urlpatterns = [
-    #path('', views.index),
-    path('recipe_generator/', include('django_recipe_generator.recipe_generator.urls')),
+    path('', TemplateView.as_view(template_name="project_page.html")),
+    path('recipe_generator/',
+         include('django_recipe_generator.recipe_generator.urls')),
     path('admin/', admin.site.urls),
 ]
-
-

@@ -1,8 +1,15 @@
 import csv
 import os
-from django.core.management.base import BaseCommand
+
 from django.conf import settings
-from django_recipe_generator.recipe_generator.models import Ingredient, Recipe, RecipeIngredient, Macro
+from django.core.management.base import BaseCommand
+
+from django_recipe_generator.recipe_generator.models import (
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    Macro,
+)
 
 
 class Command(BaseCommand):
@@ -10,26 +17,60 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # 1. Load Ingredients
-        self.stdout.write(self.style.MIGRATE_HEADING("\n=== Loading Ingredients ==="))
-        ingredients_path = os.path.join(settings.BASE_DIR, 'django_recipe_generator', 'recipe_generator', 'fixtures', 'ingredients.csv')
+        self.stdout.write(self.style.MIGRATE_HEADING(
+            "\n=== Loading Ingredients ==="
+        ))
+        ingredients_path = os.path.join(
+            settings.BASE_DIR,
+            'django_recipe_generator',
+            'recipe_generator',
+            'fixtures',
+            'ingredients.csv'
+        )
         self._load_ingredients(ingredients_path)
 
         # 2. Load Base Recipes
-        self.stdout.write(self.style.MIGRATE_HEADING("\n=== Loading Recipes ==="))
-        recipes_path = os.path.join(settings.BASE_DIR, 'django_recipe_generator', 'recipe_generator', 'fixtures', 'recipes.csv')
+        self.stdout.write(self.style.MIGRATE_HEADING(
+            "\n=== Loading Recipes ==="
+        ))
+        recipes_path = os.path.join(
+            settings.BASE_DIR,
+            'django_recipe_generator',
+            'recipe_generator',
+            'fixtures',
+            'recipes.csv'
+        )
         self._load_recipes(recipes_path)
 
         # 3. Link Ingredients to Recipes
-        self.stdout.write(self.style.MIGRATE_HEADING("\n=== Linking Ingredients ==="))
-        links_path = os.path.join(settings.BASE_DIR, 'django_recipe_generator', 'recipe_generator', 'fixtures', 'recipe_ingredients.csv')
+        self.stdout.write(self.style.MIGRATE_HEADING(
+            "\n=== Linking Ingredients ==="
+        ))
+        links_path = os.path.join(
+            settings.BASE_DIR,
+            'django_recipe_generator',
+            'recipe_generator',
+            'fixtures',
+            'recipe_ingredients.csv'
+        )
         self._link_ingredients(links_path)
 
         # 4. Load Nutritional Macros
-        self.stdout.write(self.style.MIGRATE_HEADING("\n=== Loading Macros ==="))
-        macros_path = os.path.join(settings.BASE_DIR, 'django_recipe_generator', 'recipe_generator', 'fixtures', 'macros.csv')
+        self.stdout.write(self.style.MIGRATE_HEADING(
+            "\n=== Loading Macros ==="
+        ))
+        macros_path = os.path.join(
+            settings.BASE_DIR,
+            'django_recipe_generator',
+            'recipe_generator',
+            'fixtures',
+            'macros.csv'
+        )
         self._load_macros(macros_path)
 
-        self.stdout.write(self.style.SUCCESS("\n=== ALL DATA LOADED SUCCESSFULLY ==="))
+        self.stdout.write(self.style.SUCCESS(
+            "\n=== ALL DATA LOADED SUCCESSFULLY ==="
+        ))
 
     def _load_ingredients(self, csv_path):
         with open(csv_path, 'r') as file:
@@ -41,7 +82,7 @@ class Command(BaseCommand):
                 )
                 if created:
                     self.stdout.write(f"Created ingredient: {row['name']}")
-        
+
         self.stdout.write(self.style.SUCCESS(
             f"\nTotal ingredients: {Ingredient.objects.count()}"
         ))
@@ -59,7 +100,7 @@ class Command(BaseCommand):
                 )
                 if created:
                     self.stdout.write(f"Created recipe: {row['name']}")
-        
+
         self.stdout.write(self.style.SUCCESS(
             f"\nTotal recipes: {Recipe.objects.count()}"
         ))
@@ -72,7 +113,7 @@ class Command(BaseCommand):
                 try:
                     recipe = Recipe.objects.get(name=row['recipe'])
                     ingredient = Ingredient.objects.get(name=row['ingredient'])
-                    
+
                     obj, created = RecipeIngredient.objects.get_or_create(
                         recipe=recipe,
                         ingredient=ingredient,
@@ -91,7 +132,7 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.WARNING(
                         f"⚠️ Ingredient not found: {row['ingredient']}"
                     ))
-        
+
         self.stdout.write(self.style.SUCCESS(
             f"\nCreated {success_count} recipe-ingredient relationships"
         ))
@@ -119,7 +160,7 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.WARNING(
                         f"⚠️ Recipe not found: {row['recipe']}"
                     ))
-        
+
         self.stdout.write(self.style.SUCCESS(
             f"\nLoaded macros for {success_count} recipes"
         ))
