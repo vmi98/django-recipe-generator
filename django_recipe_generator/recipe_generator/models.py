@@ -1,10 +1,27 @@
+"""
+Models for Recipe, general  and recipe-related ingredients,
+macros, manager for search and filter logic.
+"""
+
 from django.db import models
 from django.core.validators import MinLengthValidator, MinValueValidator
 from django.db.models import Count, ExpressionWrapper, F, IntegerField, Q
 
 
 class RecipeQuerySet(models.QuerySet):
+    """Custom queryset for filtering and searching recipes."""
     def search(self, query_name=None, query_ingredients=None):
+        """
+        Search recipes by name and/or ingredients.
+
+        Args:
+            query_name (str): Partial or full name of the recipe.
+            query_ingredients (list): List of ingredient IDs
+            for recipe to containg.
+
+        Returns:
+            QuerySet: Filtered and annotated recipes.
+        """
         qs = self
 
         if query_name:
@@ -24,6 +41,16 @@ class RecipeQuerySet(models.QuerySet):
         return qs
 
     def filter_recipes(self, time_filter=None, exclude_ingredients=None):
+        """
+        Filter recipes based on time and excluded ingredients.
+
+        Args:
+            time_filter (str): One of "quick", "standard", or "long".
+            exclude_ingredients (list): Ingredient IDs to exclude.
+
+        Returns:
+            QuerySet: Filtered recipes.
+        """
         qs = self
 
         if time_filter == 'quick':
@@ -40,18 +67,22 @@ class RecipeQuerySet(models.QuerySet):
 
 
 class RecipeManager(models.Manager):
+    """Custom manager using RecipeQuerySet."""
     def get_queryset(self):
         return RecipeQuerySet(self.model, using=self._db)
 
     def search(self, query_name=None, query_ingredients=None):
+        """Proxy method for search in RecipeQuerySet."""
         return self.get_queryset().search(query_name, query_ingredients)
 
     def filter_recipes(self, time_filter=None, exclude_ingredients=None):
+        """Proxy method for filter_recipes in RecipeQuerySet."""
         return self.get_queryset().filter_recipes(time_filter,
                                                   exclude_ingredients)
 
 
 class Ingredient(models.Model):
+    """Ingredient model representing food components."""
     name = models.CharField(max_length=100)
     category = models.CharField(max_length=50)  # e.g., "protein", "vegetable"
 
@@ -63,11 +94,14 @@ class Ingredient(models.Model):
 
 
 class Recipe(models.Model):
+    """Recipe model with instructions, time, and ingredients."""
     name = models.CharField(max_length=200, validators=[MinLengthValidator(3)])
     instructions = models.TextField()
     cooking_time = models.IntegerField(validators=[MinValueValidator(1)])  # in minutes
-    ingredients = models.ManyToManyField(Ingredient,
-                                         through='RecipeIngredient')
+    ingredients = models.ManyToManyField(
+        Ingredient,
+        through='RecipeIngredient'
+    )
 
     objects = RecipeManager()
 
@@ -79,6 +113,7 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
+    """Intermediate model for recipe-ingredient relationship."""
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.CharField(max_length=50)
@@ -88,6 +123,7 @@ class RecipeIngredient(models.Model):
 
 
 class Macro(models.Model):
+    """Nutritional information for a recipe."""
     recipe = models.OneToOneField(Recipe, on_delete=models.CASCADE)
     calories = models.IntegerField()
     protein = models.IntegerField()

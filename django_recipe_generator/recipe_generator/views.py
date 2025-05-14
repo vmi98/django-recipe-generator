@@ -1,3 +1,10 @@
+"""
+Views (Traditional Djangoapp) for recipe creation, editing, deletion,
+listing, and detail display.
+
+Handles form processing, session tracking, and filtering logic.
+"""
+
 from django.shortcuts import render, redirect
 from urllib.parse import parse_qs, urlencode
 
@@ -19,11 +26,13 @@ ALLOWED_SEARCH_PARAMS = [
 
 
 class RecipeCreateView(CreateView):
+    """View for creating a new recipe with inline ingredients."""
     model = Recipe
     form_class = RecipeForm
     template_name = 'recipe_generator/create.html'
 
     def get(self, request, *args, **kwargs):
+        """Display empty form and formset for recipe creation."""
         form = self.form_class()
         formset = RecipeIngredientFormSet()
         return render(
@@ -33,6 +42,7 @@ class RecipeCreateView(CreateView):
         )
 
     def post(self, request, *args, **kwargs):
+        """Handle form submission and create recipe with ingredients."""
         form = self.form_class(request.POST)
         formset = RecipeIngredientFormSet(request.POST)
 
@@ -51,11 +61,13 @@ class RecipeCreateView(CreateView):
 
 
 class RecipeDetailView(DetailView):
+    """Display full details of a recipe with its ingredients."""
     model = Recipe
     template_name = 'recipe_generator/recipe_detail.html'
     context_object_name = 'recipe'
 
     def get_queryset(self):
+        """Optimize ingredient fetching with prefetch."""
         return super().get_queryset().prefetch_related(
             Prefetch(
                 'recipeingredient_set',
@@ -64,17 +76,18 @@ class RecipeDetailView(DetailView):
         )
 
     def get_context_data(self, **kwargs):
+        """
+        Inject back URL logic (depend on the previous page)
+        for navigation context.
+        """
         context = super().get_context_data(**kwargs)
         request = self.request
 
-        # Determine the correct back URL
         if request.session.get('came_from_search'):
             if request.session.get('was_editing'):
-                # Clean and validate search query before use
                 search_query = request.session.get('search_query', '')
                 try:
                     params = parse_qs(search_query)
-                    # Filter out empty parameters
                     clean_params = {
                         k: v for k, v in params.items()
                         if k and any(v) and k in ALLOWED_SEARCH_PARAMS
@@ -89,27 +102,26 @@ class RecipeDetailView(DetailView):
                 except Exception:
                     context['back_url'] = reverse('recipe_list')
 
-                # Clear editing flag
                 if 'was_editing' in request.session:
                     del request.session['was_editing']
             else:
-                # Direct from search - use referrer or default search
                 context['back_url'] = (
                     request.META.get('HTTP_REFERER') or reverse('recipe_list')
                 )
         else:
-            # Default case - go to index
             context['back_url'] = reverse('index')
 
         return context
 
 
 class RecipeEditView(UpdateView):
+    """View for editing an existing recipe and its ingredients."""
     model = Recipe
     form_class = RecipeForm
     template_name = 'recipe_generator/recipe_edit.html'
 
     def get_context_data(self, **kwargs):
+        """Add ingredient formset to the template context."""
         context = super().get_context_data(**kwargs)
         if self.request.POST:
             context['formset'] = RecipeIngredientFormSet(
@@ -121,6 +133,7 @@ class RecipeEditView(UpdateView):
         return context
 
     def form_valid(self, form):
+        """Save form and formset if valid, then redirect."""
         context = self.get_context_data()
         formset = context['formset']
         if formset.is_valid():
@@ -135,28 +148,33 @@ class RecipeEditView(UpdateView):
         return self.form_invalid(form)
 
     def form_invalid(self, form):
+        """Handle invalid form submission."""
         context = self.get_context_data(form=form)
         return self.render_to_response(context)
 
 
 class RecipeDeleteView(DeleteView):
+    """View for confirming and deleting a recipe."""
     model = Recipe
     template_name = 'recipe_generator/recipe_delete.html'
     success_url = reverse_lazy('index')
 
 
-class RecipeList(ListView):  # search filters
+class RecipeList(ListView):
+    """List and filter recipes based on search query and ingredients."""
     model = Recipe
     paginate_by = 15
     template_name = "recipe_generator/recipe_list.html"
     context_object_name = 'recipes'
 
     def get(self, request, *args, **kwargs):
+        """Track session origin and store query params."""
         request.session['came_from_search'] = True
         request.session['search_query'] = request.GET.urlencode()
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
+        """Apply filters and search for name, ingredients, time, and exclusions."""
         query_ingredients = [
             int(i) for i in self.request.GET.getlist('query_ingredients')
             if i.isdigit()
@@ -211,6 +229,7 @@ class RecipeList(ListView):  # search filters
         return qs
 
     def get_context_data(self, **kwargs):
+        """Add filter- and search- related data to context."""
         context = super().get_context_data(**kwargs)
 
         context['current_cooking_time'] = self.request.GET.get(
@@ -229,6 +248,7 @@ class RecipeList(ListView):  # search filters
 
 
 def index_view(request):
+    """Render homepage and clear search tracking."""
     if 'came_from_search' in request.session:
         del request.session['came_from_search']
     return render(request, 'recipe_generator/index.html')

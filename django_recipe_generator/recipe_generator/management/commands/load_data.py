@@ -1,3 +1,7 @@
+"""
+Django management command to load recipes, ingredients,
+and macro data into database from CSV files
+"""
 import csv
 import os
 
@@ -13,10 +17,14 @@ from django_recipe_generator.recipe_generator.models import (
 
 
 class Command(BaseCommand):
+    """Load all recipe data (ingredients, recipes, relationships, macros)."""
     help = 'Load all recipe data (ingredients, recipes, relationships, macros)'
 
     def handle(self, *args, **options):
-        # 1. Load Ingredients
+        """
+        Entry point for the management command.
+        Loads ingredients, recipes, links between them, and macro data.
+        """
         self.stdout.write(self.style.MIGRATE_HEADING(
             "\n=== Loading Ingredients ==="
         ))
@@ -29,7 +37,6 @@ class Command(BaseCommand):
         )
         self._load_ingredients(ingredients_path)
 
-        # 2. Load Base Recipes
         self.stdout.write(self.style.MIGRATE_HEADING(
             "\n=== Loading Recipes ==="
         ))
@@ -42,7 +49,6 @@ class Command(BaseCommand):
         )
         self._load_recipes(recipes_path)
 
-        # 3. Link Ingredients to Recipes
         self.stdout.write(self.style.MIGRATE_HEADING(
             "\n=== Linking Ingredients ==="
         ))
@@ -55,7 +61,6 @@ class Command(BaseCommand):
         )
         self._link_ingredients(links_path)
 
-        # 4. Load Nutritional Macros
         self.stdout.write(self.style.MIGRATE_HEADING(
             "\n=== Loading Macros ==="
         ))
@@ -73,6 +78,9 @@ class Command(BaseCommand):
         ))
 
     def _load_ingredients(self, csv_path):
+        """
+        Load ingredients from the given CSV path into the database.
+        """
         with open(csv_path, 'r') as file:
             reader = csv.DictReader(file)
             for row in reader:
@@ -88,6 +96,9 @@ class Command(BaseCommand):
         ))
 
     def _load_recipes(self, csv_path):
+        """
+        Load recipes from the given CSV path into the database.
+        """
         with open(csv_path, 'r') as file:
             reader = csv.DictReader(file)
             for row in reader:
@@ -106,6 +117,9 @@ class Command(BaseCommand):
         ))
 
     def _link_ingredients(self, csv_path):
+        """
+        Create relationships between recipes and ingredients from CSV data.
+        """
         success_count = 0
         with open(csv_path, 'r') as file:
             reader = csv.DictReader(file)
@@ -126,11 +140,11 @@ class Command(BaseCommand):
                         success_count += 1
                 except Recipe.DoesNotExist:
                     self.stdout.write(self.style.WARNING(
-                        f"⚠️ Recipe not found: {row['recipe']}"
+                        f"Recipe not found: {row['recipe']}"
                     ))
                 except Ingredient.DoesNotExist:
                     self.stdout.write(self.style.WARNING(
-                        f"⚠️ Ingredient not found: {row['ingredient']}"
+                        f"Ingredient not found: {row['ingredient']}"
                     ))
 
         self.stdout.write(self.style.SUCCESS(
@@ -138,6 +152,9 @@ class Command(BaseCommand):
         ))
 
     def _load_macros(self, csv_path):
+        """
+        Load macro nutritional data from CSV and associate with recipes.
+        """
         success_count = 0
         with open(csv_path, 'r') as file:
             reader = csv.DictReader(file)
@@ -158,7 +175,7 @@ class Command(BaseCommand):
                         success_count += 1
                 except Recipe.DoesNotExist:
                     self.stdout.write(self.style.WARNING(
-                        f"⚠️ Recipe not found: {row['recipe']}"
+                        f"Recipe not found: {row['recipe']}"
                     ))
 
         self.stdout.write(self.style.SUCCESS(

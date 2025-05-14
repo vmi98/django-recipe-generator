@@ -1,3 +1,7 @@
+"""
+Views (API) for recipe creation, editing, deletion,
+listing, and detail display, user registration and token obtaining.
+"""
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework import generics
@@ -17,6 +21,7 @@ from django.contrib.auth.models import User
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
+    """ViewSet for listing, creating, and managing recipes."""
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
 
@@ -36,6 +41,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['POST'])
     def filter_search(self, request):
+        """
+        Filter recipes by name, time, and ingredients, including or excluding
+        specific ones. Adds metadata on matching and missing ingredients.
+
+        Args:
+            request (Request): The HTTP request containing search
+            and filter parameters:
+                - query_name (str): Text to match recipe names.
+                - time_filter (str): Time-based filter ('quick',
+                    'standard', 'long').
+                - query_ingredients (list[int]): Ingredient IDs to include.
+                - exclude_ingredients (list[int]): Ingredient IDs to exclude.
+
+        Returns:
+            Response: Serialized list of filtered recipes, possibly paginated,
+            with additional ingredient analysis fields.
+
+        Raises:
+            KeyError: If ingredient IDs are invalid or lookup fails.
+        """
         query_name = request.data.get('query_name', '')
         time_filter = request.data.get('time_filter', '')
         query_ingredients = request.data.get('query_ingredients', [])
@@ -111,5 +136,6 @@ class RecipeFormDataView(generics.ListAPIView):
 
 @permission_classes([AllowAny])
 class RegisterView(generics.CreateAPIView):
+    """View for registering a new user."""
     queryset = User.objects.all()
     serializer_class = UserSerializer

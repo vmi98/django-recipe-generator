@@ -1,3 +1,9 @@
+"""
+Forms for managing Recipe and RecipeIngredient data.
+
+Includes model forms for recipes and ingredients, with validation and
+formset logic for handling inline recipe ingredients.
+"""
 from django import forms
 from django.core.validators import MaxLengthValidator
 from django.core.exceptions import ValidationError
@@ -5,6 +11,7 @@ from .models import Recipe, RecipeIngredient
 
 
 class RecipeIngredientForm(forms.ModelForm):
+    """Form for creating or editing a single RecipeIngredient."""
     class Meta:
         model = RecipeIngredient
         fields = ('ingredient', 'quantity')
@@ -15,6 +22,7 @@ class RecipeIngredientForm(forms.ModelForm):
 
 
 class RecipeForm(forms.ModelForm):
+    """Form for creating or editing a Recipe instance."""
     class Meta:
         model = Recipe
         exclude = ['ingredients']
@@ -33,10 +41,12 @@ class RecipeForm(forms.ModelForm):
     )
 
     def __init__(self, *args, **kwargs):
+        """Attach a max length validator to the instructions field."""
         super().__init__(*args, **kwargs)
         self.fields['instructions'].validators.append(MaxLengthValidator(2000))
 
     def clean_name(self):
+        """Validate that the recipe name has a minimum length of 3 characters."""
         name = self.cleaned_data['name']
         if len(name) < 3:
             raise forms.ValidationError("Name too short!")
@@ -44,16 +54,17 @@ class RecipeForm(forms.ModelForm):
 
 
 class BaseRecipeIngredientFormSet(forms.BaseInlineFormSet):
+    """Formset for managing multiple RecipeIngredient forms."""
     def clean(self):
+        """Validate ingredient uniqueness, count, and quantity presence."""
         super().clean()
 
-        # Count non-deleted, non-empty ingredients
         total_ingredients = 0
         ingredients = []
         for form in self.forms:
             ingredient = form.cleaned_data.get("ingredient")
             quantity = form.cleaned_data.get("quantity")
-            # Skip deleted or empty forms
+
             if form.cleaned_data.get('DELETE', False):
                 continue
             if not ingredient or not quantity:
@@ -65,7 +76,6 @@ class BaseRecipeIngredientFormSet(forms.BaseInlineFormSet):
             ingredients.append(form.cleaned_data.get('ingredient'))
             total_ingredients += 1
 
-        # Enforce at least 1 ingredient
         if total_ingredients < 1:
             raise forms.ValidationError(
                 "You must have at least one ingredient (with quantity field filled)."

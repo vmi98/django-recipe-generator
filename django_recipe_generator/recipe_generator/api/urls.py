@@ -1,3 +1,19 @@
+"""
+URL configuration for the Recipe Generator API.
+
+Available endpoints:
+
+    GET     /api/recipes/           - List all recipes
+    POST    /api/recipes/           - Create a recipe
+    GET     /api/recipes/<id>/      - Retrieve a recipe
+    PUT     /api/recipes/<id>/      - Update a recipe
+    DELETE  /api/recipes/<id>/      - Delete a recipe
+    POST    /filter_search/         - Filter/search recipes
+    GET     /recipe-form-data/      - Retrieve form-related data
+                                    (provides available ingredients)
+    POST    /api-token-auth/        - Obtain authentication token
+    POST    /register/              - Register a new user
+"""
 from django.urls import path
 from django.urls import include
 from rest_framework.authtoken.views import obtain_auth_token
@@ -19,21 +35,3 @@ urlpatterns = [
         path('register/', views.RegisterView.as_view(), name='register'),
     ])),
 ]
-
-'''
-Generated URLs:
-
-GET /api/recipes/ → List all recipes
-
-POST /api/recipes/ → Create a recipe
-
-GET /api/recipes/1/ → Retrieve a recipe
-
-PUT /api/recipes/1/ → Update a recipe
-
-DELETE /api/recipes/1/ → Delete a recipe
-
-+
-
-POST /filter_search/ → Filter/serach recipe
-'''

@@ -1,3 +1,6 @@
+"""
+Test module for models
+"""
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
@@ -9,9 +12,10 @@ from django_recipe_generator.recipe_generator.models import (
 
 
 class RecipeModelTests(TestCase):
+    """Test case for Recipe, Ingredient, and Macro model behavior."""
     @classmethod
     def setUpTestData(cls):
-        """Set up data for the whole TestCase"""
+        """Set up initial test data: ingredients, recipes, macro."""
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
         cls.ingredient3 = Ingredient.objects.create(name="Banana")
@@ -27,7 +31,7 @@ class RecipeModelTests(TestCase):
         )
         cls.recipe.ingredients.set([cls.ingredient1, cls.ingredient2])
         cls.recipe1.ingredients.set([cls.ingredient1, cls.ingredient3])
-        Macro.objects.create(
+        cls.macro = Macro.objects.create(
             recipe=cls.recipe,
             calories=300,
             protein=10,
@@ -36,35 +40,43 @@ class RecipeModelTests(TestCase):
         )
 
     def test_model_creation(self):
+        """Test that recipes are created correctly."""
         self.assertEqual(Recipe.objects.count(), 2)
-        self.assertEqual(self.recipe.name, "test_pizza")
 
     def test_str_representation(self):
-        self.assertEqual(str(self.recipe), "test_pizza")
+        """Test string representation of Recipe model."""
+        expected_representation = "test_pizza"
+        self.assertEqual(str(self.recipe), expected_representation)
 
     def test_cooking_time_cannot_be_negative(self):
+        """Test that negative cooking time raises validation error."""
         self.recipe.cooking_time = -10
         with self.assertRaises(ValidationError):
             self.recipe.full_clean()
 
     def test_name_cannot_be_short(self):
+        """Test that short names raise validation error."""
         self.recipe.name = 'ex'
         with self.assertRaises(ValidationError):
             self.recipe.full_clean()
 
     def test_recipe_ingredients_relationship(self):
+        """Test that recipe has correct ingredients associated."""
         self.assertEqual(self.recipe.ingredients.count(), 2)
         self.assertIn(self.ingredient1, self.recipe.ingredients.all())
         self.assertIn(self.ingredient2, self.recipe.ingredients.all())
 
     def test_macro_relationship(self):
-        self.assertEqual(self.recipe.macro.calories, 300)
+        """Test that macro is correctly related to recipe."""
+        self.assertEqual(self.recipe.macro.calories, self.macro.calories)
 
     def test_search_by_name(self):
+        """Test searching recipes by name returns correct results."""
         results = Recipe.objects.search(query_name="piz")
         self.assertEqual(results.count(), 1)
 
     def test_search_by_ingredients(self):
+        """Test searching recipes by ingredient IDs returns correct results."""
         results = Recipe.objects.search(
             query_ingredients=[
                 self.ingredient1.id,
@@ -74,13 +86,15 @@ class RecipeModelTests(TestCase):
         self.assertEqual(results.count(), 2)
         self.assertEqual(results[0], self.recipe)
 
-    def test_filter_quick_recipes(self):
+    def test_filter_recipes_by_time(self):
+        """Test filtering recipes by quick and standard time filters."""
         quick = Recipe.objects.filter_recipes(time_filter="quick")
         standard = Recipe.objects.filter_recipes(time_filter="standard")
         self.assertEqual(quick.count(), 1)
         self.assertEqual(standard.count(), 1)
 
     def test_filter_exclude(self):
+        """Test filtering recipes by excluding ingredients."""
         results = Recipe.objects.filter_recipes(
             exclude_ingredients=[
                 self.ingredient1.id

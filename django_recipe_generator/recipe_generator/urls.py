@@ -1,3 +1,11 @@
+"""
+URL configuration for the recipe_generator app.
+
+Includes:
+- HTML views for recipe management (list, create, edit, delete, detail).
+- API endpoints.
+- Debug toolbar (only in DEBUG mode).
+"""
 from django.urls import path
 from django.urls import include
 from django.conf import settings
@@ -30,7 +38,7 @@ urlpatterns = [
     # API endpoints
     path('api/', include('django_recipe_generator.recipe_generator.api.urls')),
 ]
-
+# Enable Django Debug Toolbar in development mode
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns = [

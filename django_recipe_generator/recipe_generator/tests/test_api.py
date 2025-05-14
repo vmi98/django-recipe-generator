@@ -1,3 +1,6 @@
+"""
+Test module for API
+"""
 from django.contrib.auth.models import User
 from django.urls import reverse
 
@@ -19,8 +22,10 @@ from django_recipe_generator.recipe_generator.serializers import (
 
 
 class RecipeAPITest(APITestCase):
+    """Tests for the CRUD API endpoints including search, and form data"""
     @classmethod
     def setUpTestData(cls):
+        """Set up initial test data: user, token, ingredients, and recipes."""
         cls.user = User.objects.create_user(username='testuser',
                                             password='testpass')
         cls.token = Token.objects.create(user=cls.user)
@@ -41,10 +46,15 @@ class RecipeAPITest(APITestCase):
         cls.recipe2.ingredients.set([cls.ingredient1, cls.ingredient3])
 
     def setUp(self):
+        """Authenticate test client with token before each test."""
         self.client.login(username='testuser', password='testpass')
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
 
     def test_recipe_form_data(self):
+        """
+        Test retrieving form data with ingredient list
+        for recipe creation.
+        """
         url = reverse('recipe-form-data')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -52,6 +62,10 @@ class RecipeAPITest(APITestCase):
         self.assertContains(response, self.ingredient1.name)
 
     def test_filter_search(self):
+        """
+        Test filtering and seraching recipes by name and ingredients,
+        with exclusions.
+        """
         url = reverse('recipe-filter-search')
         data = {'time_filter': 'standard',
                 'query_ingredients': [self.ingredient1.id],
@@ -66,11 +80,18 @@ class RecipeAPITest(APITestCase):
         recipe = response.data['results'][0]
 
         self.assertIn('matching_ingredient_names', recipe)
-        self.assertEqual(recipe['matching_ingredient_names'], ['Salt'])
+        self.assertEqual(
+            recipe['matching_ingredient_names'],
+            [self.ingredient1.name]
+        )
         self.assertIn('missing_ingredient_names', recipe)
-        self.assertEqual(recipe['missing_ingredient_names'], ['Banana'])
+        self.assertEqual(
+            recipe['missing_ingredient_names'],
+            [self.ingredient3.name]
+        )
 
     def test_list_recipes(self):
+        """Test listing all available recipes via GET request."""
         url = reverse('recipe-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -79,7 +100,9 @@ class RecipeAPITest(APITestCase):
 
 
 class AuthAPITest(APITestCase):
+    """Tests for authentication-related API endpoints."""
     def test_api_token_auth(self):
+        """Test that valid credentials return a valid token."""
         User.objects.create_user(username='testuser',
                                  password='testpass')
         url = reverse('api-token-auth')
@@ -89,10 +112,10 @@ class AuthAPITest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_register(self):
+        """Test user registration via API endpoint."""
         url = reverse('register')
         data = {'username': 'testuser', 'password': 'testpass'}
 
-        # Ensure client is unauthenticated
         self.client.credentials()
 
         response = self.client.post(url, data, format='json')
@@ -100,22 +123,36 @@ class AuthAPITest(APITestCase):
 
 
 class IngredientSerializerTest(APITestCase):
+    """
+    Tests for IngredientSerializer including
+    serialization and validation.
+    """
     def test_serialization(self):
+        """Test that an ingredient is serialized correctly."""
         ingredient = Ingredient.objects.create(name="Salt")
         serializer = IngredientSerializer(ingredient)
         expected_data = {'id': ingredient.id, 'name': 'Salt'}
         self.assertEqual(serializer.data, expected_data)
 
     def test_deserialization_valid(self):
+        """
+        Test that a valid payload is
+        deserialized into an Ingredient object.
+        """
         data = {'name': 'Sugar'}
         serializer = IngredientSerializer(data=data)
         self.assertTrue(serializer.is_valid())
         ingredient = serializer.save()
-        self.assertEqual(ingredient.name, 'Sugar')
+        self.assertEqual(ingredient.name, data['name'])
 
 
 class RecipeIngredientSerializerTest(APITestCase):
+    """
+    Tests for RecipeIngredientSerializer
+    serialization and deserialization.
+    """
     def setUp(self):
+        """Set up test recipe and ingredient for use in all tests."""
         self.ingredient = Ingredient.objects.create(name="Flour")
         self.recipe = Recipe.objects.create(
             name="test_pizza",
@@ -124,6 +161,7 @@ class RecipeIngredientSerializerTest(APITestCase):
         )
 
     def test_serialization(self):
+        """Test that recipe-ingredient relation is serialized correctly."""
         recipe_ingredient = RecipeIngredient.objects.create(
             ingredient=self.ingredient,
             recipe=self.recipe,
@@ -133,13 +171,17 @@ class RecipeIngredientSerializerTest(APITestCase):
         expected_data = {
             'ingredient': {
                 'id': self.ingredient.id,
-                'name': 'Flour'
+                'name': self.ingredient.name
             },
-            'quantity': '2.5'
+            'quantity': str(recipe_ingredient.quantity)
         }
         self.assertEqual(serializer.data, expected_data)
 
     def test_deserialization_valid(self):
+        """
+        Test that valid data is deserialized into
+        a RecipeIngredient object.
+        """
         data = {
             'ingredient': self.ingredient.id,
             'quantity': 1.0
@@ -148,11 +190,12 @@ class RecipeIngredientSerializerTest(APITestCase):
         self.assertTrue(serializer.is_valid())
         obj = serializer.save(recipe=self.recipe)
         self.assertEqual(obj.ingredient, self.ingredient)
-        self.assertEqual(obj.quantity, '1.0')
+        self.assertEqual(obj.quantity, str(data["quantity"]))
 
     def test_deserialization_invalid(self):
+        """Test that invalid ingredient ID fails validation."""
         data = {
-            'ingredient': 9999,  # assuming this ID doesn't exist
+            'ingredient': 9999,
             'quantity': 1.0
         }
         serializer = RecipeIngredientSerializer(data=data)
@@ -161,7 +204,12 @@ class RecipeIngredientSerializerTest(APITestCase):
 
 
 class RecipeSerializerTest(APITestCase):
+    """
+    Test suite for RecipeSerializer:
+    create, update, validate, and context data.
+    """
     def setUp(self):
+        """Set up ingredient and recipe with a related RecipeIngredient."""
         self.ingredient = Ingredient.objects.create(name="Flour")
         self.recipe = Recipe.objects.create(
             name="test_pizza",
@@ -175,6 +223,7 @@ class RecipeSerializerTest(APITestCase):
         )
 
     def test_serialization(self):
+        """Test that recipe with ingredients is serialized correctly."""
         serializer = RecipeSerializer(self.recipe)
         expected_data = {
             "id": self.recipe.id,
@@ -194,6 +243,7 @@ class RecipeSerializerTest(APITestCase):
         self.assertEqual(serializer.data, expected_data)
 
     def test_deserialization_create(self):
+        """Test that valid data creates a new Recipe object."""
         data = {
             "ingredients": [{
                 "ingredient": self.ingredient.id,
@@ -210,6 +260,7 @@ class RecipeSerializerTest(APITestCase):
         self.assertEqual(obj.name, self.recipe.name)
 
     def test_deserialization_update(self):
+        """Test that an existing recipe is updated successfully."""
         data = {
             "ingredients": [{
                 "ingredient": self.ingredient.id,
@@ -226,13 +277,14 @@ class RecipeSerializerTest(APITestCase):
         self.assertEqual(updated.name, "updated_name")
 
     def test_deserialization_invalid_name(self):
+        """Test that an invalid short name triggers a validation error."""
         data = {
             "ingredients": [{
                 "ingredient": self.ingredient.id,
                 "quantity": self.recipeingredient.quantity
             },
             ],
-            "name": "BN",  # invalid
+            "name": "BN",
             "instructions": self.recipe.instructions,
             "cooking_time": self.recipe.cooking_time
         }
@@ -241,6 +293,7 @@ class RecipeSerializerTest(APITestCase):
         self.assertIn('name', serializer.errors)
 
     def test_deserialization_invalid_cooking_time(self):
+        """Test that negative cooking time triggers a validation error."""
         data = {
             "ingredients": [{
                 "ingredient": self.ingredient.id,
@@ -249,14 +302,17 @@ class RecipeSerializerTest(APITestCase):
             ],
             "name": self.recipe.name,
             "instructions": self.recipe.instructions,
-            "cooking_time": -15  # invalid
+            "cooking_time": -15
         }
         serializer = RecipeSerializer(data=data)
         self.assertFalse(serializer.is_valid())
         self.assertIn('cooking_time', serializer.errors)
 
     def test_contextual_fields_added(self):
-        # Simulate attributes added in view logic
+        """
+        Test that contextual fields like
+        matching/missing ingredients are added.
+        """
         self.recipe.matching_ingredient_names = ["Salt"]
         self.recipe.missing_ingredient_names = ["Beef"]
 
@@ -272,7 +328,9 @@ class RecipeSerializerTest(APITestCase):
 
 
 class UserSerializerTest(APITestCase):
+    """Test suite for UserSerializer: serialize and create users."""
     def test_serialization(self):
+        """Test that a user instance is serialized correctly."""
         user = User.objects.create(
             username='test',
             password='testpass'
@@ -284,6 +342,7 @@ class UserSerializerTest(APITestCase):
         self.assertEqual(serializer.data, expected_data)
 
     def test_user_creation(self):
+        """Test that a user is created and password is hashed properly."""
         data = {
             'username': 'test',
             'password': 'testpass'
