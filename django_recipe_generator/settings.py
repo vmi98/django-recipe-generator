@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['*']
 
 
 # Application definition
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -55,6 +56,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+if DEBUG:
+    INSTALLED_APPS += ["debug_toolbar"]
+    MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE
 
 ROOT_URLCONF = 'django_recipe_generator.urls'
 
@@ -144,6 +148,3 @@ REST_FRAMEWORK = {
 
 INTERNAL_IPS = ['127.0.0.1', '0.0.0.0']
 
-if os.environ.get("DJANGO_ENV") != "production":
-    INSTALLED_APPS += ["debug_toolbar"]
-    MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE
