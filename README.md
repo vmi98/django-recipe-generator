@@ -43,7 +43,7 @@ Available endpoints:
 
 Authentication: TokenAuthentication
 
-Example Request (cURL):
+Example Request for adding new recipe (cURL):
 ```
 curl --location 'https://django-recipe-generator.onrender.com/recipe_generator/api/recipes/' \
 --header 'Authorization: Token 123xyz' \
