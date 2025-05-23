@@ -31,4 +31,5 @@ ENTRYPOINT []
 
 # Run the Django by default
 #  0.0.0.0` to allow access from outside the container
-CMD ["gunicorn", "django_recipe_generator.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["./entrypoint.sh"]
+

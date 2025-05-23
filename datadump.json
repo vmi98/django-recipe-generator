@@ -1,0 +1,2279 @@
+[
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2025-04-16T07:59:00.865Z",
+    "user": 1,
+    "content_type": 8,
+    "object_id": "5",
+    "object_repr": "try2",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2025-04-16T07:59:00.865Z",
+    "user": 1,
+    "content_type": 8,
+    "object_id": "4",
+    "object_repr": "Try1",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2025-04-17T08:42:31.172Z",
+    "user": 1,
+    "content_type": 8,
+    "object_id": "6",
+    "object_repr": "Victor",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Instructions\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 4,
+  "fields": {
+    "action_time": "2025-04-18T08:57:48.107Z",
+    "user": 1,
+    "content_type": 8,
+    "object_id": "8",
+    "object_repr": "nmkl",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$unmV0YyMxceItn3zmgTDMM$T0ZtmMO5UQDwAfcQHYkKoJyaY1P3rSmyv2Fx/alkGTs=",
+    "last_login": "2025-04-11T10:38:42.722Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@example.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-04-11T10:35:46.238Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$EaYj62ObN1hdyW0jG2clEL$G/9oJlKRmho4bGsnIfe0jzkh3ARU1INkKdUeJ4aHIOY=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "victor",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-04-28T08:44:39.001Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$x7vfILtqyamTGy1dXzXa8d$R+BMO9QPEac0j2HBG696ECG+dQe119VBUdaryI9SIrs=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-06T14:17:12.739Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "fa2l112457jk09zj63kxd40zukf5c650",
+  "fields": {
+    "session_data": ".eJxVjMEOwiAQBf-FsyEIpcUevfsNZIFdqdoSoRyM8d-l0YNe38ybJ7NQ12hrwWynwEa2Z7vfzYG_4rKBcIHlnLhPy5onxzeFf2nhpxTwdvy6f4EIJba3ICcHj30fNHQKOtCuM0oqo7wQng5CDgIhGDlQQCMDNVsZ3Qckr8lQixaE7KO9V8yPVmyLhxkt5TTbD2Pjmiu-3lpMR0k:1uFU4b:hqPhw1Tk3Q-O5oPCKfHZ2HUDh2zg7KrSJR16vdNhgSE",
+    "expire_date": "2025-05-29T08:36:13.504Z"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 1,
+  "fields": {
+    "name": "Eggs",
+    "category": "protein"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 2,
+  "fields": {
+    "name": "Pancetta",
+    "category": "protein"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 3,
+  "fields": {
+    "name": "Parmesan Cheese",
+    "category": "dairy"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 4,
+  "fields": {
+    "name": "Spaghetti",
+    "category": "grain"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 5,
+  "fields": {
+    "name": "Bell Pepper",
+    "category": "vegetable"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 6,
+  "fields": {
+    "name": "Beef Chuck",
+    "category": "protein"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 7,
+  "fields": {
+    "name": "Red Wine",
+    "category": "other"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 8,
+  "fields": {
+    "name": "Chocolate Chips",
+    "category": "other"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 9,
+  "fields": {
+    "name": "chicken breast",
+    "category": "meat"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 10,
+  "fields": {
+    "name": "yogurt",
+    "category": "dairy"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 11,
+  "fields": {
+    "name": "tomato sauce",
+    "category": "sauce"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 12,
+  "fields": {
+    "name": "garlic",
+    "category": "vegetable"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 13,
+  "fields": {
+    "name": "ginger",
+    "category": "vegetable"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 14,
+  "fields": {
+    "name": "ground beef",
+    "category": "meat"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 15,
+  "fields": {
+    "name": "pasta sheets",
+    "category": "pasta"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 16,
+  "fields": {
+    "name": "ricotta cheese",
+    "category": "dairy"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 17,
+  "fields": {
+    "name": "cucumber",
+    "category": "vegetable"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 18,
+  "fields": {
+    "name": "tomato",
+    "category": "vegetable"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 19,
+  "fields": {
+    "name": "red onion",
+    "category": "vegetable"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 20,
+  "fields": {
+    "name": "feta cheese",
+    "category": "dairy"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 21,
+  "fields": {
+    "name": "olive oil",
+    "category": "fat"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 22,
+  "fields": {
+    "name": "pizza dough",
+    "category": "dough"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 23,
+  "fields": {
+    "name": "cheese",
+    "category": "dairy"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 24,
+  "fields": {
+    "name": "flour",
+    "category": "baking"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 25,
+  "fields": {
+    "name": "butter",
+    "category": "dairy"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 26,
+  "fields": {
+    "name": "sugar",
+    "category": "baking"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 27,
+  "fields": {
+    "name": "chocolate chips",
+    "category": "baking"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 28,
+  "fields": {
+    "name": "carrot",
+    "category": "vegetable"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 29,
+  "fields": {
+    "name": "celery",
+    "category": "vegetable"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 30,
+  "fields": {
+    "name": "onion",
+    "category": "vegetable"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 31,
+  "fields": {
+    "name": "vegetable broth",
+    "category": "liquid"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 32,
+  "fields": {
+    "name": "salmon fillet",
+    "category": "fish"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 33,
+  "fields": {
+    "name": "lemon",
+    "category": "fruit"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 34,
+  "fields": {
+    "name": "bread",
+    "category": "bakery"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 35,
+  "fields": {
+    "name": "avocado",
+    "category": "fruit"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 36,
+  "fields": {
+    "name": "burger bun",
+    "category": "bakery"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 37,
+  "fields": {
+    "name": "banana",
+    "category": "fruit"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 38,
+  "fields": {
+    "name": "strawberries",
+    "category": "fruit"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 39,
+  "fields": {
+    "name": "shrimp",
+    "category": "seafood"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 40,
+  "fields": {
+    "name": "pasta",
+    "category": "pasta"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 41,
+  "fields": {
+    "name": "noodles",
+    "category": "pasta"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 42,
+  "fields": {
+    "name": "egg",
+    "category": "dairy"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 43,
+  "fields": {
+    "name": "milk",
+    "category": "dairy"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 44,
+  "fields": {
+    "name": "romaine lettuce",
+    "category": "vegetable"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 45,
+  "fields": {
+    "name": "croutons",
+    "category": "bakery"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 46,
+  "fields": {
+    "name": "parmesan",
+    "category": "dairy"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 47,
+  "fields": {
+    "name": "beef chuck",
+    "category": "meat"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 48,
+  "fields": {
+    "name": "potato",
+    "category": "vegetable"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 49,
+  "fields": {
+    "name": "mayo",
+    "category": "sauce"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 50,
+  "fields": {
+    "name": "cocoa powder",
+    "category": "baking"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 51,
+  "fields": {
+    "name": "rice",
+    "category": "grain"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 52,
+  "fields": {
+    "name": "basil",
+    "category": "herb"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 53,
+  "fields": {
+    "name": "whole chicken",
+    "category": "meat"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 54,
+  "fields": {
+    "name": "chickpeas",
+    "category": "legume"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 55,
+  "fields": {
+    "name": "tahini",
+    "category": "sauce"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 56,
+  "fields": {
+    "name": "mixed vegetables",
+    "category": "vegetable"
+  }
+},
+{
+  "model": "recipe_generator.ingredient",
+  "pk": 57,
+  "fields": {
+    "name": "coconut milk",
+    "category": "dairy"
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 1,
+  "fields": {
+    "name": "Classic Spaghetti Carbonaraa",
+    "instructions": "1. Cook pasta\\n2. Fry pancetta\\n3. Mix eggs and cheese\\n4. Combine all ingredients",
+    "cooking_time": 20
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 2,
+  "fields": {
+    "name": "Vegetable Stir Fry",
+    "instructions": "1. Chop vegetables\\n2. Heat oil\\n3. Stir-fry veggies\\n4. Add sauce",
+    "cooking_time": 15
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 3,
+  "fields": {
+    "name": "Beef Bourguignon",
+    "instructions": "1. Sear beef\\n2. Sauté vegetables\\n3. Deglaze with wine\\n4. Slow cook for 3 hours",
+    "cooking_time": 180
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 6,
+  "fields": {
+    "name": "Victor",
+    "instructions": "kdjnfkdfj\r\nhghgh\r\nhghg",
+    "cooking_time": 5
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 10,
+  "fields": {
+    "name": "Chicken Tikka Masala",
+    "instructions": "1. Marinate chicken\\n2. Grill chicken\\n3. Prepare sauce\\n4. Combine and simmer",
+    "cooking_time": 40
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 11,
+  "fields": {
+    "name": "Beef Lasagna",
+    "instructions": "1. Cook ground beef\\n2. Prepare cheese mixture\\n3. Layer pasta sheets\\n4. Bake in oven",
+    "cooking_time": 60
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 12,
+  "fields": {
+    "name": "Greek Salad",
+    "instructions": "1. Chop vegetables\\n2. Add feta cheese\\n3. Mix with olive oil",
+    "cooking_time": 10
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 13,
+  "fields": {
+    "name": "Homemade Pizza",
+    "instructions": "1. Prepare dough\\n2. Add toppings\\n3. Bake at high temperature",
+    "cooking_time": 25
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 14,
+  "fields": {
+    "name": "Chocolate Chip Cookies",
+    "instructions": "1. Mix dry ingredients\\n2. Cream butter and sugar\\n3. Combine and bake",
+    "cooking_time": 30
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 15,
+  "fields": {
+    "name": "Vegetable Soup",
+    "instructions": "1. Sauté vegetables\\n2. Add broth\\n3. Simmer for 20 minutes",
+    "cooking_time": 30
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 16,
+  "fields": {
+    "name": "Grilled Salmon",
+    "instructions": "1. Season salmon\\n2. Grill for 5 minutes per side\\n3. Serve with lemon",
+    "cooking_time": 15
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 17,
+  "fields": {
+    "name": "Avocado Toast",
+    "instructions": "1. Toast bread\\n2. Mash avocado\\n3. Add toppings",
+    "cooking_time": 5
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 18,
+  "fields": {
+    "name": "Beef Burger",
+    "instructions": "1. Form patties\\n2. Grill burgers\\n3. Assemble with buns",
+    "cooking_time": 20
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 19,
+  "fields": {
+    "name": "Fruit Smoothie",
+    "instructions": "1. Add fruits to blender\\n2. Pour milk/yogurt\\n3. Blend until smooth",
+    "cooking_time": 5
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 20,
+  "fields": {
+    "name": "Shrimp Scampi",
+    "instructions": "1. Sauté garlic\\n2. Cook shrimp\\n3. Add white wine\\n4. Toss with pasta",
+    "cooking_time": 25
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 21,
+  "fields": {
+    "name": "Chicken Noodle Soup",
+    "instructions": "1. Boil chicken\\n2. Add vegetables\\n3. Add noodles\\n4. Simmer",
+    "cooking_time": 35
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 22,
+  "fields": {
+    "name": "Pancakes",
+    "instructions": "1. Mix batter\\n2. Cook on griddle\\n3. Flip when bubbly",
+    "cooking_time": 15
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 23,
+  "fields": {
+    "name": "Caesar Salad",
+    "instructions": "1. Chop romaine\\n2. Make dressing\\n3. Add croutons\\n4. Toss with cheese",
+    "cooking_time": 10
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 24,
+  "fields": {
+    "name": "Beef Stew",
+    "instructions": "1. Brown beef\\n2. Add vegetables\\n3. Simmer for 2 hours",
+    "cooking_time": 120
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 25,
+  "fields": {
+    "name": "Garlic Bread",
+    "instructions": "1. Mix butter and garlic\\n2. Spread on bread\\n3. Bake until golden",
+    "cooking_time": 10
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 26,
+  "fields": {
+    "name": "Omelette",
+    "instructions": "1. Beat eggs\\n2. Cook in pan\\n3. Add fillings\\n4. Fold",
+    "cooking_time": 10
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 27,
+  "fields": {
+    "name": "Tuna Salad",
+    "instructions": "1. Mix tuna with mayo\\n2. Add celery\\n3. Season to taste",
+    "cooking_time": 5
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 28,
+  "fields": {
+    "name": "Chocolate Cake",
+    "instructions": "1. Mix ingredients\\n2. Pour in pan\\n3. Bake at 350F\\n4. Frost when cool",
+    "cooking_time": 45
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 29,
+  "fields": {
+    "name": "Fried Rice",
+    "instructions": "1. Cook rice\\n2. Scramble eggs\\n3. Stir-fry with vegetables",
+    "cooking_time": 20
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 30,
+  "fields": {
+    "name": "Baked Potatoes",
+    "instructions": "1. Wash potatoes\\n2. Rub with oil\\n3. Bake for 1 hour",
+    "cooking_time": 60
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 31,
+  "fields": {
+    "name": "Guacamole",
+    "instructions": "1. Mash avocados\\n2. Add lime juice\\n3. Mix with vegetables",
+    "cooking_time": 10
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 32,
+  "fields": {
+    "name": "Chicken Curry",
+    "instructions": "1. Brown chicken\\n2. Add curry paste\\n3. Simmer with coconut milk",
+    "cooking_time": 35
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 33,
+  "fields": {
+    "name": "French Toast",
+    "instructions": "1. Dip bread in egg mixture\\n2. Cook on griddle\\n3. Serve with syrup",
+    "cooking_time": 15
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 34,
+  "fields": {
+    "name": "Pasta Pesto",
+    "instructions": "1. Cook pasta\\n2. Blend pesto\\n3. Toss together",
+    "cooking_time": 15
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 35,
+  "fields": {
+    "name": "Roast Chicken",
+    "instructions": "1. Season chicken\\n2. Roast at 375F\\n3. Baste occasionally",
+    "cooking_time": 90
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 36,
+  "fields": {
+    "name": "Hummus",
+    "instructions": "1. Blend chickpeas\\n2. Add tahini\\n3. Season to taste",
+    "cooking_time": 10
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 37,
+  "fields": {
+    "name": "Vegetable Curry",
+    "instructions": "1. Sauté vegetables\\n2. Add curry sauce\\n3. Simmer for 20 minutes",
+    "cooking_time": 25
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 38,
+  "fields": {
+    "name": "victors shrimp food",
+    "instructions": "fry salmon and put parmesan",
+    "cooking_time": 5
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 39,
+  "fields": {
+    "name": "victors shrimp food",
+    "instructions": "fry salmon and put parmesan",
+    "cooking_time": 5
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 40,
+  "fields": {
+    "name": "example",
+    "instructions": "jnkjnkjn",
+    "cooking_time": 50
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 41,
+  "fields": {
+    "name": "try try",
+    "instructions": "try try try",
+    "cooking_time": 15
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 43,
+  "fields": {
+    "name": "Pasta API API",
+    "instructions": "Api",
+    "cooking_time": 15
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 44,
+  "fields": {
+    "name": "improve API",
+    "instructions": "Api",
+    "cooking_time": 15
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 45,
+  "fields": {
+    "name": "postman",
+    "instructions": "Api",
+    "cooking_time": 10
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 46,
+  "fields": {
+    "name": "postman last",
+    "instructions": "Api",
+    "cooking_time": 50
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 47,
+  "fields": {
+    "name": "test test",
+    "instructions": ",m ,",
+    "cooking_time": 8
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 48,
+  "fields": {
+    "name": "test test67",
+    "instructions": "kjnk",
+    "cooking_time": 90
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 49,
+  "fields": {
+    "name": "okkk",
+    "instructions": "jkn,nl",
+    "cooking_time": 7
+  }
+},
+{
+  "model": "recipe_generator.recipe",
+  "pk": 50,
+  "fields": {
+    "name": "kmm",
+    "instructions": "lklkl",
+    "cooking_time": 45
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 1,
+  "fields": {
+    "recipe": 1,
+    "ingredient": 4,
+    "quantity": "400g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 2,
+  "fields": {
+    "recipe": 1,
+    "ingredient": 1,
+    "quantity": "3 large"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 3,
+  "fields": {
+    "recipe": 1,
+    "ingredient": 2,
+    "quantity": "150g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 4,
+  "fields": {
+    "recipe": 1,
+    "ingredient": 3,
+    "quantity": "1 cup"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 5,
+  "fields": {
+    "recipe": 2,
+    "ingredient": 5,
+    "quantity": "2 medium"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 6,
+  "fields": {
+    "recipe": 3,
+    "ingredient": 6,
+    "quantity": "1 kg"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 7,
+  "fields": {
+    "recipe": 3,
+    "ingredient": 7,
+    "quantity": "750 ml"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 10,
+  "fields": {
+    "recipe": 6,
+    "ingredient": 1,
+    "quantity": "2"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 18,
+  "fields": {
+    "recipe": 10,
+    "ingredient": 9,
+    "quantity": "500g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 19,
+  "fields": {
+    "recipe": 10,
+    "ingredient": 10,
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 20,
+  "fields": {
+    "recipe": 10,
+    "ingredient": 11,
+    "quantity": "300ml"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 21,
+  "fields": {
+    "recipe": 10,
+    "ingredient": 12,
+    "quantity": "3 cloves"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 22,
+  "fields": {
+    "recipe": 10,
+    "ingredient": 13,
+    "quantity": "1 tbsp"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 23,
+  "fields": {
+    "recipe": 11,
+    "ingredient": 14,
+    "quantity": "400g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 24,
+  "fields": {
+    "recipe": 11,
+    "ingredient": 15,
+    "quantity": "250g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 25,
+  "fields": {
+    "recipe": 11,
+    "ingredient": 16,
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 26,
+  "fields": {
+    "recipe": 11,
+    "ingredient": 11,
+    "quantity": "300ml"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 27,
+  "fields": {
+    "recipe": 12,
+    "ingredient": 17,
+    "quantity": "1 large"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 28,
+  "fields": {
+    "recipe": 12,
+    "ingredient": 18,
+    "quantity": "2 medium"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 29,
+  "fields": {
+    "recipe": 12,
+    "ingredient": 19,
+    "quantity": "1 small"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 30,
+  "fields": {
+    "recipe": 12,
+    "ingredient": 20,
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 31,
+  "fields": {
+    "recipe": 12,
+    "ingredient": 21,
+    "quantity": "2 tbsp"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 32,
+  "fields": {
+    "recipe": 13,
+    "ingredient": 22,
+    "quantity": "1 base"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 33,
+  "fields": {
+    "recipe": 13,
+    "ingredient": 11,
+    "quantity": "100ml"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 34,
+  "fields": {
+    "recipe": 13,
+    "ingredient": 23,
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 35,
+  "fields": {
+    "recipe": 14,
+    "ingredient": 24,
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 36,
+  "fields": {
+    "recipe": 14,
+    "ingredient": 25,
+    "quantity": "150g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 37,
+  "fields": {
+    "recipe": 14,
+    "ingredient": 26,
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 38,
+  "fields": {
+    "recipe": 14,
+    "ingredient": 27,
+    "quantity": "150g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 39,
+  "fields": {
+    "recipe": 15,
+    "ingredient": 28,
+    "quantity": "2 medium"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 40,
+  "fields": {
+    "recipe": 15,
+    "ingredient": 29,
+    "quantity": "2 stalks"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 41,
+  "fields": {
+    "recipe": 15,
+    "ingredient": 30,
+    "quantity": "1 medium"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 42,
+  "fields": {
+    "recipe": 15,
+    "ingredient": 31,
+    "quantity": "1L"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 43,
+  "fields": {
+    "recipe": 16,
+    "ingredient": 32,
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 44,
+  "fields": {
+    "recipe": 16,
+    "ingredient": 33,
+    "quantity": "1/2"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 45,
+  "fields": {
+    "recipe": 16,
+    "ingredient": 21,
+    "quantity": "1 tbsp"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 46,
+  "fields": {
+    "recipe": 17,
+    "ingredient": 34,
+    "quantity": "2 slices"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 47,
+  "fields": {
+    "recipe": 17,
+    "ingredient": 35,
+    "quantity": "1 medium"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 48,
+  "fields": {
+    "recipe": 18,
+    "ingredient": 14,
+    "quantity": "150g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 49,
+  "fields": {
+    "recipe": 18,
+    "ingredient": 36,
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 50,
+  "fields": {
+    "recipe": 19,
+    "ingredient": 37,
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 51,
+  "fields": {
+    "recipe": 19,
+    "ingredient": 38,
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 52,
+  "fields": {
+    "recipe": 19,
+    "ingredient": 10,
+    "quantity": "150ml"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 53,
+  "fields": {
+    "recipe": 20,
+    "ingredient": 39,
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 54,
+  "fields": {
+    "recipe": 20,
+    "ingredient": 12,
+    "quantity": "2 cloves"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 55,
+  "fields": {
+    "recipe": 20,
+    "ingredient": 40,
+    "quantity": "150g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 56,
+  "fields": {
+    "recipe": 21,
+    "ingredient": 9,
+    "quantity": "300g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 57,
+  "fields": {
+    "recipe": 21,
+    "ingredient": 41,
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 58,
+  "fields": {
+    "recipe": 21,
+    "ingredient": 28,
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 59,
+  "fields": {
+    "recipe": 22,
+    "ingredient": 24,
+    "quantity": "150g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 60,
+  "fields": {
+    "recipe": 22,
+    "ingredient": 42,
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 61,
+  "fields": {
+    "recipe": 22,
+    "ingredient": 43,
+    "quantity": "200ml"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 62,
+  "fields": {
+    "recipe": 23,
+    "ingredient": 44,
+    "quantity": "1 head"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 63,
+  "fields": {
+    "recipe": 23,
+    "ingredient": 45,
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 64,
+  "fields": {
+    "recipe": 23,
+    "ingredient": 46,
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 65,
+  "fields": {
+    "recipe": 24,
+    "ingredient": 47,
+    "quantity": "500g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 66,
+  "fields": {
+    "recipe": 24,
+    "ingredient": 48,
+    "quantity": "2 medium"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 67,
+  "fields": {
+    "recipe": 24,
+    "ingredient": 28,
+    "quantity": "2"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 68,
+  "fields": {
+    "recipe": 25,
+    "ingredient": 34,
+    "quantity": "4 slices"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 69,
+  "fields": {
+    "recipe": 25,
+    "ingredient": 25,
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 70,
+  "fields": {
+    "recipe": 25,
+    "ingredient": 12,
+    "quantity": "2 cloves"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 71,
+  "fields": {
+    "recipe": 26,
+    "ingredient": 42,
+    "quantity": "2"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 72,
+  "fields": {
+    "recipe": 26,
+    "ingredient": 23,
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 73,
+  "fields": {
+    "recipe": 27,
+    "ingredient": 49,
+    "quantity": "2 tbsp"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 74,
+  "fields": {
+    "recipe": 28,
+    "ingredient": 24,
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 75,
+  "fields": {
+    "recipe": 28,
+    "ingredient": 26,
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 76,
+  "fields": {
+    "recipe": 28,
+    "ingredient": 50,
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 77,
+  "fields": {
+    "recipe": 29,
+    "ingredient": 51,
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 78,
+  "fields": {
+    "recipe": 29,
+    "ingredient": 42,
+    "quantity": "2"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 79,
+  "fields": {
+    "recipe": 30,
+    "ingredient": 48,
+    "quantity": "2 large"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 80,
+  "fields": {
+    "recipe": 31,
+    "ingredient": 35,
+    "quantity": "2"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 81,
+  "fields": {
+    "recipe": 32,
+    "ingredient": 57,
+    "quantity": "400ml"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 82,
+  "fields": {
+    "recipe": 33,
+    "ingredient": 34,
+    "quantity": "2 slices"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 83,
+  "fields": {
+    "recipe": 33,
+    "ingredient": 42,
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 84,
+  "fields": {
+    "recipe": 34,
+    "ingredient": 40,
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 85,
+  "fields": {
+    "recipe": 34,
+    "ingredient": 52,
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 86,
+  "fields": {
+    "recipe": 35,
+    "ingredient": 53,
+    "quantity": "1.5kg"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 87,
+  "fields": {
+    "recipe": 36,
+    "ingredient": 54,
+    "quantity": "400g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 88,
+  "fields": {
+    "recipe": 36,
+    "ingredient": 55,
+    "quantity": "2 tbsp"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 89,
+  "fields": {
+    "recipe": 37,
+    "ingredient": 56,
+    "quantity": "300g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 90,
+  "fields": {
+    "recipe": 37,
+    "ingredient": 57,
+    "quantity": "400ml"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 91,
+  "fields": {
+    "recipe": 38,
+    "ingredient": 32,
+    "quantity": "300g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 92,
+  "fields": {
+    "recipe": 38,
+    "ingredient": 46,
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 93,
+  "fields": {
+    "recipe": 39,
+    "ingredient": 32,
+    "quantity": "300g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 94,
+  "fields": {
+    "recipe": 39,
+    "ingredient": 46,
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 95,
+  "fields": {
+    "recipe": 40,
+    "ingredient": 10,
+    "quantity": "3 packs"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 96,
+  "fields": {
+    "recipe": 41,
+    "ingredient": 16,
+    "quantity": "8"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 97,
+  "fields": {
+    "recipe": 41,
+    "ingredient": 18,
+    "quantity": "6"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 98,
+  "fields": {
+    "recipe": 43,
+    "ingredient": 1,
+    "quantity": "200"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 99,
+  "fields": {
+    "recipe": 43,
+    "ingredient": 3,
+    "quantity": "50"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 100,
+  "fields": {
+    "recipe": 44,
+    "ingredient": 1,
+    "quantity": "200"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 101,
+  "fields": {
+    "recipe": 44,
+    "ingredient": 3,
+    "quantity": "50"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 102,
+  "fields": {
+    "recipe": 45,
+    "ingredient": 1,
+    "quantity": "200"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 103,
+  "fields": {
+    "recipe": 45,
+    "ingredient": 3,
+    "quantity": "50"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 104,
+  "fields": {
+    "recipe": 46,
+    "ingredient": 8,
+    "quantity": "200"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 105,
+  "fields": {
+    "recipe": 46,
+    "ingredient": 6,
+    "quantity": "50"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 108,
+  "fields": {
+    "recipe": 6,
+    "ingredient": 3,
+    "quantity": "9"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 109,
+  "fields": {
+    "recipe": 6,
+    "ingredient": 10,
+    "quantity": "989"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 110,
+  "fields": {
+    "recipe": 47,
+    "ingredient": 1,
+    "quantity": "9"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 111,
+  "fields": {
+    "recipe": 47,
+    "ingredient": 12,
+    "quantity": "3"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 112,
+  "fields": {
+    "recipe": 48,
+    "ingredient": 5,
+    "quantity": "8"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 113,
+  "fields": {
+    "recipe": 48,
+    "ingredient": 8,
+    "quantity": "3"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 114,
+  "fields": {
+    "recipe": 49,
+    "ingredient": 8,
+    "quantity": "8"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 115,
+  "fields": {
+    "recipe": 49,
+    "ingredient": 10,
+    "quantity": "9"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 120,
+  "fields": {
+    "recipe": 50,
+    "ingredient": 14,
+    "quantity": "3"
+  }
+},
+{
+  "model": "recipe_generator.recipeingredient",
+  "pk": 121,
+  "fields": {
+    "recipe": 50,
+    "ingredient": 17,
+    "quantity": "4"
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 1,
+  "fields": {
+    "recipe": 1,
+    "calories": 750,
+    "protein": 35,
+    "carbs": 80,
+    "fat": 32
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 2,
+  "fields": {
+    "recipe": 2,
+    "calories": 320,
+    "protein": 12,
+    "carbs": 40,
+    "fat": 15
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 3,
+  "fields": {
+    "recipe": 3,
+    "calories": 620,
+    "protein": 45,
+    "carbs": 12,
+    "fat": 40
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 4,
+  "fields": {
+    "recipe": 10,
+    "calories": 450,
+    "protein": 35,
+    "carbs": 20,
+    "fat": 25
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 5,
+  "fields": {
+    "recipe": 11,
+    "calories": 550,
+    "protein": 30,
+    "carbs": 40,
+    "fat": 30
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 6,
+  "fields": {
+    "recipe": 12,
+    "calories": 250,
+    "protein": 8,
+    "carbs": 15,
+    "fat": 18
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 7,
+  "fields": {
+    "recipe": 13,
+    "calories": 400,
+    "protein": 15,
+    "carbs": 50,
+    "fat": 15
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 8,
+  "fields": {
+    "recipe": 14,
+    "calories": 200,
+    "protein": 2,
+    "carbs": 25,
+    "fat": 10
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 9,
+  "fields": {
+    "recipe": 15,
+    "calories": 150,
+    "protein": 5,
+    "carbs": 20,
+    "fat": 5
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 10,
+  "fields": {
+    "recipe": 16,
+    "calories": 300,
+    "protein": 25,
+    "carbs": 2,
+    "fat": 20
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 11,
+  "fields": {
+    "recipe": 17,
+    "calories": 250,
+    "protein": 6,
+    "carbs": 25,
+    "fat": 15
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 12,
+  "fields": {
+    "recipe": 18,
+    "calories": 500,
+    "protein": 30,
+    "carbs": 35,
+    "fat": 25
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 13,
+  "fields": {
+    "recipe": 19,
+    "calories": 200,
+    "protein": 5,
+    "carbs": 35,
+    "fat": 3
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 14,
+  "fields": {
+    "recipe": 20,
+    "calories": 350,
+    "protein": 25,
+    "carbs": 40,
+    "fat": 10
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 15,
+  "fields": {
+    "recipe": 21,
+    "calories": 300,
+    "protein": 25,
+    "carbs": 30,
+    "fat": 8
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 16,
+  "fields": {
+    "recipe": 22,
+    "calories": 250,
+    "protein": 6,
+    "carbs": 40,
+    "fat": 5
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 17,
+  "fields": {
+    "recipe": 23,
+    "calories": 300,
+    "protein": 10,
+    "carbs": 15,
+    "fat": 20
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 18,
+  "fields": {
+    "recipe": 24,
+    "calories": 400,
+    "protein": 35,
+    "carbs": 20,
+    "fat": 20
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 19,
+  "fields": {
+    "recipe": 25,
+    "calories": 200,
+    "protein": 4,
+    "carbs": 25,
+    "fat": 10
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 20,
+  "fields": {
+    "recipe": 26,
+    "calories": 250,
+    "protein": 15,
+    "carbs": 2,
+    "fat": 20
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 21,
+  "fields": {
+    "recipe": 27,
+    "calories": 200,
+    "protein": 20,
+    "carbs": 5,
+    "fat": 12
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 22,
+  "fields": {
+    "recipe": 28,
+    "calories": 350,
+    "protein": 5,
+    "carbs": 50,
+    "fat": 15
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 23,
+  "fields": {
+    "recipe": 29,
+    "calories": 400,
+    "protein": 10,
+    "carbs": 60,
+    "fat": 10
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 24,
+  "fields": {
+    "recipe": 30,
+    "calories": 200,
+    "protein": 4,
+    "carbs": 45,
+    "fat": 1
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 25,
+  "fields": {
+    "recipe": 31,
+    "calories": 200,
+    "protein": 2,
+    "carbs": 10,
+    "fat": 18
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 26,
+  "fields": {
+    "recipe": 32,
+    "calories": 400,
+    "protein": 30,
+    "carbs": 15,
+    "fat": 25
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 27,
+  "fields": {
+    "recipe": 33,
+    "calories": 300,
+    "protein": 10,
+    "carbs": 40,
+    "fat": 10
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 28,
+  "fields": {
+    "recipe": 34,
+    "calories": 450,
+    "protein": 15,
+    "carbs": 50,
+    "fat": 20
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 29,
+  "fields": {
+    "recipe": 35,
+    "calories": 500,
+    "protein": 50,
+    "carbs": 5,
+    "fat": 30
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 30,
+  "fields": {
+    "recipe": 36,
+    "calories": 150,
+    "protein": 5,
+    "carbs": 15,
+    "fat": 8
+  }
+},
+{
+  "model": "recipe_generator.macro",
+  "pk": 31,
+  "fields": {
+    "recipe": 37,
+    "calories": 300,
+    "protein": 8,
+    "carbs": 30,
+    "fat": 15
+  }
+},
+{
+  "model": "authtoken.token",
+  "pk": "34a7b1693c4e3d181afa0368a1f3b952eec0ec02",
+  "fields": {
+    "user": 1,
+    "created": "2025-04-27T09:56:09.411Z"
+  }
+},
+{
+  "model": "authtoken.token",
+  "pk": "54eb9c3a4c36365aa44219f893e614e5d156d75a",
+  "fields": {
+    "user": 2,
+    "created": "2025-04-28T08:45:42.044Z"
+  }
+}
+]
