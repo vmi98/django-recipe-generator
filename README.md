@@ -16,7 +16,7 @@ A Django-based web application for searching recipes baced on recipe name and in
 - Python
 - Django
 - Django REST Framework
-- SQLite (default database)
+- PostgreSQL
 - Django ORM
 - unittest (testing)
 - Docker
@@ -96,8 +96,8 @@ Example Response (JSON):
 git clone https://github.com/vmi98/django-recipe-generator.git
 cd django-recipe-generator
 
-docker build -t django-recipe-generator .
-docker run -p 8000:8000 django-recipe-generator
+docker compose build
+docker compose up
 ```
 
 ## Running the tests
@@ -113,4 +113,4 @@ uv run flake8 .
 
 ## Deployment Notes
 
-Dockerized and deployed on Render
+Dockerized and deployed on [Render](https://django-recipe-generator.onrender.com)
