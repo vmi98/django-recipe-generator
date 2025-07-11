@@ -85,25 +85,15 @@ class RecipeDetailView(DetailView):
 
         if request.session.get('came_from_search'):
             if request.session.get('was_editing'):
-                search_query = request.session.get('search_query', '')
-                try:
-                    params = parse_qs(search_query)
-                    clean_params = {
-                        k: v for k, v in params.items()
-                        if k and any(v) and k in ALLOWED_SEARCH_PARAMS
-                    }
-                    if clean_params:
-                        context['back_url'] = (
-                            reverse('recipe_list') + f"?{urlencode(clean_params, doseq=True)}"
-                            if clean_params else ""
-                        )
-                    else:
-                        context['back_url'] = reverse('recipe_list')
-                except Exception:
-                    context['back_url'] = reverse('recipe_list')
+                search_params = request.session.get('search_params', {})
 
-                if 'was_editing' in request.session:
-                    del request.session['was_editing']
+                back_url = (
+                    reverse('recipe_list') + f"?{urlencode(search_params, doseq=True)}"
+                    if search_params else reverse('recipe_list')
+                )
+                context['back_url'] = back_url
+                request.session.pop('was_editing', None)
+
             else:
                 context['back_url'] = (
                     request.META.get('HTTP_REFERER') or reverse('recipe_list')
@@ -170,7 +160,11 @@ class RecipeList(ListView):
     def get(self, request, *args, **kwargs):
         """Track session origin and store query params."""
         request.session['came_from_search'] = True
-        request.session['search_query'] = request.GET.urlencode()
+        allowed_params = {
+            k: request.GET.getlist(k) for k in ALLOWED_SEARCH_PARAMS
+            if k in request.GET and any(request.GET.getlist(k))
+        }
+        request.session['search_params'] = allowed_params
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -250,5 +244,6 @@ class RecipeList(ListView):
 def index_view(request):
     """Render homepage and clear search tracking."""
     if 'came_from_search' in request.session:
-        del request.session['came_from_search']
+        request.session.pop('came_from_search', None)
+        request.session.pop('search_params', None)
     return render(request, 'recipe_generator/index.html')
