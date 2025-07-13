@@ -6,8 +6,9 @@ Handles form processing, session tracking, and filtering logic.
 """
 
 from django.shortcuts import render, redirect
-from urllib.parse import parse_qs, urlencode
+from urllib.parse import urlencode
 
+from django_recipe_generator.services import annotate_recipes
 from django.db.models import Prefetch
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView
@@ -29,7 +30,7 @@ class RecipeCreateView(CreateView):
     """View for creating a new recipe with inline ingredients."""
     model = Recipe
     form_class = RecipeForm
-    template_name = 'recipe_generator/create.html'
+    template_name = 'recipe_generator/recipe_create.html'
 
     def get(self, request, *args, **kwargs):
         """Display empty form and formset for recipe creation."""
@@ -93,7 +94,6 @@ class RecipeDetailView(DetailView):
                 )
                 context['back_url'] = back_url
                 request.session.pop('was_editing', None)
-
             else:
                 context['back_url'] = (
                     request.META.get('HTTP_REFERER') or reverse('recipe_list')
@@ -180,45 +180,20 @@ class RecipeList(ListView):
         query_name = self.request.GET.get('query_name', '')
         time_filter = self.request.GET.get('cooking_time')
 
+        ingredient_qs = Ingredient.objects.only('id', 'name').order_by('id')
+        
         qs = Recipe.objects.search(
             query_name=query_name,
             query_ingredients=query_ingredients
         ).filter_recipes(
             time_filter=time_filter,
             exclude_ingredients=exclude_ingredients
-        ).prefetch_related('ingredients').order_by('id')
+        ).prefetch_related(
+            Prefetch("ingredients", queryset=ingredient_qs)
+        ).order_by('id')
 
         if query_ingredients:
-            ingredient_lookup_query = {
-                i.id: i.name for i in Ingredient.objects.filter(
-                    id__in=query_ingredients
-                )
-            }
-
-            for recipe in qs:
-                recipe_ingredient_ids = set(
-                    recipe.ingredients.values_list('id', flat=True)
-                )
-                matching_ids = recipe_ingredient_ids.intersection(
-                    set(query_ingredients)
-                )
-                missing_ids = set(recipe_ingredient_ids) - set(query_ingredients)
-
-                ingredient_lookup_recipe = {
-                    i.id: i.name for i in Ingredient.objects.filter(
-                        id__in=missing_ids
-                    )
-                }
-
-                recipe.matching_ingredient_ids = list(matching_ids)
-                recipe.missing_ingredient_ids = list(missing_ids)
-
-                recipe.matching_ingredient_names = [
-                    ingredient_lookup_query[i] for i in matching_ids
-                ]
-                recipe.missing_ingredient_names = [
-                    ingredient_lookup_recipe[i] for i in missing_ids
-                ]
+            qs = annotate_recipes(qs, query_ingredients)
 
         return qs
 
@@ -241,9 +216,3 @@ class RecipeList(ListView):
         return context
 
 
-def index_view(request):
-    """Render homepage and clear search tracking."""
-    if 'came_from_search' in request.session:
-        request.session.pop('came_from_search', None)
-        request.session.pop('search_params', None)
-    return render(request, 'recipe_generator/index.html')
