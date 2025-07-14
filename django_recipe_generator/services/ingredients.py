@@ -24,6 +24,6 @@ def annotate_recipes(recipes, query_ingredient_ids):
         r.missing_ingredient_names = [
             ing.name
             for ing in r.ingredients.all()
-            if ing.id in r.missing_ingredient_ids
+            if ing.id in r.missing_ids
         ]
     return recipes

@@ -101,7 +101,10 @@ class RecipeDetailViewTests(TestCase):
         session = self.client.session
         session['came_from_search'] = True
         session['was_editing'] = True
-        session['search_query'] = "q=test&time_filter=quick"
+        session['search_params'] = {
+            'q': 'test',
+            'time_filter': 'quick',
+        }
         session.save()
 
         response = self.client.get(self.detail_url)
@@ -216,7 +219,7 @@ class RecipeCreateViewTests(TestCase):
         """Ensure the creation form renders correctly."""
         response = self.client.get(self.create_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'recipe_generator/create.html')
+        self.assertTemplateUsed(response, 'recipe_generator/recipe_create.html')
         self.assertIsInstance(response.context['form'], self.form)
         self.assertIsInstance(response.context['formset'], self.formset)
 
@@ -248,7 +251,7 @@ class RecipeCreateViewTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'recipe_generator/create.html')
+        self.assertTemplateUsed(response, 'recipe_generator/recipe_create.html')
         self.assertFalse(response.context['form'].is_valid())
         self.assertFalse(response.context['formset'].is_valid())
         self.assertIn('name', response.context['form'].errors)

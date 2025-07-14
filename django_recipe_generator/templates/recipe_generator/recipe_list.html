@@ -39,11 +39,11 @@
 </head>
 
 <body>
-    <a href="{% url 'index' %}"" class="button is-pastel">Go Back to Home page</a>
+    <a href="{% url 'index' %}" class="button is-pastel">Go Back to Home page</a>
 <section class="section">
   <div class="container">
     <div class="box pastel-box">
-    <h1 class="title is-3">Search Recipes</h1>
+    <h1 class="title is-3">Search Recipes </h1> 
       <form method="get" action=".">
         <div class="field">
           <label class="label" for="query_name">Search by name</label>
@@ -53,7 +53,7 @@
         </div>
 
         <div class="field">
-          <label class="label" for="query_ingredients">Search by ingredients</label>
+          <label class="label" for="query_ingredients">Search by ingredients <a href="{% url 'add_ingredient' %}"><i>(add lacking ingredient)</i></a></label>
           <div class="control">
             <div class="select is-multiple is-fullwidth">
               <select name="query_ingredients" id="query_ingredients" multiple size="5">
@@ -89,7 +89,7 @@
         </div>
 
         <div class="field">
-          <label class="label" for="exclude_ingredients">Exclude Ingredients</label>
+          <label class="label" for="exclude_ingredients">Exclude Ingredients <a href="{% url 'add_ingredient' %}"><i>(add lacking ingredient)</i></a></label>
           <div class="control">
             <div class="select is-multiple is-fullwidth">
               <select name="exclude_ingredients" id="exclude_ingredients" multiple size="5">
