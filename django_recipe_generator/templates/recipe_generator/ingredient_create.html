@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Recipe</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <style>
+    body {
+      background-color: #f6f4fb; /* pale lilac */
+    }
+    .pastel-box {
+      background-color: #ffffff;
+      border: 1px solid #dcd9f0;
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    h1, h3 {
+      color: #6c63ff;
+    }
+    .button.is-pastel {
+      background-color: #e0e7ff;
+      color: #3c3c3c;
+      border: none;
+    }
+    .form-control {
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+<section class="section">
+  <div class="container">
+    <div class="box pastel-box">
+      <h1 class="title is-3">Add New Ingredient</h1>
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="content">
+          <div class="form-control">
+            {% for field in form %}
+            <div class="field">
+              {{ field.label_tag }}
+
+              <div class="control">
+                {{ field }}
+              </div>
+
+              {% if field.errors %}
+                {% for error in field.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+          {% endfor %}
+          </div>
+
+        <div class="field mt-4">
+          <div class="control">
+            <button type="submit" class="button is-pastel">Save Ingredient</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+</body>
+</html>
+
+
+

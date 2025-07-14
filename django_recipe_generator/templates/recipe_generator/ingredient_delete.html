@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Delete Confirmation</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <style>
+    body {
+      background-color: #f6f4fb; /* Pale lilac */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .pastel-box {
+      background-color: #ffffff;
+      border: 1px solid #dcd9f0;
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+    h1, p {
+      color: #3c3c3c;
+    }
+    .button.is-pastel {
+      background-color: #e0e7ff;
+      color: #3c3c3c;
+      border: none;
+      margin-top: 20px;
+    }
+    .button.is-danger {
+      background-color: #ff6f6f;
+      color: #fff;
+      margin-top: 20px;
+    }
+    .back-link {
+      margin-top: 20px;
+      display: inline-block;
+      text-decoration: none;
+      color: #6c63ff;
+    }
+  </style>
+</head>
+<body>
+<section class="section">
+  <div class="container">
+    <div class="box pastel-box">
+      <h1 class="title is-3">Delete Confirmation</h1>
+
+      <form method="post">
+        {% csrf_token %}
+        <p>Are you sure you want to delete "<strong>{{ object }}</strong>"?</p>
+        <button type="submit" class="button is-danger">Confirm</button>
+      </form>
+
+      <!-- Go Back Link -->
+      <a href="javascript:history.back()" class="back-link">Go Back</a>
+    </div>
+  </div>
+</section>
+</body>
+</html>
+

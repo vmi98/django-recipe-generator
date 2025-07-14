@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recipes</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <style>
+    body {
+      background-color: #f6f4fb; /* pale lilac */
+    }
+    .pastel-box {
+      background-color: #ffffff;
+      border: 1px solid #dcd9f0;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    h1, h2 {
+      color: #6c63ff; /* soft lilac-blue */
+    }
+    .button.is-pastel {
+      background-color: #e0e7ff;
+      color: #3c3c3c;
+      border: none;
+    }
+    .button.is-light {
+      background-color: #f0f4ff;
+      color: #3c3c3c;
+    }
+    select, input {
+      margin-bottom: 1rem;
+    }
+    .pagination-info {
+      display: block;
+      text-align: center;
+      margin-top: 1rem;
+      color: #6c63ff;
+    }
+  </style>
+</head>
+
+<body>
+    <a href="{% url 'index' %}" class="button is-pastel">Go Back to Home page</a>
+<section class="section">
+  <div class="container">
+    <div class="box pastel-box">
+
+    <div class="content mt-6">
+      <h1 class="title is-4">Ingredients</h1> 
+      {% for ingredient in ingredients %}
+        <div class="box pastel-box">
+          <a href="{% url 'ingredient_detail' ingredient.id %}">
+            <h2 class="subtitle is-4">{{ ingredient.name }}</h2>
+          </a>
+        </div> 
+      {% endfor %} 
+    </div>
+
+      <nav class="pagination is-centered mt-4" role="navigation" aria-label="pagination">
+        {% if page_obj.has_previous %}
+          <a class="pagination-previous" href="?page=1">First</a>
+          <a class="pagination-previous" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+        <span class="pagination-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+          <a class="pagination-next" href="?page={{ page_obj.next_page_number }}">Next</a>
+          <a class="pagination-next" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        {% endif %}
+      </nav>
+    </div>
+  </div>
+</section>
+</body>
+</html>
+

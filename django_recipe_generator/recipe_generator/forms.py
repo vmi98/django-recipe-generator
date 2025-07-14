@@ -7,7 +7,7 @@ formset logic for handling inline recipe ingredients.
 from django import forms
 from django.core.validators import MaxLengthValidator
 from django.core.exceptions import ValidationError
-from .models import Recipe, RecipeIngredient
+from .models import Recipe, RecipeIngredient, Ingredient
 
 
 class RecipeIngredientForm(forms.ModelForm):
@@ -83,6 +83,24 @@ class BaseRecipeIngredientFormSet(forms.BaseInlineFormSet):
 
         if total_ingredients > 20:
             raise ValidationError("Ingredients per recipe limit exceeded.")
+
+
+class IngredientForm(forms.ModelForm):
+    """Form for creating or editing a Ingredient instance."""
+    class Meta:
+        model = Ingredient
+        fields = '__all__'
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'input'}),
+            'category': forms.TextInput(attrs={'class': 'input'})
+        }
+
+    def clean_name(self):
+        """Validate that the ingredient name has a minimum length of 3 characters."""
+        name = self.cleaned_data['name']
+        if len(name) < 3:
+            raise forms.ValidationError("Name too short!")
+        return name
 
 
 # Create a formset factory

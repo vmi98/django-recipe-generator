@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recipe Generator</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <style>
+    body {
+      background-color: #f6f4fb;
+    }
+    .pastel-box {
+      background-color: #ffffff;
+      border: 1px solid #dcd9f0;
+      border-radius: 12px;
+      padding: 2rem;
+      margin-top: 2rem;
+    }
+    h1, h2, h3 {
+      color: #6c63ff;
+    }
+    .button.is-pastel {
+      background-color: #e0e7ff;
+      color: #3c3c3c;
+      border: none;
+      margin-right: 1rem;
+    }
+    .step-box {
+      background-color: #f0f4ff;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .has-text-grey {
+      color: #7d7d7d;
+    }
+  </style>
+</head>
+<body>
+<section class="section">
+  <div class="container">
+    <div class="box pastel-box">
+      <h1 class="title is-3">{{ ingredient.name }}</h1>
+      <p><strong>Category:</strong> {{ ingredient.category }} </p>
+
+      <div class="buttons mt-5">
+        <a href="{% url 'ingredient_edit' ingredient.id %}" class="button is-pastel">Edit Ingredient</a>
+        <a href="{% url 'ingredient_delete' ingredient.id %}" class="button is-light">Delete Ingredient</a>
+        <a href="{% url 'recipe_list' %}" class="button is-light">Go back to serach page</a>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>
+
+
+

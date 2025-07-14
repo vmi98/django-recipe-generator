@@ -8,13 +8,13 @@ Handles form processing, session tracking, and filtering logic.
 from django.shortcuts import render, redirect
 from urllib.parse import urlencode
 
-from django_recipe_generator.services import annotate_recipes
+from django_recipe_generator.services.ingredients import annotate_recipes
 from django.db.models import Prefetch
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 
-from .forms import RecipeForm, RecipeIngredientFormSet
+from .forms import RecipeForm, RecipeIngredientFormSet, IngredientForm
 from .models import Ingredient, Recipe, RecipeIngredient
 
 ALLOWED_SEARCH_PARAMS = [
@@ -126,7 +126,7 @@ class RecipeEditView(UpdateView):
         """Save form and formset if valid, then redirect."""
         context = self.get_context_data()
         formset = context['formset']
-        if formset.is_valid():
+        if formset.is_valid() and form.is_valid():
             self.object = form.save()
             formset.instance = self.object
             formset.save()
@@ -180,8 +180,8 @@ class RecipeList(ListView):
         query_name = self.request.GET.get('query_name', '')
         time_filter = self.request.GET.get('cooking_time')
 
-        ingredient_qs = Ingredient.objects.only('id', 'name').order_by('id')
-        
+        ingredient_qs = Ingredient.objects.only('id', 'name')
+
         qs = Recipe.objects.search(
             query_name=query_name,
             query_ingredients=query_ingredients
@@ -189,8 +189,7 @@ class RecipeList(ListView):
             time_filter=time_filter,
             exclude_ingredients=exclude_ingredients
         ).prefetch_related(
-            Prefetch("ingredients", queryset=ingredient_qs)
-        ).order_by('id')
+            Prefetch("ingredients", queryset=ingredient_qs))
 
         if query_ingredients:
             qs = annotate_recipes(qs, query_ingredients)
@@ -216,3 +215,84 @@ class RecipeList(ListView):
         return context
 
 
+class IngredientCreateView(CreateView):
+    """View for creating a new ingredient."""
+    model = Ingredient
+    form_class = IngredientForm
+    template_name = 'recipe_generator/ingredient_create.html'
+
+    def get(self, request, *args, **kwargs):
+        """Display empty form and formset for ingredient creation."""
+        form = self.form_class()
+        return render(
+            request,
+            self.template_name,
+            {'form': form}
+        )
+
+    def post(self, request, *args, **kwargs):
+        """Handle form submission and create ingredient."""
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            ingredient = form.save()
+            return redirect(reverse('ingredient_detail',
+                                    kwargs={'pk': ingredient.pk}))
+
+        return render(
+            request,
+            self.template_name,
+            {'form': form}
+        )
+
+
+class IngredientDetailView(DetailView):
+    """Display details of ingredient."""
+    model = Ingredient
+    template_name = 'recipe_generator/ingredient_detail.html'
+    context_object_name = 'ingredient'
+
+
+class IngredientEditView(UpdateView):
+    """View for editing an existing ingredient."""
+    model = Ingredient
+    form_class = IngredientForm
+    template_name = 'recipe_generator/ingredient_edit.html'
+
+    def form_valid(self, form):
+        """Save form if valid, then redirect."""
+        if form.is_valid():
+            self.object = form.save()
+            return redirect(reverse(
+                'ingredient_detail',
+                kwargs={'pk': self.object.pk}
+            ))
+        return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        """Handle invalid form submission."""
+        context = self.get_context_data(form=form)
+        return self.render_to_response(context)
+
+
+class IngredientDeleteView(DeleteView):
+    """View for confirming and deleting a ingredient."""
+    model = Ingredient
+    template_name = 'recipe_generator/ingredient_delete.html'
+    success_url = reverse_lazy('index')
+
+
+class IngredientListView(ListView):
+    """List of all ingredients."""
+    model = Ingredient
+    paginate_by = 15
+    template_name = "recipe_generator/ingredient_list.html"
+    context_object_name = 'ingredients'
+
+
+def index_view(request):
+    """Render homepage and clear search tracking."""
+    if 'came_from_search' in request.session:
+        request.session.pop('came_from_search', None)
+        request.session.pop('search_params', None)
+    return render(request, 'recipe_generator/index.html')
