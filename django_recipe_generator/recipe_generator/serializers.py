@@ -7,11 +7,27 @@ from .models import Recipe, Ingredient, RecipeIngredient
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-    """Serializer for basic ingredient data (ID and name)."""
+    """Serializer for ingredient data."""
     class Meta:
         model = Ingredient
-        fields = ['id', 'name']
+        fields = '__all__'
         read_only_fields = ['id']
+
+    def validate_name(self, value):
+        """Ensure name is a minimum length."""
+        if len(value) < 3:
+            raise serializers.ValidationError("Name too short!")
+        return value
+
+    def validate_no_duplicants(self, attrs):
+        name = attrs.get('name')
+        category = attrs.get('category')
+
+        if Ingredient.objects.filter(name__iexact=name, category=category).exists():
+            raise serializers.ValidationError(
+                "An ingredient with this name and category already exists."
+            )
+        return attrs
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):

@@ -17,7 +17,7 @@ from django_recipe_generator.recipe_generator.serializers import (
     UserSerializer
 )
 
-from django_recipe_generator.services import annotate_recipes
+from django_recipe_generator.services.ingredients import annotate_recipes
 from django.db.models import Prefetch
 from django.contrib.auth.models import User
 
@@ -99,10 +99,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class RecipeFormDataView(generics.ListAPIView):
-    """
-    Provides available ingredients needed to initialize a recipe creation form
-    """
+class IngredientViewSet(viewsets.ModelViewSet):
+    """ViewSet for listing, creating, and managing ingredients."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
 
