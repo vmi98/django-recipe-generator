@@ -9,6 +9,7 @@ from django_recipe_generator.recipe_generator import views
 from django_recipe_generator.recipe_generator.forms import (
     RecipeForm,
     RecipeIngredientFormSet,
+    IngredientForm
 )
 from django_recipe_generator.recipe_generator.models import (
     Ingredient,
@@ -219,7 +220,8 @@ class RecipeCreateViewTests(TestCase):
         """Ensure the creation form renders correctly."""
         response = self.client.get(self.create_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'recipe_generator/recipe_create.html')
+        self.assertTemplateUsed(response,
+                                'recipe_generator/recipe_create.html')
         self.assertIsInstance(response.context['form'], self.form)
         self.assertIsInstance(response.context['formset'], self.formset)
 
@@ -251,7 +253,8 @@ class RecipeCreateViewTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'recipe_generator/recipe_create.html')
+        self.assertTemplateUsed(response,
+                                'recipe_generator/recipe_create.html')
         self.assertFalse(response.context['form'].is_valid())
         self.assertFalse(response.context['formset'].is_valid())
         self.assertIn('name', response.context['form'].errors)
@@ -468,3 +471,227 @@ class RecipeListViewTests(TestCase):
         data = {'query_name': 'Soup'}
         response = self.client.get(self.list_url, data)
         self.assertIn(self.recipe1, response.context['recipes'])
+
+
+class IngredientDetailViewTests(TestCase):
+    """Tests for the  retrieving an ingredient view."""
+    @classmethod
+    def setUpTestData(cls):
+        """Set up initial test data: ingredient, urls."""
+        cls.ingredient = Ingredient.objects.create(
+            name="Salt",
+            category="seasoning"
+        )
+
+        cls.detail_url = reverse(
+            'ingredient_detail',
+            kwargs={'pk': cls.ingredient.pk}
+        )
+
+    def test_view_returns_correct_template(self):
+        """Ensure detail view renders the correct template."""
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response,
+            'recipe_generator/ingredient_detail.html'
+        )
+
+    def test_view_returns_404_for_invalid_ingredient(self):
+        """Test response for a nonexistent ingredient ID."""
+        response = self.client.get(
+            reverse('ingredient_detail', kwargs={'pk': 999})
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_context_contains_ingredient(self):
+        """Ensure the ingredient is in the context."""
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.context['ingredient'], self.ingredient)
+
+
+class IngredientDeleteViewTests(TestCase):
+    """Tests deleting ingredient view."""
+    @classmethod
+    def setUpTestData(cls):
+        """Set up initial test data: ingredient, urls."""
+        cls.ingredient = Ingredient.objects.create(
+            name="Salt", category="seasoning"
+        )
+
+        cls.delete_url = reverse(
+            'ingredient_delete',
+            kwargs={'pk': cls.ingredient.pk}
+        )
+        cls.success_url = reverse('index')
+
+    def test_view_returns_correct_template(self):
+        """Ensure delete view renders correct template."""
+        response = self.client.get(self.delete_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response,
+            'recipe_generator/ingredient_delete.html'
+        )
+
+    def test_successful_deletion(self):
+        """Test that a ingredient is deleted successfully."""
+        self.assertTrue(Ingredient.objects.filter(
+            pk=self.ingredient.pk).exists()
+        )
+
+        response = self.client.post(self.delete_url)
+
+        self.assertRedirects(response, self.success_url)
+        self.assertFalse(Ingredient.objects.filter(
+            pk=self.ingredient.pk).exists()
+        )
+        self.assertEqual(Ingredient.objects.count(), 0)
+
+    def test_deletion_of_nonexistent_ingredient(self):
+        """Ensure a 404 is returned for invalid delete URL."""
+        invalid_url = reverse('ingredient_delete', kwargs={'pk': 999})
+        response = self.client.post(invalid_url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_success_url(self):
+        """Verify success URL after deletion."""
+        view = views.IngredientDeleteView()
+        view.object = self.ingredient
+        self.assertEqual(view.get_success_url(), self.success_url)
+
+
+class IngredientCreateViewTests(TestCase):
+    """Tests for creating ingredient view."""
+    @classmethod
+    def setUpTestData(cls):
+        """Set up initial test data: ingredients, forms urls."""
+        cls.valid_data = {'name': 'Salt',
+                          'category': 'seasoning'}
+        cls.create_url = reverse('add_ingredient')
+        cls.form = IngredientForm
+
+    def test_view_returns_correct_template(self):
+        """Ensure the creation form renders correctly."""
+        response = self.client.get(self.create_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response,
+                                'recipe_generator/ingredient_create.html')
+        self.assertIsInstance(response.context['form'], self.form)
+
+    def test_successful_creation(self):
+        """Verify that a valid ingredient can be created."""
+        self.assertEqual(Ingredient.objects.count(), 0)
+
+        response = self.client.post(self.create_url, data=self.valid_data)
+
+        ingredient = Ingredient.objects.get(name='Salt')
+        self.assertRedirects(
+            response,
+            reverse('ingredient_detail', kwargs={'pk': ingredient.pk})
+        )
+
+    def test_invalid_post_redisplays_form(self):
+        """Ensure invalid input redisplays the form with errors."""
+        response = self.client.post(
+            self.create_url,
+            kwargs={
+                'name': ' ',
+                'category': ' ',
+            }
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response,
+                                'recipe_generator/ingredient_create.html')
+        self.assertFalse(response.context['form'].is_valid())
+        self.assertIn('name', response.context['form'].errors)
+        self.assertIn('category', response.context['form'].errors)
+
+
+class IngredientEditViewTests(TestCase):
+    """Tests for editing ingredient view."""
+    @classmethod
+    def setUpTestData(cls):
+        """Set up initial test data: ingredient, forms, urls."""
+        cls.ingredient = Ingredient.objects.create(
+            name="Salt", category="seasoning"
+        )
+
+        cls.edit_url = reverse('ingredient_edit',
+                               kwargs={'pk': cls.ingredient.pk})
+        cls.edit_data = {'name': 'Salt_edit',
+                         'category': 'seasoning_edit'}
+        cls.success_url = reverse(
+            'ingredient_detail',
+            kwargs={'pk': cls.ingredient.pk}
+        )
+        cls.form = IngredientForm
+
+    def test_view_returns_correct_template(self):
+        """Ensure the edit form renders properly."""
+        response = self.client.get(self.edit_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response,
+                                'recipe_generator/ingredient_edit.html'
+                                )
+        self.assertIsInstance(response.context['form'], self.form)
+
+    def test_view_returns_404_for_invalid_recipe(self):
+        """Return 404 if editing a nonexistent ingredient."""
+        response = self.client.get(reverse('ingredient_edit',
+                                           kwargs={'pk': 999}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_successful_edit(self):
+        """Verify a valid edit updates the ingredient."""
+        self.assertTrue(Ingredient.objects.filter(
+            pk=self.ingredient.pk).exists()
+        )
+        response = self.client.post(self.edit_url, data=self.edit_data)
+
+        ingredient = Ingredient.objects.get(pk=self.ingredient.pk)
+        self.assertRedirects(
+            response,
+            reverse('ingredient_detail', kwargs={'pk': ingredient.pk})
+        )
+        self.assertEqual(ingredient.name, 'Salt_edit')
+        self.assertEqual(ingredient.category, 'seasoning_edit')
+
+    def test_invalid_post_redisplays_form(self):
+        """Check behavior with invalid edit input."""
+        data = {
+            'name': '',
+            'category': '',
+        }
+        response = self.client.post(self.edit_url, data=data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response,
+                                'recipe_generator/ingredient_edit.html')
+        self.assertFalse(response.context['form'].is_valid())
+        self.assertIn('name', response.context['form'].errors)
+        self.assertIn('category', response.context['form'].errors)
+
+
+class IngredientListViewTests(TestCase):
+    """Tests for the ingredient list view"""
+    @classmethod
+    def setUpTestData(cls):
+        """Set up initial test data: ingredient, urls."""
+        cls.ingredient = Ingredient.objects.create(name="Salt")
+
+        cls.list_url = reverse('ingredient_list')
+
+    def test_view_returns_correct_template(self):
+        """Ensure list view renders the correct template."""
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response,
+                                'recipe_generator/ingredient_list.html')
+
+    def test_recipe_listing(self):
+        """Check that ingredients are listed."""
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.ingredient.name)

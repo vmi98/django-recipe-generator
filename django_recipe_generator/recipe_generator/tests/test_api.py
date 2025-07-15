@@ -50,17 +50,6 @@ class RecipeAPITest(APITestCase):
         self.client.login(username='testuser', password='testpass')
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
 
-    def test_recipe_form_data(self):
-        """
-        Test retrieving form data with ingredient list
-        for recipe creation.
-        """
-        url = reverse('recipe-form-data')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(Ingredient.objects.count(), 3)
-        self.assertContains(response, self.ingredient1.name)
-
     def test_filter_search(self):
         """
         Test filtering and seraching recipes by name and ingredients,
@@ -129,9 +118,15 @@ class IngredientSerializerTest(APITestCase):
     """
     def test_serialization(self):
         """Test that an ingredient is serialized correctly."""
-        ingredient = Ingredient.objects.create(name="Salt")
+        ingredient = Ingredient.objects.create(
+            name="Salt", category="seasoning"
+        )
         serializer = IngredientSerializer(ingredient)
-        expected_data = {'id': ingredient.id, 'name': 'Salt'}
+        expected_data = {
+            'id': ingredient.id,
+            'name': ingredient.name,
+            'category': ingredient.category
+        }
         self.assertEqual(serializer.data, expected_data)
 
     def test_deserialization_valid(self):
@@ -139,11 +134,30 @@ class IngredientSerializerTest(APITestCase):
         Test that a valid payload is
         deserialized into an Ingredient object.
         """
-        data = {'name': 'Sugar'}
+        data = {'name': 'Sugar', 'category': 'seasoning'}
         serializer = IngredientSerializer(data=data)
         self.assertTrue(serializer.is_valid())
         ingredient = serializer.save()
         self.assertEqual(ingredient.name, data['name'])
+        self.assertEqual(ingredient.category, data['category'])
+
+    def test_invalid_name(self):
+        """Test that an invalid short name triggers a validation error."""
+        data = {'name': 'Su', 'category': 'seasoning'}
+        serializer = IngredientSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('name', serializer.errors)
+
+    def test_duplicants(self):
+        """Test that an duplicant ingredient triggers an error."""
+        Ingredient.objects.create(
+            name="Salt", category="seasoning"
+        )
+        data = {'name': 'Salt', 'category': 'seasoning'}
+        serializer = IngredientSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('non_field_errors', serializer.errors)
+        self.assertIn('unique ', serializer.errors['non_field_errors'][0])
 
 
 class RecipeIngredientSerializerTest(APITestCase):
