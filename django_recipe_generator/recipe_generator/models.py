@@ -88,6 +88,12 @@ class Ingredient(models.Model):
 
     class Meta:
         ordering = ['id']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'category'],
+                name='unique_ingredient'
+            )
+        ]
 
     def __str__(self):
         return self.name
