@@ -1,9 +1,10 @@
 # Recipe Generator App
 
-A Django-based web application for searching recipes baced on recipe name and ingredients. Offers both traditional HTML views and RESTful API endpoints.
+A Django-based web application for managing and searching recipes based on recipe name and ingredients. Users can create, edit, delete, and store recipes, with support for both traditional HTML views and RESTful API endpoints using Django Rest Framework (DRF).
 
 ## Features
 
+- CRUD for recipes and ingredients
 - Search recipes by name 
 - Search recipes by ingredients (for each recipe it shows what you have and what’s missing)
 - Filter by:
