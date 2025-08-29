@@ -73,13 +73,14 @@ class RecipeSerializer(serializers.ModelSerializer):
     """
     ingredients = RecipeIngredientSerializer(
         many=True,
-        source='recipeingredient_set'
+        source='recipeingredient_set',
+        required=False
     )
 
     class Meta:
         model = Recipe
         fields = '__all__'
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'owner']
 
     def to_representation(self, instance):
         """
@@ -132,31 +133,37 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         """Update a recipe instance, including nested ingredients."""
-        ingredients_data = validated_data.pop('recipeingredient_set', [])
+        ingredients_data = validated_data.pop('recipeingredient_set', None)
 
-        instance.name = validated_data.get('name', instance.name)
-        instance.cooking_time = validated_data.get(
-            'cooking_time',
-            instance.cooking_time
-        )
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
         instance.save()
 
-        for ingredient_data in ingredients_data:
-            ingredient = ingredient_data['ingredient']
-            quantity = ingredient_data['quantity']
+        # Handle ingredients only if provided
+        if ingredients_data is not None:
+            updated_ingredient_ids = []
 
-            try:
-                recipe_ingredient = instance.recipeingredient_set.get(
-                    ingredient=ingredient
-                )
-                recipe_ingredient.quantity = quantity
-                recipe_ingredient.save()
-            except RecipeIngredient.DoesNotExist:
-                RecipeIngredient.objects.create(
-                    recipe=instance,
-                    ingredient=ingredient,
-                    quantity=quantity
-                )
+            for ingredient_data in ingredients_data:
+                ingredient = ingredient_data['ingredient']
+                quantity = ingredient_data['quantity']
+                updated_ingredient_ids.append(ingredient.id)
+
+                try:
+                    recipe_ingredient = instance.recipeingredient_set.get(
+                        ingredient=ingredient
+                    )
+                    recipe_ingredient.quantity = quantity
+                    recipe_ingredient.save()
+                except RecipeIngredient.DoesNotExist:
+                    RecipeIngredient.objects.create(
+                        recipe=instance,
+                        ingredient=ingredient,
+                        quantity=quantity
+                    )
+
+            instance.recipeingredient_set.exclude(
+                ingredient_id__in=updated_ingredient_ids
+            ).delete()
 
         return instance
 

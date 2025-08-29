@@ -4,6 +4,7 @@ macros, manager for search and filter logic.
 """
 
 from django.db import models
+from django.contrib.auth.models import User
 from django.core.validators import MinLengthValidator, MinValueValidator
 from django.db.models import Count, ExpressionWrapper, F, IntegerField, Q
 
@@ -108,6 +109,7 @@ class Recipe(models.Model):
         Ingredient,
         through='RecipeIngredient'
     )
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     objects = RecipeManager()
 

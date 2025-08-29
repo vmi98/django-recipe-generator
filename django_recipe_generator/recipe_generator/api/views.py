@@ -11,6 +11,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import permission_classes
 
 from django_recipe_generator.recipe_generator.models import Recipe, Ingredient
+from django_recipe_generator.recipe_generator.api.permissions import IsOwnerOrAdmin
 from django_recipe_generator.recipe_generator.serializers import (
     RecipeSerializer,
     IngredientSerializer,
@@ -26,6 +27,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     """ViewSet for listing, creating, and managing recipes."""
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
+    permission_classes = [IsOwnerOrAdmin]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
     @action(detail=False, methods=['get'])
     def api_root(self, request):

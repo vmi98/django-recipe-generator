@@ -7,6 +7,7 @@ import os
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.contrib.auth import get_user_model
 
 from django_recipe_generator.recipe_generator.models import (
     Ingredient,
@@ -77,6 +78,13 @@ class Command(BaseCommand):
             "\n=== ALL DATA LOADED SUCCESSFULLY ==="
         ))
 
+    def _get_default_owner(self):
+        User = get_user_model()
+        admin = User.objects.filter(is_staff=True).first()
+        if not admin:
+            raise ValueError("No admin user exists. Create one before loading recipes.")
+        return admin
+
     def _load_ingredients(self, csv_path):
         """
         Load ingredients from the given CSV path into the database.
@@ -99,6 +107,7 @@ class Command(BaseCommand):
         """
         Load recipes from the given CSV path into the database.
         """
+        default_owner = self._get_default_owner()
         with open(csv_path, 'r') as file:
             reader = csv.DictReader(file)
             for row in reader:
@@ -106,7 +115,8 @@ class Command(BaseCommand):
                     name=row['name'],
                     defaults={
                         'instructions': row['instructions'],
-                        'cooking_time': int(row['cooking_time'])
+                        'cooking_time': int(row['cooking_time']),
+                        'owner': default_owner
                     }
                 )
                 if created:
