@@ -1,5 +1,6 @@
-"""
-Views (Traditional Djangoapp) for recipe creation, editing, deletion,
+"""Traditional Djangoapp views.
+
+Views for recipe creation, editing, deletion,
 listing, and detail display.
 
 Handles form processing, session tracking, and filtering logic.
@@ -30,17 +31,15 @@ ALLOWED_SEARCH_PARAMS = [
 
 
 class AdminRequiredMixin(UserPassesTestMixin):
-    """
-    Mixin to ensure only admins can access the view.
-    """
+    """Mixin to ensure only admins can access the view."""
+
     def test_func(self):
         return self.request.user.is_staff
 
 
 class OwnerOrAdminRequiredMixin(UserPassesTestMixin):
-    """
-    Mixin to ensure only owners or admins can access the view.
-    """
+    """Mixin to ensure only owners or admins can access the view."""
+
     def test_func(self):
         obj = self.get_object()
         return obj.owner == self.request.user or self.request.user.is_staff
@@ -48,6 +47,7 @@ class OwnerOrAdminRequiredMixin(UserPassesTestMixin):
 
 class RecipeCreateView(LoginRequiredMixin, CreateView):
     """View for creating a new recipe with inline ingredients."""
+
     model = Recipe
     form_class = RecipeForm
     template_name = 'recipe_generator/recipe_create.html'
@@ -83,6 +83,7 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
 
 class RecipeDetailView(DetailView):
     """Display full details of a recipe with its ingredients."""
+
     model = Recipe
     template_name = 'recipe_generator/recipe_detail.html'
     context_object_name = 'recipe'
@@ -97,10 +98,7 @@ class RecipeDetailView(DetailView):
         )
 
     def get_context_data(self, **kwargs):
-        """
-        Inject back URL logic (depend on the previous page)
-        for navigation context.
-        """
+        """Inject back URL logic (depend on the prev page) for navigation context."""
         context = super().get_context_data(**kwargs)
         request = self.request
 
@@ -126,6 +124,7 @@ class RecipeDetailView(DetailView):
 
 class RecipeEditView(LoginRequiredMixin, OwnerOrAdminRequiredMixin, UpdateView):
     """View for editing an existing recipe and its ingredients."""
+
     model = Recipe
     form_class = RecipeForm
     template_name = 'recipe_generator/recipe_edit.html'
@@ -165,6 +164,7 @@ class RecipeEditView(LoginRequiredMixin, OwnerOrAdminRequiredMixin, UpdateView):
 
 class RecipeDeleteView(LoginRequiredMixin, OwnerOrAdminRequiredMixin, DeleteView):
     """View for confirming and deleting a recipe."""
+
     model = Recipe
     template_name = 'recipe_generator/recipe_delete.html'
     success_url = reverse_lazy('index')
@@ -172,6 +172,7 @@ class RecipeDeleteView(LoginRequiredMixin, OwnerOrAdminRequiredMixin, DeleteView
 
 class RecipeList(ListView):
     """List and filter recipes based on search query and ingredients."""
+
     model = Recipe
     paginate_by = 15
     template_name = "recipe_generator/recipe_list.html"
@@ -237,6 +238,7 @@ class RecipeList(ListView):
 
 class IngredientCreateView(LoginRequiredMixin, CreateView):
     """View for creating a new ingredient."""
+
     model = Ingredient
     form_class = IngredientForm
     template_name = 'recipe_generator/ingredient_create.html'
@@ -268,6 +270,7 @@ class IngredientCreateView(LoginRequiredMixin, CreateView):
 
 class IngredientDetailView(DetailView):
     """Display details of ingredient."""
+
     model = Ingredient
     template_name = 'recipe_generator/ingredient_detail.html'
     context_object_name = 'ingredient'
@@ -275,6 +278,7 @@ class IngredientDetailView(DetailView):
 
 class IngredientEditView(AdminRequiredMixin, LoginRequiredMixin, UpdateView):
     """View for editing an existing ingredient."""
+
     model = Ingredient
     form_class = IngredientForm
     template_name = 'recipe_generator/ingredient_edit.html'
@@ -297,6 +301,7 @@ class IngredientEditView(AdminRequiredMixin, LoginRequiredMixin, UpdateView):
 
 class IngredientDeleteView(AdminRequiredMixin, LoginRequiredMixin, DeleteView):
     """View for confirming and deleting a ingredient."""
+
     model = Ingredient
     template_name = 'recipe_generator/ingredient_delete.html'
     success_url = reverse_lazy('index')
@@ -304,6 +309,7 @@ class IngredientDeleteView(AdminRequiredMixin, LoginRequiredMixin, DeleteView):
 
 class IngredientListView(ListView):
     """List of all ingredients."""
+
     model = Ingredient
     paginate_by = 15
     template_name = "recipe_generator/ingredient_list.html"

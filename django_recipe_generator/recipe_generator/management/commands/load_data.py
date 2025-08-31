@@ -1,7 +1,4 @@
-"""
-Django management command to load recipes, ingredients,
-and macro data into database from CSV files
-"""
+"""Django management command to load recipes, ingredients,and macro data into db."""
 import csv
 import os
 
@@ -19,11 +16,12 @@ from django_recipe_generator.recipe_generator.models import (
 
 class Command(BaseCommand):
     """Load all recipe data (ingredients, recipes, relationships, macros)."""
+
     help = 'Load all recipe data (ingredients, recipes, relationships, macros)'
 
     def handle(self, *args, **options):
-        """
-        Entry point for the management command.
+        """Entry point for the management command.
+
         Loads ingredients, recipes, links between them, and macro data.
         """
         self.stdout.write(self.style.MIGRATE_HEADING(
@@ -86,9 +84,7 @@ class Command(BaseCommand):
         return admin
 
     def _load_ingredients(self, csv_path):
-        """
-        Load ingredients from the given CSV path into the database.
-        """
+        """Load ingredients from the given CSV path into the database."""
         with open(csv_path, 'r') as file:
             reader = csv.DictReader(file)
             for row in reader:
@@ -104,9 +100,7 @@ class Command(BaseCommand):
         ))
 
     def _load_recipes(self, csv_path):
-        """
-        Load recipes from the given CSV path into the database.
-        """
+        """Load recipes from the given CSV path into the database."""
         default_owner = self._get_default_owner()
         with open(csv_path, 'r') as file:
             reader = csv.DictReader(file)
@@ -127,9 +121,7 @@ class Command(BaseCommand):
         ))
 
     def _link_ingredients(self, csv_path):
-        """
-        Create relationships between recipes and ingredients from CSV data.
-        """
+        """Create relationships between recipes and ingredients from CSV data."""
         success_count = 0
         with open(csv_path, 'r') as file:
             reader = csv.DictReader(file)
@@ -162,9 +154,7 @@ class Command(BaseCommand):
         ))
 
     def _load_macros(self, csv_path):
-        """
-        Load macro nutritional data from CSV and associate with recipes.
-        """
+        """Load macro nutritional data from CSV and associate with recipes."""
         success_count = 0
         with open(csv_path, 'r') as file:
             reader = csv.DictReader(file)

@@ -1,6 +1,4 @@
-"""
-Test module for Traditional Django views.
-"""
+"""Test module for Traditional Django views."""
 from django.db import connection
 from django.test import TestCase
 from django.urls import reverse
@@ -20,6 +18,7 @@ from django_recipe_generator.recipe_generator.models import (
 
 class RecipeDetailViewTests(TestCase):
     """Tests for the  retrieving a recipe view."""
+
     def setUp(self):
         """Clear queries log before each test."""
         connection.queries_log.clear()
@@ -62,8 +61,8 @@ class RecipeDetailViewTests(TestCase):
         self.assertEqual(response.context['recipe'], self.recipe)
 
     def test_queryset_prefetch_related(self):
-        """
-        Check the number of queries with prefetching.
+        """Check the number of queries with prefetching.
+
         3 = 2 prefetching queries + 1 django session query
         """
         with self.assertNumQueries(3):
@@ -86,9 +85,9 @@ class RecipeDetailViewTests(TestCase):
         self.assertEqual(response.context['back_url'], referer)
 
     def test_back_url_from_search_without_referer(self):
-        """
-        Check back_url fallback to list if came_from_search is set
-        but no referer.
+        """Check back_url fallback.
+
+        Back_url fallback to list if came_from_search is set but no referer.
         """
         session = self.client.session
         session['came_from_search'] = True
@@ -141,6 +140,7 @@ class RecipeDetailViewTests(TestCase):
 
 class RecipeDeleteViewTests(TestCase):
     """Tests deleting recipe view."""
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients and recipes, urls."""
@@ -191,6 +191,7 @@ class RecipeDeleteViewTests(TestCase):
 
 class RecipeCreateViewTests(TestCase):
     """Tests for creating recipe view."""
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients, forms, recipe data, urls."""
@@ -262,10 +263,7 @@ class RecipeCreateViewTests(TestCase):
         self.assertIn('cooking_time', response.context['form'].errors)
 
     def test_duplicate_ingredients(self):
-        """
-        Test that duplicate ingredients
-        in formset cause validation errors.
-        """
+        """Test that duplicate ingredientsin formset cause validation errors."""
         data = self.valid_data.copy()
         data['recipeingredient_set-1-ingredient'] = self.ingredient1.pk
         response = self.client.post(self.create_url, data=data)
@@ -275,6 +273,7 @@ class RecipeCreateViewTests(TestCase):
 
 class RecipeEditViewTests(TestCase):
     """Tests for editing recipe view."""
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients,recipe, forms, urls."""
@@ -369,7 +368,8 @@ class RecipeEditViewTests(TestCase):
 
 
 class RecipeListViewTests(TestCase):
-    """Tests for the recipe list view, searching and filtering"""
+    """Tests for the recipe list view, searching and filtering."""
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients, recipes, urls."""
@@ -403,19 +403,17 @@ class RecipeListViewTests(TestCase):
         self.assertContains(response, self.recipe.name)
 
     def test_context_data_without_search(self):
-        """
-        Verify without search and filtering param context contains
-        recipes and ingredients.
+        """Verify context.
+
+        Verify without search and filtering param
+        context contains recipes and ingredients.
         """
         response = self.client.get(self.list_url)
         self.assertIn(self.recipe, response.context['recipes'])
         self.assertIn(self.ingredient1, response.context['all_ingredients'])
 
     def test_context_data_search_filter(self):
-        """
-        Ensure filters and search params
-        are passed correctly to the template context.
-        """
+        """Ensure filters/search params passed correctly to the template context."""
         data = {
             'cooking_time': 'standard',
             'query_ingredients': [str(self.ingredient1.id)],
@@ -475,6 +473,7 @@ class RecipeListViewTests(TestCase):
 
 class IngredientDetailViewTests(TestCase):
     """Tests for the  retrieving an ingredient view."""
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredient, urls."""
@@ -512,6 +511,7 @@ class IngredientDetailViewTests(TestCase):
 
 class IngredientDeleteViewTests(TestCase):
     """Tests deleting ingredient view."""
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredient, urls."""
@@ -563,6 +563,7 @@ class IngredientDeleteViewTests(TestCase):
 
 class IngredientCreateViewTests(TestCase):
     """Tests for creating ingredient view."""
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients, forms urls."""
@@ -611,6 +612,7 @@ class IngredientCreateViewTests(TestCase):
 
 class IngredientEditViewTests(TestCase):
     """Tests for editing ingredient view."""
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredient, forms, urls."""
@@ -675,7 +677,8 @@ class IngredientEditViewTests(TestCase):
 
 
 class IngredientListViewTests(TestCase):
-    """Tests for the ingredient list view"""
+    """Tests for the ingredient list view."""
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredient, urls."""

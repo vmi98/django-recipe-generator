@@ -2,10 +2,8 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 
 class IsOwnerOrAdmin(BasePermission):
-    """
-    Custom permission: Only the owner or an admin can edit/delete.
-    Others can only read.
-    """
+    """Custom permission: Only the owner/dmin can edit/delete,others can only read."""
+
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True
@@ -14,10 +12,8 @@ class IsOwnerOrAdmin(BasePermission):
 
 
 class IsAdmin(BasePermission):
-    """
-    Custom permission: Only the admin can edit/delete.
-    Others can only read.
-    """
+    """Custom permission: Only the admin can edit/delete,others can only read."""
+
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True

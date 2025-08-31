@@ -1,4 +1,5 @@
-"""
+"""Models.
+
 Models for Recipe, general  and recipe-related ingredients,
 macros, manager for search and filter logic.
 """
@@ -11,6 +12,7 @@ from django.db.models import Count, ExpressionWrapper, F, IntegerField, Q
 
 class RecipeQuerySet(models.QuerySet):
     """Custom queryset for filtering and searching recipes."""
+
     def search(self, query_name=None, query_ingredients=None):
         """
         Search recipes by name and/or ingredients.
@@ -69,6 +71,7 @@ class RecipeQuerySet(models.QuerySet):
 
 class RecipeManager(models.Manager):
     """Custom manager using RecipeQuerySet."""
+
     def get_queryset(self):
         return RecipeQuerySet(self.model, using=self._db)
 
@@ -84,6 +87,7 @@ class RecipeManager(models.Manager):
 
 class Ingredient(models.Model):
     """Ingredient model representing food components."""
+
     name = models.CharField(max_length=100)
     category = models.CharField(max_length=50)  # e.g., "protein", "vegetable"
 
@@ -97,11 +101,13 @@ class Ingredient(models.Model):
         ]
 
     def __str__(self):
+        """Ingredient representation."""
         return self.name
 
 
 class Recipe(models.Model):
     """Recipe model with instructions, time, and ingredients."""
+
     name = models.CharField(max_length=200, validators=[MinLengthValidator(3)])
     instructions = models.TextField()
     cooking_time = models.IntegerField(validators=[MinValueValidator(1)])  # in minutes
@@ -117,21 +123,25 @@ class Recipe(models.Model):
         ordering = ['id']
 
     def __str__(self):
+        """Recipe representation."""
         return self.name
 
 
 class RecipeIngredient(models.Model):
     """Intermediate model for recipe-ingredient relationship."""
+
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.CharField(max_length=50)
 
     def __str__(self):
+        """Recipeingredient representation."""
         return self.quantity
 
 
 class Macro(models.Model):
     """Nutritional information for a recipe."""
+
     recipe = models.OneToOneField(Recipe, on_delete=models.CASCADE)
     calories = models.IntegerField()
     protein = models.IntegerField()
@@ -139,4 +149,5 @@ class Macro(models.Model):
     fat = models.IntegerField()
 
     def __str__(self):
+        """Nutritional information representation."""
         return f"Macros for {self.recipe}"

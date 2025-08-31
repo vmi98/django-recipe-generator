@@ -15,7 +15,7 @@ Available endpoints:
     GET     /api/ingredients/<id>/  - Retrieve an ingredient
     PUT     /api/ingredients/<id>/  - Update an ingredient
     DELETE  /api/ingredients/<id>/  - Delete an ingredient
-    
+
     GET     /recipe-form-data/      - Retrieve form-related data
                                     (provides available ingredients)
     POST    /api-token-auth/        - Obtain authentication token

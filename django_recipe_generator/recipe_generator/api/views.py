@@ -1,5 +1,6 @@
-"""
-Views (API) for recipe creation, editing, deletion,
+"""Views (API).
+
+Views for recipe creation, editing, deletion,
 listing, and detail display, user registration and token obtaining.
 """
 from rest_framework.response import Response
@@ -11,7 +12,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import permission_classes
 
 from django_recipe_generator.recipe_generator.models import Recipe, Ingredient
-from django_recipe_generator.recipe_generator.api.permissions import IsOwnerOrAdmin, IsAdmin
+from django_recipe_generator.recipe_generator.api.permissions import (
+    IsOwnerOrAdmin, IsAdmin)
 from django_recipe_generator.recipe_generator.serializers import (
     RecipeSerializer,
     IngredientSerializer,
@@ -25,6 +27,7 @@ from django.contrib.auth.models import User
 
 class RecipeViewSet(viewsets.ModelViewSet):
     """ViewSet for listing, creating, and managing recipes."""
+
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = [IsOwnerOrAdmin]
@@ -34,7 +37,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def api_root(self, request):
-        """Index route at /api/"""
+        """Index route at /api/."""
         return Response({
             'recipes_list': {
                 'url': reverse('recipe-list', request=request),
@@ -48,7 +51,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['POST'])
     def filter_search(self, request):
-        """
+        """Filter recipes.
+
         Filter recipes by name, time, and ingredients, including or excluding
         specific ones. Adds metadata on matching and missing ingredients.
 
@@ -106,6 +110,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 class IngredientViewSet(viewsets.ModelViewSet):
     """ViewSet for listing, creating, and managing ingredients."""
+
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = [IsAdmin]
@@ -114,5 +119,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
 @permission_classes([AllowAny])
 class RegisterView(generics.CreateAPIView):
     """View for registering a new user."""
+
     queryset = User.objects.all()
     serializer_class = UserSerializer

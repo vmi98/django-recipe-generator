@@ -1,6 +1,4 @@
-"""
-Test module for API
-"""
+"""Test module for API."""
 from django.contrib.auth.models import User
 from django.urls import reverse
 
@@ -22,7 +20,8 @@ from django_recipe_generator.recipe_generator.serializers import (
 
 
 class RecipeAPITest(APITestCase):
-    """Tests for the CRUD API endpoints including search, and form data"""
+    """Tests for the CRUD API endpoints including search, and form data."""
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: user, token, ingredients, and recipes."""
@@ -51,10 +50,7 @@ class RecipeAPITest(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
 
     def test_filter_search(self):
-        """
-        Test filtering and seraching recipes by name and ingredients,
-        with exclusions.
-        """
+        """Filter and serach recipes by name and ingredients with exclusions."""
         url = reverse('recipe-filter-search')
         data = {'time_filter': 'standard',
                 'query_ingredients': [self.ingredient1.id],
@@ -90,6 +86,7 @@ class RecipeAPITest(APITestCase):
 
 class AuthAPITest(APITestCase):
     """Tests for authentication-related API endpoints."""
+
     def test_api_token_auth(self):
         """Test that valid credentials return a valid token."""
         User.objects.create_user(username='testuser',
@@ -112,10 +109,8 @@ class AuthAPITest(APITestCase):
 
 
 class IngredientSerializerTest(APITestCase):
-    """
-    Tests for IngredientSerializer including
-    serialization and validation.
-    """
+    """Tests for IngredientSerializer including serialization and validation."""
+
     def test_serialization(self):
         """Test that an ingredient is serialized correctly."""
         ingredient = Ingredient.objects.create(
@@ -130,10 +125,7 @@ class IngredientSerializerTest(APITestCase):
         self.assertEqual(serializer.data, expected_data)
 
     def test_deserialization_valid(self):
-        """
-        Test that a valid payload is
-        deserialized into an Ingredient object.
-        """
+        """Test that a valid payload is deserialized into an Ingredient object."""
         data = {'name': 'Sugar', 'category': 'seasoning'}
         serializer = IngredientSerializer(data=data)
         self.assertTrue(serializer.is_valid())
@@ -161,10 +153,8 @@ class IngredientSerializerTest(APITestCase):
 
 
 class RecipeIngredientSerializerTest(APITestCase):
-    """
-    Tests for RecipeIngredientSerializer
-    serialization and deserialization.
-    """
+    """Tests for RecipeIngredientSerializer serialization and deserialization."""
+
     def setUp(self):
         """Set up test recipe and ingredient for use in all tests."""
         self.ingredient = Ingredient.objects.create(name="Flour")
@@ -192,10 +182,7 @@ class RecipeIngredientSerializerTest(APITestCase):
         self.assertEqual(serializer.data, expected_data)
 
     def test_deserialization_valid(self):
-        """
-        Test that valid data is deserialized into
-        a RecipeIngredient object.
-        """
+        """Test that valid data is deserialized into a RecipeIngredient object."""
         data = {
             'ingredient': self.ingredient.id,
             'quantity': 1.0
@@ -218,10 +205,8 @@ class RecipeIngredientSerializerTest(APITestCase):
 
 
 class RecipeSerializerTest(APITestCase):
-    """
-    Test suite for RecipeSerializer:
-    create, update, validate, and context data.
-    """
+    """Test suite for RecipeSerializer:create, update, validate, and context data."""
+
     def setUp(self):
         """Set up ingredient and recipe with a related RecipeIngredient."""
         self.ingredient = Ingredient.objects.create(name="Flour")
@@ -323,10 +308,7 @@ class RecipeSerializerTest(APITestCase):
         self.assertIn('cooking_time', serializer.errors)
 
     def test_contextual_fields_added(self):
-        """
-        Test that contextual fields like
-        matching/missing ingredients are added.
-        """
+        """Test that contextual fields like matching/missing ingredients are added."""
         self.recipe.matching_ingredient_names = ["Salt"]
         self.recipe.missing_ingredient_names = ["Beef"]
 
@@ -343,6 +325,7 @@ class RecipeSerializerTest(APITestCase):
 
 class UserSerializerTest(APITestCase):
     """Test suite for UserSerializer: serialize and create users."""
+
     def test_serialization(self):
         """Test that a user instance is serialized correctly."""
         user = User.objects.create(

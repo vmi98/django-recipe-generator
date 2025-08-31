@@ -12,6 +12,7 @@ from .models import Recipe, RecipeIngredient, Ingredient
 
 class RecipeIngredientForm(forms.ModelForm):
     """Form for creating or editing a single RecipeIngredient."""
+
     class Meta:
         model = RecipeIngredient
         fields = ('ingredient', 'quantity')
@@ -23,6 +24,7 @@ class RecipeIngredientForm(forms.ModelForm):
 
 class RecipeForm(forms.ModelForm):
     """Form for creating or editing a Recipe instance."""
+
     class Meta:
         model = Recipe
         exclude = ['ingredients', 'owner']
@@ -55,6 +57,7 @@ class RecipeForm(forms.ModelForm):
 
 class BaseRecipeIngredientFormSet(forms.BaseInlineFormSet):
     """Formset for managing multiple RecipeIngredient forms."""
+
     def clean(self):
         """Validate ingredient uniqueness, count, and quantity presence."""
         super().clean()
@@ -87,6 +90,7 @@ class BaseRecipeIngredientFormSet(forms.BaseInlineFormSet):
 
 class IngredientForm(forms.ModelForm):
     """Form for creating or editing a Ingredient instance."""
+
     class Meta:
         model = Ingredient
         fields = '__all__'

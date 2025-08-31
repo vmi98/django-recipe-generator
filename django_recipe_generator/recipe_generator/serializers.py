@@ -1,6 +1,4 @@
-"""
-Serializers for recipes, ingredients, and user management.
-"""
+"""Serializers for recipes, ingredients, and user management."""
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Recipe, Ingredient, RecipeIngredient
@@ -8,6 +6,7 @@ from .models import Recipe, Ingredient, RecipeIngredient
 
 class IngredientSerializer(serializers.ModelSerializer):
     """Serializer for ingredient data."""
+
     class Meta:
         model = Ingredient
         fields = '__all__'
@@ -31,11 +30,11 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
-    """
-    Serializer for individual recipe-ingredient relations.
+    """Serializer for individual recipe-ingredient relations.
 
     Provides nested ingredient ID and quantity input/output.
     """
+
     ingredient = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all()
     )
@@ -45,7 +44,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
         fields = ['ingredient', 'quantity']
 
     def to_representation(self, instance):
-        """Customize output to show both id and name"""
+        """Customize output to show both id and name."""
         representation = super().to_representation(instance)
         ingredient = instance.ingredient
         representation['ingredient'] = {
@@ -56,21 +55,21 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeFormDataSerializer(serializers.Serializer):
-    """
-    Serializer for initializing recipe creation forms.
+    """Serializer for initializing recipe creation forms.
 
     Returns a list of available ingredients.
     """
+
     ingredients = IngredientSerializer(many=True)
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    """
-    Full serializer for Recipe objects.
+    """Full serializer for Recipe objects.
 
     Handles nested ingredient creation and supports contextual flags
     for optional ingredient matching/missing metadata.
     """
+
     ingredients = RecipeIngredientSerializer(
         many=True,
         source='recipeingredient_set',
@@ -83,8 +82,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'owner']
 
     def to_representation(self, instance):
-        """
-        Dynamically adds matching/missing ingredient fields
+        """Dynamically adds matching/missing ingredient fields.
+
         ONLY when called from filter_search endpoint
         """
         representation = super().to_representation(instance)
@@ -170,6 +169,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for user registration using username and password."""
+
     class Meta:
         model = User
         fields = ('username', 'password')

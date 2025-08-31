@@ -40,7 +40,8 @@ ingredient_patterns = [
     path('new/', views.IngredientCreateView.as_view(), name='add_ingredient'),
     path('<int:pk>/', views.IngredientDetailView.as_view(), name='ingredient_detail'),
     path('<int:pk>/edit', views.IngredientEditView.as_view(), name='ingredient_edit'),
-    path('<int:pk>/delete', views.IngredientDeleteView.as_view(), name='ingredient_delete'),
+    path('<int:pk>/delete', views.IngredientDeleteView.as_view(),
+         name='ingredient_delete'),
 ]
 
 urlpatterns = [

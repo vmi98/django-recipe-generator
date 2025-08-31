@@ -1,6 +1,4 @@
-"""
-Test module for models
-"""
+"""Test module for models."""
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
@@ -13,6 +11,7 @@ from django_recipe_generator.recipe_generator.models import (
 
 class RecipeModelTests(TestCase):
     """Test case for Recipe, Ingredient, and Macro model behavior."""
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients, recipes, macro."""
