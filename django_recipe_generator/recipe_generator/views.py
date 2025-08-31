@@ -13,6 +13,9 @@ from django.db.models import Prefetch
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 
 from .forms import RecipeForm, RecipeIngredientFormSet, IngredientForm
 from .models import Ingredient, Recipe, RecipeIngredient
@@ -26,7 +29,24 @@ ALLOWED_SEARCH_PARAMS = [
 ]
 
 
-class RecipeCreateView(CreateView):
+class AdminRequiredMixin(UserPassesTestMixin):
+    """
+    Mixin to ensure only admins can access the view.
+    """
+    def test_func(self):
+        return self.request.user.is_staff
+
+
+class OwnerOrAdminRequiredMixin(UserPassesTestMixin):
+    """
+    Mixin to ensure only owners or admins can access the view.
+    """
+    def test_func(self):
+        obj = self.get_object()
+        return obj.owner == self.request.user or self.request.user.is_staff
+
+
+class RecipeCreateView(LoginRequiredMixin, CreateView):
     """View for creating a new recipe with inline ingredients."""
     model = Recipe
     form_class = RecipeForm
@@ -104,7 +124,7 @@ class RecipeDetailView(DetailView):
         return context
 
 
-class RecipeEditView(UpdateView):
+class RecipeEditView(LoginRequiredMixin, OwnerOrAdminRequiredMixin, UpdateView):
     """View for editing an existing recipe and its ingredients."""
     model = Recipe
     form_class = RecipeForm
@@ -143,7 +163,7 @@ class RecipeEditView(UpdateView):
         return self.render_to_response(context)
 
 
-class RecipeDeleteView(DeleteView):
+class RecipeDeleteView(LoginRequiredMixin, OwnerOrAdminRequiredMixin, DeleteView):
     """View for confirming and deleting a recipe."""
     model = Recipe
     template_name = 'recipe_generator/recipe_delete.html'
@@ -215,7 +235,7 @@ class RecipeList(ListView):
         return context
 
 
-class IngredientCreateView(CreateView):
+class IngredientCreateView(LoginRequiredMixin, CreateView):
     """View for creating a new ingredient."""
     model = Ingredient
     form_class = IngredientForm
@@ -253,7 +273,7 @@ class IngredientDetailView(DetailView):
     context_object_name = 'ingredient'
 
 
-class IngredientEditView(UpdateView):
+class IngredientEditView(AdminRequiredMixin, LoginRequiredMixin, UpdateView):
     """View for editing an existing ingredient."""
     model = Ingredient
     form_class = IngredientForm
@@ -275,7 +295,7 @@ class IngredientEditView(UpdateView):
         return self.render_to_response(context)
 
 
-class IngredientDeleteView(DeleteView):
+class IngredientDeleteView(AdminRequiredMixin, LoginRequiredMixin, DeleteView):
     """View for confirming and deleting a ingredient."""
     model = Ingredient
     template_name = 'recipe_generator/ingredient_delete.html'
@@ -296,3 +316,15 @@ def index_view(request):
         request.session.pop('came_from_search', None)
         request.session.pop('search_params', None)
     return render(request, 'recipe_generator/index.html')
+
+
+def register(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            messages.success(request, f"Account created for {user.username}!")
+            return redirect("login")
+    else:
+        form = UserCreationForm()
+    return render(request, "registration/register.html", {"form": form})

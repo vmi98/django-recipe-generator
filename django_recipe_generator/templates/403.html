@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Does't exist</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <style>
+    body {
+      background-color: #f6f4fb; /* pale lilac */
+    }
+    .pastel-box {
+      background-color: #ffffff;
+      border: 1px solid #dcd9f0;
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    h1, h3 {
+      color: #6c63ff;
+    }
+    .button.is-pastel {
+      background-color: #e0e7ff;
+      color: #3c3c3c;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+<section class="section">
+  <div class="container">
+    <div class="box pastel-box">
+      <h1 class="title is-3">You don't have access to this page</h1>
+      <a href="{% url 'index' %}" class="button is-pastel">Go Back to Home page</a>    
+    </div>
+  </div>
+</section>
+</body>
+</html>

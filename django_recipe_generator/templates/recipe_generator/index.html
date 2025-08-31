@@ -6,12 +6,32 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
   <style>
     body {
-      background-color: #f6f4fb; /* Pale lilac */
+      background-color: #f6f4fb;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: flex-end;
+      padding: 3px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #dcd9f0;
+      align-items: center;
+    }
+
+    .top-bar a.button,
+    .top-bar form {
+      display: flex;
+      align-items: center;
+      margin: 2px;
+    }
+    .page-center {
+      flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
     }
     .pastel-box {
       background-color: #ffffff;
@@ -51,12 +71,25 @@
   </style>
 </head>
 <body>
-  <div class="pastel-box">
-    <h1 class="title is-3">Recipe Generator</h1>
-    <ul>
-      <li><a href="{% url 'add_recipe' %}" class="button is-pastel">Add New Recipe</a></li>
-      <li><a href="{% url 'recipe_list' %}" class="button is-pastel">Search the Recipe</a></li>
-    </ul>
+  <div class="top-bar">
+    {% if user.is_authenticated %}
+      <form method="post" action="{% url 'logout' %} " style="margin: 0;">{% csrf_token %}
+        <button type="submit" class="button is-light">Logout</button>
+      </form>
+    {% else %}
+      <a href="{% url 'login' %}" class="button is-pastel">Login</a>
+      <a href="{% url 'register_html' %}" class="button is-pastel">Register</a>
+    {% endif %}
+  </div>
+
+  <div class="page-center">
+    <div class="pastel-box">
+      <h1 class="title is-3">Recipe Generator</h1>
+      <ul>
+        <li><a href="{% url 'add_recipe' %}" class="button is-pastel">Add New Recipe</a></li>
+        <li><a href="{% url 'recipe_list' %}" class="button is-pastel">Search the Recipe</a></li>
+      </ul>
+    </div>
   </div>
 </body>
 </html>

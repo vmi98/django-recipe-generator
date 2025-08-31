@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Logged Out - Recipe Generator</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <style>
+    body {
+      background-color: #f6f4fb; /* pale lilac */
+    }
+    .pastel-box {
+      background-color: #ffffff;
+      border: 1px solid #dcd9f0;
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      max-width: 500px;
+      margin: 4rem auto;
+    }
+    h1, h3 {
+      color: #6c63ff;
+    }
+    .button.is-pastel {
+      background-color: #e0e7ff;
+      color: #3c3c3c;
+      border: none;
+      margin-top: 1rem;
+    }
+    a.button.is-pastel {
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <section class="section">
+    <div class="container">
+      <div class="box pastel-box">
+        <h1 class="title is-3">You have been logged out</h1>
+        <p>Thank you for visiting!</p>
+        <a href="{% url 'index' %}" class="button is-pastel">Return to Home</a>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
