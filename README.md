@@ -11,6 +11,8 @@ A Django-based web application for managing and searching recipes based on recip
   - Cooking time
   - Excluded ingredients
 - Dual interface: Django templates and DRF API
+- API endpoints are secured using Token Authentication (DRF), HTML routes are secured using Session Authentication.
+- Access Control: read access - open to all users, create access - restricted to authenticated users. Recipes: update/delete - only the recipe creator or admin users. Ingredients: update/delete - restricted to admin users only.
 
 ## Tech Stack
 
@@ -37,9 +39,14 @@ Available endpoints:
     PUT     /api/recipes/<id>/      - Update a recipe
     DELETE  /api/recipes/<id>/      - Delete a recipe
     POST    /filter_search/         - Filter/search recipes
-    GET     /recipe-form-data/      - Retrieve form-related data
-                                    (provides available ingredients)
-    POST    /api-token-auth/        - Log in, obtain authentication token
+
+    GET     /api/ingredients/       - List all ingredients
+    POST    /api/ingredients/       - Create an ingredients
+    GET     /api/ingredients/<id>/  - Retrieve an ingredient
+    PUT     /api/ingredients/<id>/  - Update an ingredient
+    DELETE  /api/ingredients/<id>/  - Delete an ingredient
+
+    POST    /api-token-auth/        - Obtain authentication token
     POST    /register/              - Register a new user
 
 Authentication: TokenAuthentication
@@ -93,6 +100,25 @@ Example Response (JSON):
 ```
 
 ## Run with docker
+
+Set the following variables in your .env file
+```
+SECRET_KEY=your-secret-key
+DB_NAME=recipegenerator 
+DB_USER=your_user
+DB_PASSWORD=your_password
+DB_HOST=db # leave this for docker compose
+DB_PORT=5432
+
+DEBUG=False
+
+DJANGO_SUPERUSER_USERNAME=your_user
+DJANGO_SUPERUSER_EMAIL=your_user_email@example.com
+DJANGO_SUPERUSER_PASSWORD=your_password
+
+DJANGO_ALLOWED_HOSTS=example.com,www.example.com
+```
+
 ```
 git clone https://github.com/vmi98/django-recipe-generator.git
 cd django-recipe-generator
@@ -103,13 +129,15 @@ docker compose up
 
 ## Running the tests
 ```
-uv run coverage run manage.py test
-uv run coverage report
+docker-compose up -d
+docker-compose exec web uv run coverage run  manage.py test
+docker-compose exec web uv run coverage report
 ```
 
 ## Linting
 ```
-uv run flake8 .
+docker-compose up -d
+docker-compose exec web uv run flake8 .
 ```
 
 ## Deployment Notes
