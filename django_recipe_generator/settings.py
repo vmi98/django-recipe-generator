@@ -27,10 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
 
 
 # Application definition
@@ -62,6 +59,44 @@ if DEBUG:
     INSTALLED_APPS += ["debug_toolbar"]
     MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE
 
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+
+        'formatters': {
+            'verbose': {
+                'format': '{asctime} {levelname} {name} {message}',
+                'style': '{',
+            },
+        },
+
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+                'formatter': 'verbose',
+            },
+        },
+
+        'loggers': {
+            'django': {
+                'handlers': ['console'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+            'django.server': {
+                'handlers': ['console'],
+                'level': 'ERROR',
+                'propagate': False,
+            },
+            'django.request': {
+                'handlers': ['console'],
+                'level': 'ERROR',
+                'propagate': False,
+            },
+        },
+    }
+
+
 ROOT_URLCONF = 'django_recipe_generator.urls'
 
 TEMPLATES = [
@@ -79,6 +114,11 @@ TEMPLATES = [
     },
 ]
 
+LOGIN_REDIRECT_URL = "index"
+SESSION_COOKIE_SECURE = False         # set True in production (HTTPS)
+CSRF_COOKIE_SECURE = False            # set True in production
+SESSION_COOKIE_AGE = 1209600          # 2 weeks (default)
+
 WSGI_APPLICATION = 'django_recipe_generator.wsgi.application'
 
 
@@ -94,12 +134,12 @@ DATABASES = {
 }
 
 
-#DATABASES = {
+# DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.sqlite3',
 #        'NAME': BASE_DIR / 'db.sqlite3',
 #    }
-#}
+# }
 
 
 # Password validation
@@ -157,5 +197,4 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
 }
 
-INTERNAL_IPS = ['127.0.0.1', '0.0.0.0']
-
+INTERNAL_IPS = os.getenv('INTERNAL_IPS', [])
