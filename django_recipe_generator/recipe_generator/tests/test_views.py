@@ -2,6 +2,7 @@
 from django.db import connection
 from django.test import TestCase
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 from django_recipe_generator.recipe_generator import views
 from django_recipe_generator.recipe_generator.forms import (
@@ -22,16 +23,20 @@ class RecipeDetailViewTests(TestCase):
     def setUp(self):
         """Clear queries log before each test."""
         connection.queries_log.clear()
+        self.client.login(username='testuser', password='testpass')
 
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients and recipes, urls."""
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
+        cls.user = User.objects.create_user(username='testuser',
+                                            password='testpass')
         cls.recipe = Recipe.objects.create(
             name="test_pizza",
             instructions="test instructions",
-            cooking_time=15
+            cooking_time=15,
+            owner=cls.user
         )
         cls.recipe.ingredients.set([cls.ingredient1, cls.ingredient2])
 
@@ -63,9 +68,9 @@ class RecipeDetailViewTests(TestCase):
     def test_queryset_prefetch_related(self):
         """Check the number of queries with prefetching.
 
-        3 = 2 prefetching queries + 1 django session query
+        4 = 1 recipe fetch + 2 prefetching queries + 1 django session query
         """
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(4):
             response = self.client.get(self.detail_url)
             list(response.context['recipe'].ingredients.all())
 
@@ -141,15 +146,21 @@ class RecipeDetailViewTests(TestCase):
 class RecipeDeleteViewTests(TestCase):
     """Tests deleting recipe view."""
 
+    def setUp(self):
+        self.client.login(username='testuser', password='testpass')
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients and recipes, urls."""
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
+        cls.user = User.objects.create_user(username='testuser',
+                                            password='testpass')
         cls.recipe = Recipe.objects.create(
             name="test_pizza",
             instructions="test instructions",
-            cooking_time=15
+            cooking_time=15,
+            owner=cls.user
         )
         cls.recipe.ingredients.set([cls.ingredient1, cls.ingredient2])
         cls.delete_url = reverse('recipe_delete', kwargs={'pk': cls.recipe.pk})
@@ -192,12 +203,16 @@ class RecipeDeleteViewTests(TestCase):
 class RecipeCreateViewTests(TestCase):
     """Tests for creating recipe view."""
 
+    def setUp(self):
+        self.client.login(username='testuser', password='testpass')
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients, forms, recipe data, urls."""
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
-
+        cls.user = User.objects.create_user(username='testuser',
+                                            password='testpass')
         cls.create_url = reverse('add_recipe')
         cls.form = RecipeForm
         cls.formset = RecipeIngredientFormSet
@@ -274,15 +289,21 @@ class RecipeCreateViewTests(TestCase):
 class RecipeEditViewTests(TestCase):
     """Tests for editing recipe view."""
 
+    def setUp(self):
+        self.client.login(username='testuser', password='testpass')
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients,recipe, forms, urls."""
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
+        cls.user = User.objects.create_user(username='testuser',
+                                            password='testpass')
         cls.recipe = Recipe.objects.create(
             name="test_pizza",
             instructions="test instructions",
-            cooking_time=15
+            cooking_time=15,
+            owner= cls.user
         )
         cls.recipe.ingredients.set([cls.ingredient1, cls.ingredient2])
         cls.edit_data = {
@@ -376,15 +397,19 @@ class RecipeListViewTests(TestCase):
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
         cls.ingredient3 = Ingredient.objects.create(name="Banana")
+        cls.user = User.objects.create_user(username='testuser',
+                                            password='testpass')
         cls.recipe = Recipe.objects.create(
             name="test_pizza",
             instructions="test instructions",
-            cooking_time=15
+            cooking_time=15,
+            owner=cls.user
         )
         cls.recipe1 = Recipe.objects.create(
             name="test_soup",
             instructions="test instructions1",
-            cooking_time=40
+            cooking_time=40,
+            owner=cls.user
         )
         cls.recipe.ingredients.set([cls.ingredient1, cls.ingredient2])
         cls.recipe1.ingredients.set([cls.ingredient1, cls.ingredient3])
@@ -512,13 +537,18 @@ class IngredientDetailViewTests(TestCase):
 class IngredientDeleteViewTests(TestCase):
     """Tests deleting ingredient view."""
 
+    def setUp(self):
+        self.client.login(username='admin', password='adminpass')
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredient, urls."""
         cls.ingredient = Ingredient.objects.create(
             name="Salt", category="seasoning"
         )
-
+        cls.admin_user = User.objects.create_superuser(
+            username='admin', password='adminpass', email='admin@example.com'
+        )
         cls.delete_url = reverse(
             'ingredient_delete',
             kwargs={'pk': cls.ingredient.pk}
@@ -564,11 +594,16 @@ class IngredientDeleteViewTests(TestCase):
 class IngredientCreateViewTests(TestCase):
     """Tests for creating ingredient view."""
 
+    def setUp(self):
+        self.client.login(username='testuser', password='testpass')
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients, forms urls."""
         cls.valid_data = {'name': 'Salt',
                           'category': 'seasoning'}
+        cls.user = User.objects.create_user(username='testuser',
+                                            password='testpass')
         cls.create_url = reverse('add_ingredient')
         cls.form = IngredientForm
 
@@ -613,13 +648,18 @@ class IngredientCreateViewTests(TestCase):
 class IngredientEditViewTests(TestCase):
     """Tests for editing ingredient view."""
 
+    def setUp(self):
+        self.client.login(username='admin', password='adminpass')
+
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredient, forms, urls."""
         cls.ingredient = Ingredient.objects.create(
             name="Salt", category="seasoning"
         )
-
+        cls.admin_user = User.objects.create_superuser(
+            username='admin', password='adminpass', email='admin@example.com'
+        )
         cls.edit_url = reverse('ingredient_edit',
                                kwargs={'pk': cls.ingredient.pk})
         cls.edit_data = {'name': 'Salt_edit',

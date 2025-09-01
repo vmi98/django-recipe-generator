@@ -34,12 +34,14 @@ class RecipeAPITest(APITestCase):
         cls.recipe1 = Recipe.objects.create(
             name="test_pizza",
             instructions="test instructions1",
-            cooking_time=15
+            cooking_time=15,
+            owner=cls.user
         )
         cls.recipe2 = Recipe.objects.create(
             name="test_soup",
             instructions="test instructions2",
-            cooking_time=40
+            cooking_time=40,
+            owner=cls.user
         )
         cls.recipe1.ingredients.set([cls.ingredient1, cls.ingredient2])
         cls.recipe2.ingredients.set([cls.ingredient1, cls.ingredient3])
@@ -157,11 +159,14 @@ class RecipeIngredientSerializerTest(APITestCase):
 
     def setUp(self):
         """Set up test recipe and ingredient for use in all tests."""
+        self.user = User.objects.create_user(username='testuser',
+                                             password='testpass')
         self.ingredient = Ingredient.objects.create(name="Flour")
         self.recipe = Recipe.objects.create(
             name="test_pizza",
             instructions="test instructions1",
-            cooking_time=15
+            cooking_time=15,
+            owner=self.user
         )
 
     def test_serialization(self):
@@ -209,16 +214,25 @@ class RecipeSerializerTest(APITestCase):
 
     def setUp(self):
         """Set up ingredient and recipe with a related RecipeIngredient."""
+        self.user = User.objects.create_user(username='testuser',
+                                             password='testpass')
+        self.client.force_authenticate(self.user)  # Authenticate client
+        # Build a proper authenticated request for serializer context
+        request = self.client.post("/api/recipes/", {}).wsgi_request
+        request.user = self.user
+        self.context = {"request": request}
+
         self.ingredient = Ingredient.objects.create(name="Flour")
         self.recipe = Recipe.objects.create(
             name="test_pizza",
             instructions="test instructions1",
-            cooking_time=15
+            cooking_time=15,
+            owner=self.user
         )
         self.recipeingredient = RecipeIngredient.objects.create(
             recipe=self.recipe,
             ingredient=self.ingredient,
-            quantity='30'
+            quantity='30',
         )
 
     def test_serialization(self):
@@ -237,7 +251,8 @@ class RecipeSerializerTest(APITestCase):
             ],
             "name": self.recipe.name,
             "instructions": self.recipe.instructions,
-            "cooking_time": self.recipe.cooking_time
+            "cooking_time": self.recipe.cooking_time,
+            "owner": self.user.id
         }
         self.assertEqual(serializer.data, expected_data)
 
@@ -251,9 +266,9 @@ class RecipeSerializerTest(APITestCase):
             ],
             "name": self.recipe.name,
             "instructions": self.recipe.instructions,
-            "cooking_time": self.recipe.cooking_time
+            "cooking_time": self.recipe.cooking_time,
         }
-        serializer = RecipeSerializer(data=data)
+        serializer = RecipeSerializer(data=data, context=self.context)
         self.assertTrue(serializer.is_valid(), serializer.errors)
         obj = serializer.save()
         self.assertEqual(obj.name, self.recipe.name)
@@ -268,9 +283,10 @@ class RecipeSerializerTest(APITestCase):
             ],
             "name": "updated_name",
             "instructions": self.recipe.instructions,
-            "cooking_time": self.recipe.cooking_time
+            "cooking_time": self.recipe.cooking_time,
         }
-        serializer = RecipeSerializer(instance=self.recipe, data=data)
+        serializer = RecipeSerializer(instance=self.recipe, data=data,
+                                      context=self.context)
         self.assertTrue(serializer.is_valid(), serializer.errors)
         updated = serializer.save()
         self.assertEqual(updated.name, "updated_name")
@@ -285,9 +301,9 @@ class RecipeSerializerTest(APITestCase):
             ],
             "name": "BN",
             "instructions": self.recipe.instructions,
-            "cooking_time": self.recipe.cooking_time
+            "cooking_time": self.recipe.cooking_time,
         }
-        serializer = RecipeSerializer(data=data)
+        serializer = RecipeSerializer(data=data, context=self.context)
         self.assertFalse(serializer.is_valid())
         self.assertIn('name', serializer.errors)
 
@@ -301,9 +317,9 @@ class RecipeSerializerTest(APITestCase):
             ],
             "name": self.recipe.name,
             "instructions": self.recipe.instructions,
-            "cooking_time": -15
+            "cooking_time": -15,
         }
-        serializer = RecipeSerializer(data=data)
+        serializer = RecipeSerializer(data=data, context=self.context)
         self.assertFalse(serializer.is_valid())
         self.assertIn('cooking_time', serializer.errors)
 

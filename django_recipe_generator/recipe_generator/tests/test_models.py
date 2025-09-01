@@ -1,6 +1,7 @@
 """Test module for models."""
 from django.core.exceptions import ValidationError
 from django.test import TestCase
+from django.contrib.auth.models import User
 
 from django_recipe_generator.recipe_generator.models import (
     Ingredient,
@@ -18,15 +19,19 @@ class RecipeModelTests(TestCase):
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
         cls.ingredient3 = Ingredient.objects.create(name="Banana")
+        cls.user = User.objects.create_user(username='testuser',
+                                            password='testpass')
         cls.recipe = Recipe.objects.create(
             name="test_pizza",
             instructions="test instructions",
-            cooking_time=15
+            cooking_time=15,
+            owner=cls.user
         )
         cls.recipe1 = Recipe.objects.create(
             name="test_soup",
             instructions="test instructions1",
-            cooking_time=40
+            cooking_time=40,
+            owner=cls.user
         )
         cls.recipe.ingredients.set([cls.ingredient1, cls.ingredient2])
         cls.recipe1.ingredients.set([cls.ingredient1, cls.ingredient3])
@@ -95,8 +100,6 @@ class RecipeModelTests(TestCase):
     def test_filter_exclude(self):
         """Test filtering recipes by excluding ingredients."""
         results = Recipe.objects.filter_recipes(
-            exclude_ingredients=[
-                self.ingredient1.id
-            ]
+            exclude_ingredients=[self.ingredient1.id]
         )
         self.assertEqual(results.count(), 0)
