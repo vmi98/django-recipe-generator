@@ -68,10 +68,11 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
         formset = RecipeIngredientFormSet(request.POST)
 
         if form.is_valid() and formset.is_valid():
-            recipe = form.save()
+            recipe = form.save(commit=False)
+            recipe.owner = request.user
+            recipe.save()
             formset.instance = recipe
             formset.save()
-
             return redirect(reverse('recipe_detail', kwargs={'pk': recipe.pk}))
 
         return render(

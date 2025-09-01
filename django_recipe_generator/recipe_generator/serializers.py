@@ -119,7 +119,12 @@ class RecipeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """Create a recipe instance with nested ingredients."""
         ingredients_data = validated_data.pop('recipeingredient_set')
-        recipe = Recipe.objects.create(**validated_data)
+        request = self.context.get('request')
+
+        recipe = Recipe.objects.create(
+            owner=request.user if request else None,
+            **validated_data
+        )
 
         for ingredient_data in ingredients_data:
             RecipeIngredient.objects.create(

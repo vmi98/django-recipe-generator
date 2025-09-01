@@ -32,9 +32,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     permission_classes = [IsOwnerOrAdmin]
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
     @action(detail=False, methods=['get'])
     def api_root(self, request):
         """Index route at /api/."""
