@@ -115,8 +115,8 @@ TEMPLATES = [
 ]
 
 LOGIN_REDIRECT_URL = "index"
-SESSION_COOKIE_SECURE = False         # set True in production (HTTPS)
-CSRF_COOKIE_SECURE = False            # set True in production
+SESSION_COOKIE_SECURE = True        # set True in production (HTTPS)
+CSRF_COOKIE_SECURE = True            # set True in production
 SESSION_COOKIE_AGE = 1209600          # 2 weeks (default)
 
 WSGI_APPLICATION = 'django_recipe_generator.wsgi.application'
@@ -125,21 +125,8 @@ WSGI_APPLICATION = 'django_recipe_generator.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=f"postgres://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}",
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
-
-
-# DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': BASE_DIR / 'db.sqlite3',
-#    }
-# }
+DB = os.getenv('RENDER_DB')
+DATABASES = {'default': dj_database_url.parse(DB)}
 
 
 # Password validation
