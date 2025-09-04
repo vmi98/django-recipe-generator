@@ -27,10 +27,10 @@ def get_unexpected_twist(title, ingredients):
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=prompt,
-            response_json_schema=schema
+            responseSchema=schema
         )
         return response.output_parsed
-    
+
     except Exception as e:
         print(f"Gemini API error: {e}")
         return {
