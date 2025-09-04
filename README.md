@@ -142,4 +142,4 @@ docker-compose exec web uv run flake8 .
 
 ## Deployment Notes
 
-Dockerized and deployed on [Render](https://django-recipe-generator.onrender.com)
+Dockerized and deployed on [Render](https://django-recipe-generator-latest.onrender.com)
