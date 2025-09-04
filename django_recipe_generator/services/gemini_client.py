@@ -8,7 +8,8 @@ client = genai.Client()
 def get_unexpected_twist(title, ingredients):
     prompt = f"""
     You are a creative chef.
-    Suggest ONE surprising ingredient to elevate this dish and briefly explain why.
+    Suggest ONE surprising ingredient to elevate this dish and briefly explain why,
+    and return strictly JSON matching the schema.
 
     Title: {title}
     Ingredients: {", ".join(ingredients)}
@@ -22,10 +23,18 @@ def get_unexpected_twist(title, ingredients):
         },
         "required": ["twist_ingredient", "reason", "how_to_use"]
     }
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt,
-        response_json_schema=schema
-    )
-
-    return response.output_parsed
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+            response_json_schema=schema
+        )
+        return response.output_parsed
+    
+    except Exception as e:
+        print(f"Gemini API error: {e}")
+        return {
+            "twist_ingredient": "",
+            "reason": "",
+            "how_to_use": ""
+        }
