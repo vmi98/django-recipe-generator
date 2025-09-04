@@ -1,4 +1,3 @@
-import json
 from google import genai
 
 
@@ -14,11 +13,19 @@ def get_unexpected_twist(title, ingredients):
     Title: {title}
     Ingredients: {", ".join(ingredients)}
     """
-
+    schema = {
+        "type": "object",
+        "properties": {
+            "twist_ingredient": {"type": "string"},
+            "reason": {"type": "string"},
+            "how_to_use": {"type": "string"}
+        },
+        "required": ["twist_ingredient", "reason", "how_to_use"]
+    }
     response = client.models.generate_content(
         model="gemini-2.5-flash",
-        contents=prompt
+        contents=prompt,
+        response_json_schema=schema
     )
 
-    return response.text
-
+    return response.output_parsed
