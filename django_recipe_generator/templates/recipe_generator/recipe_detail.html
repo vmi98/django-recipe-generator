@@ -57,6 +57,11 @@
         <p class="has-text-grey">No instructions provided for this recipe.</p>
       {% endif %}
 
+      <div>
+        <h3 class="subtitle is-4 mt-5">Gemini says</h3>
+        <p>{{ gemini }}</p>
+      </div>
+
       <div class="buttons mt-5">
         <a href="{% url 'recipe_edit' recipe.id %}" class="button is-pastel">Edit Recipe</a>
         <a href="{% url 'recipe_delete' recipe.id %}" class="button is-light">Delete Recipe</a>
