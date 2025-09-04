@@ -10,6 +10,7 @@ from django.shortcuts import render, redirect
 from urllib.parse import urlencode
 
 from django_recipe_generator.services.ingredients import annotate_recipes
+from django_recipe_generator.services.gemini_client import get_unexpected_twist
 from django.db.models import Prefetch
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView
@@ -20,6 +21,7 @@ from django.contrib import messages
 
 from .forms import RecipeForm, RecipeIngredientFormSet, IngredientForm
 from .models import Ingredient, Recipe, RecipeIngredient
+
 
 ALLOWED_SEARCH_PARAMS = [
     'q',
@@ -120,6 +122,9 @@ class RecipeDetailView(DetailView):
         else:
             context['back_url'] = reverse('index')
 
+        recipe_name = self.object.name
+        ingredients = [ing.ingredient.name for ing in self.object.recipeingredient_set.all()]
+        context['gemini'] = get_unexpected_twist(recipe_name, ingredients)
         return context
 
 
