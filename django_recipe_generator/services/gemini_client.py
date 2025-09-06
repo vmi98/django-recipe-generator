@@ -9,10 +9,12 @@ def get_unexpected_twist(title, ingredients):
     prompt = f"""
     You are a creative chef.
     Suggest ONE surprising ingredient to elevate this dish and briefly explain why,
-    and return strictly JSON matching the schema.
+    and return strictly JSON matching the schema. The ingredient must be unexpecting
+    for this recipe  and creative but obtainable by regular person.
 
     Title: {title}
     Ingredients: {", ".join(ingredients)}
+    If Title or Ingredients doesn't seem existing or realistic tell user so.
     """
     schema = {
         "type": "object",
