@@ -136,8 +136,12 @@ class Recipe(models.Model):
         """Save recipe and get twist from gemini if needed."""
 
         name_changed = self.tracker.has_changed('name')
-        ingredients_changed = self.tracker.has_changed('ingredients')
         is_new = self._state.adding
+
+        if self.pk:  # only check after instance exists
+            ingredients_changed = self.tracker.has_changed('ingredients')
+        else:
+            ingredients_changed = False
 
         super().save(*args, **kwargs)  # self._state.adding updated
         need_generation = (name_changed or ingredients_changed or is_new)
