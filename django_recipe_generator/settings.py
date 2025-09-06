@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django_recipe_generator.recipe_generator',
     'rest_framework',
     'rest_framework.authtoken',
+    'model_utils'
 ]
 
 MIDDLEWARE = [

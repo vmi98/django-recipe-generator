@@ -14,7 +14,7 @@ from rest_framework.decorators import permission_classes
 from django_recipe_generator.recipe_generator.models import Recipe, Ingredient
 from django_recipe_generator.recipe_generator.api.permissions import (
     IsOwnerOrAdmin, IsAdmin)
-from django_recipe_generator.recipe_generator.serializers import (
+from django_recipe_generator.recipe_generator.api.serializers import (
     RecipeSerializer,
     IngredientSerializer,
     UserSerializer

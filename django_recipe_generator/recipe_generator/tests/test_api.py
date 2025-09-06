@@ -11,7 +11,7 @@ from django_recipe_generator.recipe_generator.models import (
     Recipe,
     RecipeIngredient,
 )
-from django_recipe_generator.recipe_generator.serializers import (
+from django_recipe_generator.recipe_generator.api.serializers import (
     IngredientSerializer,
     RecipeIngredientSerializer,
     RecipeSerializer,
