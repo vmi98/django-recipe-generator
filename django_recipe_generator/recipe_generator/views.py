@@ -121,10 +121,6 @@ class RecipeDetailView(DetailView):
                 )
         else:
             context['back_url'] = reverse('index')
-
-        recipe_name = self.object.name
-        ingredients = [ing.ingredient.name for ing in self.object.recipeingredient_set.all()]
-        context['gemini'] = get_unexpected_twist(recipe_name, ingredients)
         return context
 
 
