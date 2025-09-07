@@ -1,6 +1,7 @@
 """Test module for API."""
 from django.contrib.auth.models import User
 from django.urls import reverse
+from unittest.mock import patch
 
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -25,6 +26,14 @@ class RecipeAPITest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: user, token, ingredients, and recipes."""
+        cls.patcher = patch(
+            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
+            return_value={"twist_ingredient": "ingredient",
+                          "reason": "reason",
+                          "how_to_use": "how_to_use"})
+        cls.mock_twist = cls.patcher.start()
+        cls.addClassCleanup(cls.patcher.stop)
+
         cls.user = User.objects.create_user(username='testuser',
                                             password='testpass')
         cls.token = Token.objects.create(user=cls.user)
@@ -159,6 +168,14 @@ class RecipeIngredientSerializerTest(APITestCase):
 
     def setUp(self):
         """Set up test recipe and ingredient for use in all tests."""
+        self.patcher = patch(
+            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
+            return_value={"twist_ingredient": "ingredient",
+                          "reason": "reason",
+                          "how_to_use": "how_to_use"})
+        self.mock_twist = self.patcher.start()
+        self.addClassCleanup(self.patcher.stop)
+
         self.user = User.objects.create_user(username='testuser',
                                              password='testpass')
         self.ingredient = Ingredient.objects.create(name="Flour")
@@ -214,6 +231,14 @@ class RecipeSerializerTest(APITestCase):
 
     def setUp(self):
         """Set up ingredient and recipe with a related RecipeIngredient."""
+        self.patcher = patch(
+            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
+            return_value={"twist_ingredient": "ingredient",
+                          "reason": "reason",
+                          "how_to_use": "how_to_use"})
+        self.mock_twist = self.patcher.start()
+        self.addClassCleanup(self.patcher.stop)
+
         self.user = User.objects.create_user(username='testuser',
                                              password='testpass')
         self.client.force_authenticate(self.user)  # Authenticate client
@@ -252,7 +277,10 @@ class RecipeSerializerTest(APITestCase):
             "name": self.recipe.name,
             "instructions": self.recipe.instructions,
             "cooking_time": self.recipe.cooking_time,
-            "owner": self.user.id
+            "owner": self.user.id,
+            "elevating_twist": {"twist_ingredient": "ingredient",
+                                "reason": "reason",
+                                "how_to_use": "how_to_use"}
         }
         self.assertEqual(serializer.data, expected_data)
 

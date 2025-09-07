@@ -3,6 +3,7 @@ from django.db import connection
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
+from unittest.mock import patch
 
 from django_recipe_generator.recipe_generator import views
 from django_recipe_generator.recipe_generator.forms import (
@@ -28,6 +29,14 @@ class RecipeDetailViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients and recipes, urls."""
+        cls.patcher = patch(
+            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
+            return_value={"twist_ingredient": "ingredient",
+                          "reason": "reason",
+                          "how_to_use": "how_to_use"})
+        cls.mock_twist = cls.patcher.start()
+        cls.addClassCleanup(cls.patcher.stop)
+
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
         cls.user = User.objects.create_user(username='testuser',
@@ -152,6 +161,14 @@ class RecipeDeleteViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients and recipes, urls."""
+        cls.patcher = patch(
+            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
+            return_value={"twist_ingredient": "ingredient",
+                          "reason": "reason",
+                          "how_to_use": "how_to_use"})
+        cls.mock_twist = cls.patcher.start()
+        cls.addClassCleanup(cls.patcher.stop)
+
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
         cls.user = User.objects.create_user(username='testuser',
@@ -209,6 +226,14 @@ class RecipeCreateViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients, forms, recipe data, urls."""
+        cls.patcher = patch(
+            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
+            return_value={"twist_ingredient": "ingredient",
+                          "reason": "reason",
+                          "how_to_use": "how_to_use"})
+        cls.mock_twist = cls.patcher.start()
+        cls.addClassCleanup(cls.patcher.stop)
+
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
         cls.user = User.objects.create_user(username='testuser',
@@ -295,6 +320,14 @@ class RecipeEditViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients,recipe, forms, urls."""
+        cls.patcher = patch(
+            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
+            return_value={"twist_ingredient": "ingredient",
+                          "reason": "reason",
+                          "how_to_use": "how_to_use"})
+        cls.mock_twist = cls.patcher.start()
+        cls.addClassCleanup(cls.patcher.stop)
+
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
         cls.user = User.objects.create_user(username='testuser',
@@ -394,6 +427,14 @@ class RecipeListViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients, recipes, urls."""
+        cls.patcher = patch(
+            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
+            return_value={"twist_ingredient": "ingredient",
+                          "reason": "reason",
+                          "how_to_use": "how_to_use"})
+        cls.mock_twist = cls.patcher.start()
+        cls.addClassCleanup(cls.patcher.stop)
+
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
         cls.ingredient3 = Ingredient.objects.create(name="Banana")
