@@ -2,6 +2,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.contrib.auth.models import User
+from unittest.mock import patch
 
 from django_recipe_generator.recipe_generator.models import (
     Ingredient,
@@ -16,6 +17,14 @@ class RecipeModelTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients, recipes, macro."""
+        cls.patcher = patch(
+            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
+            return_value={"twist_ingredient": "ingredient",
+                          "reason": "reason",
+                          "how_to_use": "how_to_use"})
+        cls.mock_twist = cls.patcher.start()
+        cls.addClassCleanup(cls.patcher.stop)  # automatic cleanup after all tests
+
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
         cls.ingredient3 = Ingredient.objects.create(name="Banana")
@@ -46,6 +55,11 @@ class RecipeModelTests(TestCase):
     def test_model_creation(self):
         """Test that recipes are created correctly."""
         self.assertEqual(Recipe.objects.count(), 2)
+        self.assertEqual(self.recipe.elevating_twist,
+                         {"twist_ingredient": "ingredient",
+                          "reason": "reason",
+                          "how_to_use": "how_to_use"})
+        self.assertTrue(self.mock_twist.called)
 
     def test_str_representation(self):
         """Test string representation of Recipe model."""
