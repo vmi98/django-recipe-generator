@@ -10,8 +10,8 @@ def get_unexpected_twist(title, ingredients):
         "type": "object",
         "properties": {
             "twist_ingredient": {"type": "string"},
-            "reason": {"type": ["string", "null"]},
-            "how_to_use": {"type": ["string", "null"]}
+            "reason": {"type": "string"},
+            "how_to_use": {"type": "string"}
         },
         "required": ["twist_ingredient", "reason", "how_to_use"]
     }
@@ -27,7 +27,7 @@ def get_unexpected_twist(title, ingredients):
     2. Suggest ONE Ingredient: Propose a single ingredient that is unexpected
     for this specific dish. Strive for originality and variety. Avoid suggesting
     the same ingredient for different recipes unless it is truly the best fit.
-    3. Ensure Feasibility: The ingredient must be reasonably obtainable by a home cook 
+    3. Ensure Feasibility: The ingredient must be reasonably obtainable by a home cook
     (e.g.,available at a well-stocked grocery store,
     not a highly specialized or rare item).
     4. Provide Justification:Briefly explain why this ingredient would elevate the dish.
@@ -43,9 +43,10 @@ def get_unexpected_twist(title, ingredients):
     - Do not include any text outside of the JSON object.
     - Do not generate an ingredient that is already in the provided ingredients list.
     - Do not suggest an ingredient if the dish title or ingredients are nonsensical
-    or unrealistic. In such a case, respond with a JSON object that has `null` values
-    for "how_to_use"  and "reason" and "The provided dish title or ingredients
-    are not realistic." value for "twist_ingredient".
+    or unrealistic. In such a case, respond with a JSON object that has
+    `no suggestion` values for "how_to_use"  and "reason" and
+    "The provided dish title or ingredients are not realistic." value
+    for "twist_ingredient".
 
     """
     try:
