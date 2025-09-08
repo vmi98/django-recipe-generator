@@ -40,6 +40,7 @@
             {% for field in form %}
             <div class="field">
               {{ field.label_tag }}
+              {{ field.help_text }}
 
               <div class="control">
                 {{ field }}

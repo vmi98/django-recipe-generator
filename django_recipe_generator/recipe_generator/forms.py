@@ -39,7 +39,7 @@ class RecipeForm(forms.ModelForm):
         }
 
     cooking_time = forms.IntegerField(
-        help_text="in minutes (e.g., 30 minutes)"
+        help_text="in minutes"
     )
 
     def __init__(self, *args, **kwargs):
