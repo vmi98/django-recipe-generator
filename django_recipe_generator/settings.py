@@ -115,6 +115,7 @@ TEMPLATES = [
     },
 ]
 
+LOGIN_URL = '/recipe_generator/accounts/login/'
 LOGIN_REDIRECT_URL = "index"
 SESSION_COOKIE_SECURE = False         # set True in production (HTTPS)
 CSRF_COOKIE_SECURE = False            # set True in production
