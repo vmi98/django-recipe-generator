@@ -13,6 +13,7 @@ A Django-based web application for managing and searching recipes based on recip
 - Dual interface: Django templates and DRF API
 - API endpoints are secured using Token Authentication (DRF), HTML routes are secured using Session Authentication.
 - Access Control: read access - open to all users, create access - restricted to authenticated users. Recipes: update/delete - only the recipe creator or admin users. Ingredients: update/delete - restricted to admin users only.
+- Gemini API integration: to each recipe gemini recommends special ingredient to elevate the dish and explain reason behaind it and how to use it (generates after saving new recipe or editing name or ingredients of existing one)
 
 ## Tech Stack
 
@@ -48,6 +49,8 @@ Available endpoints:
 
     POST    /api-token-auth/        - Obtain authentication token
     POST    /register/              - Register a new user
+    GET     /docs/                  - Swagger UI
+    GET     /schema/                - OpenAPI schema
 
 Authentication: TokenAuthentication
 
@@ -59,43 +62,82 @@ curl --location 'https://django-recipe-generator.onrender.com/recipe_generator/a
 --data '{
     "ingredients": [
         {
-            "ingredient": 6,
-            "quantity": "90 g"
+            "ingredient": 1,
+            "quantity": "500 g"
         },
         {
-            "ingredient": 8,
-            "quantity": "50 g"
+            "ingredient": 2,
+            "quantity": "200 g"
+        },
+        {
+            "ingredient": 3,
+            "quantity": "300 ml"
+        },
+        {
+            "ingredient": 4,
+            "quantity": "3 cloves"
+        },
+        {
+            "ingredient": 5,
+            "quantity": "1 tbsp"
         }
     ],
-    "name": "Salad",
-    "instructions": "Put ingredients together, mix",
-    "cooking_time": 5
+    "name": "Chicken Tikka Masalaa",
+    "instructions": "Marinate chicken. Grill chicken. Prepare sauce. Combine and simmer",
+    "cooking_time": 40
 }
 '
 ```
 Example Response (JSON):
 ```
 {
-    "id": 53,
+    "id": 1,
     "ingredients": [
         {
             "ingredient": {
-                "id": 6,
-                "name": "Cucumber"
+                "id": 1,
+                "name": "chicken breast"
             },
-            "quantity": "90 g"
+            "quantity": "500g"
         },
         {
             "ingredient": {
-                "id": 8,
-                "name": "Tomato"
+                "id": 2,
+                "name": "yogurt"
             },
-            "quantity": "50 g"
+            "quantity": "200g"
+        },
+        {
+            "ingredient": {
+                "id": 3,
+                "name": "tomato sauce"
+            },
+            "quantity": "300ml"
+        },
+        {
+            "ingredient": {
+                "id": 4,
+                "name": "garlic"
+            },
+            "quantity": "3 cloves"
+        },
+        {
+            "ingredient": {
+                "id": 5,
+                "name": "ginger"
+            },
+            "quantity": "1 tbsp"
         }
     ],
-    "name": "Salad",
-    "instructions": "Put ingredients together, mix",
-    "cooking_time": 5
+    "name": "Chicken Tikka Masalaa",
+    "instructions": "Marinate chicken. Grill chicken. Prepare sauce. Combine and simmer",
+    "cooking_time": 40,
+    "elevating_twist": {
+        "reason": "It adds a subtle earthy depth, a hint of bitterness to balance the richness, and a dark, complex umami note that complements the tomato and spice base without making the dish taste like chocolate. It deepens the overall complexity.",
+        "how_to_use": "Whisk 1-2 teaspoons of unsweetened cocoa powder into the simmering tomato sauce base. Allow it to dissolve completely and meld with the other flavors for 5-10 minutes before adding the chicken.",
+        "twist_ingredient": "Unsweetened Cocoa Powder"
+    },
+    "owner": 1
 }
 ```
 
