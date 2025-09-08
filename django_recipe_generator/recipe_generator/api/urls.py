@@ -16,15 +16,16 @@ Available endpoints:
     PUT     /api/ingredients/<id>/  - Update an ingredient
     DELETE  /api/ingredients/<id>/  - Delete an ingredient
 
-    GET     /recipe-form-data/      - Retrieve form-related data
-                                    (provides available ingredients)
     POST    /api-token-auth/        - Obtain authentication token
     POST    /register/              - Register a new user
+    GET     /docs/                  - Swagger UI
+    GET     /schema/                - OpenAPI schema
 """
 from django.urls import path
 from django.urls import include
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.routers import DefaultRouter
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from django_recipe_generator.recipe_generator.api import views
 
 
@@ -39,5 +40,7 @@ urlpatterns = [
         path('', include(router.urls)),
         path('api-token-auth/', obtain_auth_token, name='api-token-auth'),
         path('register/', views.RegisterView.as_view(), name='register'),
+        path('schema/', SpectacularAPIView.as_view(), name='schema'),
+        path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     ])),
 ]

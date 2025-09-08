@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django_recipe_generator.recipe_generator',
     'rest_framework',
     'rest_framework.authtoken',
-    'model_utils'
+    'model_utils',
+    'drf_spectacular'
 ]
 
 MIDDLEWARE = [
@@ -184,6 +185,11 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
 }
-
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'django-recipe-generator',
+    'VERSION': '0.1.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
 INTERNAL_IPS = os.getenv('INTERNAL_IPS', [])
