@@ -35,6 +35,8 @@ def get_unexpected_twist(title, ingredients):
     The explanation should be concise.
     5. Strictly JSON Output: Your response must be a valid JSON object
     matching the following schema. No extra text, no preamble, no markdown.
+    6. In your JSON Output values for "how_to_use", "reason", "twist_ingredient" must
+    be in a language of provided Title and Ingredients.
 
     JSON Schema: {schema}
 
