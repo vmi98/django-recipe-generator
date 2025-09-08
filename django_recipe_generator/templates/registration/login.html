@@ -38,6 +38,7 @@
       {{ form.password.label_tag }} {{ form.password }}
       <input type="hidden" name="next" value="{{ next }}">
       <button type="submit" class="button is-pastel">Login</button>
+      <a href="{% url 'register_html' %}" class="button is-pastel">Register</a>
     </form>
   </div>
   </div>
