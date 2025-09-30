@@ -10,6 +10,9 @@ from rest_framework.decorators import action
 from rest_framework.reverse import reverse
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import permission_classes
+from dj_rest_auth.registration.views import SocialLoginView
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 
 from django_recipe_generator.recipe_generator.models import Recipe, Ingredient
 from django_recipe_generator.recipe_generator.api.permissions import (
@@ -119,3 +122,10 @@ class RegisterView(generics.CreateAPIView):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+@permission_classes([AllowAny])
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+    callback_url = 'http://localhost:8000/accounts/google/login/callback/'
+    client_class = OAuth2Client
