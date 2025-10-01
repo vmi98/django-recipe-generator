@@ -127,5 +127,5 @@ class RegisterView(generics.CreateAPIView):
 @permission_classes([AllowAny])
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
-    callback_url = 'http://localhost:8000/accounts/google/login/callback/'
+    callback_url = 'http://localhost:8000/recipe_generator/accounts/google/login/callback/'
     client_class = OAuth2Client
