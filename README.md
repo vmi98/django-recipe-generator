@@ -11,7 +11,8 @@ A Django-based web application for managing and searching recipes based on recip
   - Cooking time
   - Excluded ingredients
 - Dual interface: Django templates and DRF API
-- API endpoints are secured using Token Authentication (DRF), HTML routes are secured using Session Authentication.
+- API endpoints are secured using JWT Authentication (DRF), HTML routes are secured using Session Authentication.
+- Google OAuth 2.0 is implemented
 - Access Control: read access - open to all users, create access - restricted to authenticated users. Recipes: update/delete - only the recipe creator or admin users. Ingredients: update/delete - restricted to admin users only.
 - Gemini API integration: to each recipe gemini recommends special ingredient to elevate the dish and explain reason behaind it and how to use it (generates after saving new recipe or editing name or ingredients of existing one)
 
@@ -22,6 +23,7 @@ A Django-based web application for managing and searching recipes based on recip
 - Django REST Framework
 - PostgreSQL
 - Django ORM
+- Allauth + dj-rest-auth + simple JWT
 - unittest (testing)
 - Docker
 - Gunicorn (production server)
@@ -32,27 +34,9 @@ A Django-based web application for managing and searching recipes based on recip
 ## API
 Access via recipe_generator/api/
 
-Available endpoints:
+Available endpoints via recipe_generator/api/schema or recipe_generator/api/docs/ 
 
-    GET     /api/recipes/           - List all recipes
-    POST    /api/recipes/           - Create a recipe
-    GET     /api/recipes/<id>/      - Retrieve a recipe
-    PUT     /api/recipes/<id>/      - Update a recipe
-    DELETE  /api/recipes/<id>/      - Delete a recipe
-    POST    /filter_search/         - Filter/search recipes
-
-    GET     /api/ingredients/       - List all ingredients
-    POST    /api/ingredients/       - Create an ingredients
-    GET     /api/ingredients/<id>/  - Retrieve an ingredient
-    PUT     /api/ingredients/<id>/  - Update an ingredient
-    DELETE  /api/ingredients/<id>/  - Delete an ingredient
-
-    POST    /api-token-auth/        - Obtain authentication token
-    POST    /register/              - Register a new user
-    GET     /docs/                  - Swagger UI
-    GET     /schema/                - OpenAPI schema
-
-Authentication: TokenAuthentication
+Authentication: JWT Authentication
 
 Example Request for adding new recipe (cURL):
 ```
@@ -137,7 +121,6 @@ Example Response (JSON):
         "how_to_use": "Whisk 1-2 teaspoons of unsweetened cocoa powder into the simmering tomato sauce base. Allow it to dissolve completely and meld with the other flavors for 5-10 minutes before adding the chicken.",
         "twist_ingredient": "Unsweetened Cocoa Powder"
     },
-    "owner": 1
 }
 ```
 
@@ -146,6 +129,7 @@ Example Response (JSON):
 Set the following variables in your .env file
 ```
 SECRET_KEY=your-secret-key
+GEMINI_API_KEY=your-secret-key
 DB_NAME=recipegenerator 
 DB_USER=your_user
 DB_PASSWORD=your_password
@@ -159,6 +143,11 @@ DJANGO_SUPERUSER_EMAIL=your_user_email@example.com
 DJANGO_SUPERUSER_PASSWORD=your_password
 
 DJANGO_ALLOWED_HOSTS=example.com,www.example.com
+
+# for google auth
+CLIENT_ID=client_id
+CLIENT_SECRET=secret
+CALLBACK_URL=url
 ```
 
 ```
