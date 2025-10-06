@@ -8,7 +8,8 @@ Includes:
 """
 from django.urls import path, include
 from django.conf import settings
-from django.contrib.auth import views as auth_views
+from django.contrib import admin
+from allauth.account.decorators import secure_admin_login
 from django_recipe_generator.recipe_generator import views
 
 
@@ -49,16 +50,14 @@ urlpatterns = [
     path('', views.index_view, name='index'),
     path('recipes/', include(recipe_patterns)),
     path('ingredients/', include(ingredient_patterns)),
-    path(
-        "accounts/logout/",
-        auth_views.LogoutView.as_view(template_name="logged_out.html"),
-        name="logout"
-    ),
-    path("accounts/", include("django.contrib.auth.urls")),  # accounts/login/ accounts/logout/
-    path("register/", views.register, name="register_html"),
+    path("accounts/", include("allauth.urls")),  # for social login
     # API endpoints
     path('api/', include('django_recipe_generator.recipe_generator.api.urls')),
 ]
+
+# allauth admin
+admin.autodiscover()
+admin.site.login = secure_admin_login(admin.site.login)
 
 # Enable Django Debug Toolbar in development mode
 if settings.DEBUG:

@@ -135,8 +135,8 @@ TEMPLATES = [
 
 LOGIN_URL = '/recipe_generator/accounts/login/'
 LOGIN_REDIRECT_URL = "index"
-SESSION_COOKIE_SECURE = True        # set True in production (HTTPS)
-CSRF_COOKIE_SECURE = True            # set True in production
+SESSION_COOKIE_SECURE = True         # set True in production (HTTPS)
+CSRF_COOKIE_SECURE = True           # set True in production
 SESSION_COOKIE_AGE = 1209600          # 2 weeks (default)
 
 WSGI_APPLICATION = 'django_recipe_generator.wsgi.application'
@@ -227,7 +227,27 @@ REST_AUTH = {'USE_JWT': True,
              'JWT_AUTH_REFRESH_COOKIE': 'my-refresh-token', }
 
 # allauth
-ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
-ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_SIGNUP_FIELDS = ['username*', "email*", "password1*", "password2*"]
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_RATE_LIMITS = {
+    'login_failed': '5/1h',
+    'login_failed_by_username': '3/1h',
+
+    'signup': '10/1h',
+
+    'password_reset': '3/1h',
+    'password_reset_email': '3/1h',
+
+    'confirm_email': '3/1h',
+}
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "AUTH_PARAMS": {
+            "prompt": "select_account"  # or "consent select_account"
+        }
+    }
+}
