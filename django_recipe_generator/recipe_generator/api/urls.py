@@ -21,15 +21,11 @@ Available endpoints:
     GET     /docs/                  - Swagger UI
     GET     /schema/                - OpenAPI schema
 
-    POST /auth/login/ — логин по email + пароль
-
-POST /auth/logout/ — разлогин
-
-POST /auth/registration/ — регистрация
-
-POST /auth/jwt/refresh/ — обновление токена
-
-POST /auth/jwt/verify/ — проверка токена
+    POST    /auth/login/            - Login
+    POST    /auth/logout/           - Logout
+    POST    /auth/registration/     - Register
+    POST    /auth/jwt/refresh/      - Refresh token
+    POST    /auth/jwt/verify/       - Verify token
 """
 from django.urls import path
 from django.urls import include
