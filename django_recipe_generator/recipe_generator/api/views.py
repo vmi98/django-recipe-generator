@@ -3,6 +3,8 @@
 Views for recipe creation, editing, deletion,
 listing, and detail display, user registration and token obtaining.
 """
+import os
+from dotenv import load_dotenv
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework import generics
@@ -26,7 +28,7 @@ from django_recipe_generator.recipe_generator.api.serializers import (
 from django_recipe_generator.services.ingredients import annotate_recipes
 from django.db.models import Prefetch
 from django.contrib.auth.models import User
-
+load_dotenv()
 
 class RecipeViewSet(viewsets.ModelViewSet):
     """ViewSet for listing, creating, and managing recipes."""
@@ -127,5 +129,5 @@ class RegisterView(generics.CreateAPIView):
 @permission_classes([AllowAny])
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
-    callback_url = 'http://localhost:8000/recipe_generator/accounts/google/login/callback/'
+    callback_url = os.getenv('CALLBACK_URL')
     client_class = OAuth2Client
