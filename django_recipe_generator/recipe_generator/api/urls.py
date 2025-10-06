@@ -1,32 +1,7 @@
 """
 URL configuration for the Recipe Generator API.
-
-Available endpoints:
-
-    GET     /api/recipes/           - List all recipes
-    POST    /api/recipes/           - Create a recipe
-    GET     /api/recipes/<id>/      - Retrieve a recipe
-    PUT     /api/recipes/<id>/      - Update a recipe
-    DELETE  /api/recipes/<id>/      - Delete a recipe
-    POST    /filter_search/         - Filter/search recipes
-
-    GET     /api/ingredients/       - List all ingredients
-    POST    /api/ingredients/       - Create an ingredients
-    GET     /api/ingredients/<id>/  - Retrieve an ingredient
-    PUT     /api/ingredients/<id>/  - Update an ingredient
-    DELETE  /api/ingredients/<id>/  - Delete an ingredient
-
-    POST    /api-token-auth/        - Obtain authentication token
-    POST    /register/              - Register a new user
-    GET     /docs/                  - Swagger UI
-    GET     /schema/                - OpenAPI schema
-
-    POST    /auth/login/            - Login
-    POST    /auth/logout/           - Logout
-    POST    /auth/registration/     - Register
-    POST    /auth/jwt/refresh/      - Refresh token
-    POST    /auth/jwt/verify/       - Verify token
 """
+
 from django.urls import path
 from django.urls import include
 from rest_framework.authtoken.views import obtain_auth_token

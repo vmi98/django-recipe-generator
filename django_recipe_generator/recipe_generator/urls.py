@@ -8,8 +8,6 @@ Includes:
 """
 from django.urls import path, include
 from django.conf import settings
-from django.contrib import admin
-from allauth.account.decorators import secure_admin_login
 from django_recipe_generator.recipe_generator import views
 
 
@@ -54,10 +52,6 @@ urlpatterns = [
     # API endpoints
     path('api/', include('django_recipe_generator.recipe_generator.api.urls')),
 ]
-
-# allauth admin
-admin.autodiscover()
-admin.site.login = secure_admin_login(admin.site.login)
 
 # Enable Django Debug Toolbar in development mode
 if settings.DEBUG:

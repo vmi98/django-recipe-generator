@@ -7,10 +7,14 @@ This module defines the URL patterns for the project, including:
 - The Django admin interface.
 """
 from django.contrib import admin
+from allauth.account.decorators import secure_admin_login
 from django.urls import path
 from django.urls import include
 from django.views.generic import TemplateView
 
+# allauth admin
+admin.autodiscover()
+admin.site.login = secure_admin_login(admin.site.login)
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name="project_page.html")),
