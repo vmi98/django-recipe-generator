@@ -73,12 +73,15 @@
 <body>
   <div class="top-bar">
     {% if user.is_authenticated %}
-      <form method="post" action="{% url 'logout' %} " style="margin: 0;">{% csrf_token %}
+      <form method="post" action="{% url 'account_logout' %} " style="margin: 0;">{% csrf_token %}
         <button type="submit" class="button is-light">Logout</button>
       </form>
+      <div>
+        <i>You logged in as <b>{{ user.username }}</b></i>
+      </div>
     {% else %}
-      <a href="{% url 'login' %}" class="button is-pastel">Login</a>
-      <a href="{% url 'register_html' %}" class="button is-pastel">Register</a>
+      <a href="{% url 'account_login' %}" class="button is-pastel">Login</a>
+      <a href="{% url 'account_signup' %}" class="button is-pastel">Register</a>
     {% endif %}
   </div>
 
