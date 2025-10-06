@@ -64,6 +64,8 @@
   </style>
 </head>
 <body>
+<section class="section">
+<div class="container">
   <div class="pastel-box">
     <h1 class="title is-3">Create an Account</h1>
     <form method="post">
@@ -79,9 +81,12 @@
       {% endfor %}
       <button type="submit" class="button is-pastel">Register</button>
     </form>
+    <a href="/recipe_generator/accounts/google/login/" class="button is-pastel">Login with Google</a>
     <div class="bottom-link">
-      Already have an account? <a href="{% url 'login' %}">Login here</a>.
+      Already have an account? <a href="{% url 'account_login' %}">Login here</a>.
     </div>
   </div>
+</div>
+</section>
 </body>
 </html>
