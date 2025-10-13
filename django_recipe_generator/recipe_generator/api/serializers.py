@@ -1,6 +1,7 @@
 """Serializers for recipes, ingredients, and user management."""
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from django.db import transaction
 from ..models import Recipe, Ingredient, RecipeIngredient
 
 
@@ -70,7 +71,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = '__all__'
-        read_only_fields = ['id', 'owner', 'elevating_twist']
+        read_only_fields = ['id', 'owner', 'elevating_twist', 'ai_generation_status']
 
     def to_representation(self, instance):
         """Dynamically adds matching/missing ingredient fields.
@@ -112,18 +113,26 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredients_data = validated_data.pop('recipeingredient_set')
         request = self.context.get('request')
 
-        recipe = Recipe.objects.create(
-            owner=request.user if request else None,
-            **validated_data
-        )
-
-        for ingredient_data in ingredients_data:
-            RecipeIngredient.objects.create(
-                recipe=recipe,
-                ingredient=ingredient_data['ingredient'],
-                quantity=ingredient_data['quantity']
+        with transaction.atomic():
+            recipe = Recipe.objects.create(
+                owner=request.user if request else None,
+                **validated_data
             )
 
+            # triggers AI via m2m_changed signal
+            ingredient_ids = [ing_data['ingredient'] for ing_data in ingredients_data]
+            recipe.ingredients.add(*ingredient_ids)
+
+            # Create RecipeIngredient through model objects with quantities
+            recipe_ingredients = [
+                RecipeIngredient(
+                    recipe=recipe,
+                    ingredient_id=ing_data['ingredient'],
+                    quantity=ing_data['quantity']
+                )
+                for ing_data in ingredients_data
+            ]
+            RecipeIngredient.objects.bulk_create(recipe_ingredients)
         return recipe
 
     def update(self, instance, validated_data):
@@ -134,32 +143,23 @@ class RecipeSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
         instance.save()
 
-        # Handle ingredients only if provided
         if ingredients_data is not None:
-            updated_ingredient_ids = []
+            with transaction.atomic():
+                ingredient_ids = [ing_data['ingredient'] for ing_data in ingredients_data]
 
-            for ingredient_data in ingredients_data:
-                ingredient = ingredient_data['ingredient']
-                quantity = ingredient_data['quantity']
-                updated_ingredient_ids.append(ingredient.id)
+                # triggers m2m_changed signal with 'post_clear' + 'post_add'
+                instance.ingredients.set(ingredient_ids)
 
-                try:
-                    recipe_ingredient = instance.recipeingredient_set.get(
-                        ingredient=ingredient
-                    )
-                    recipe_ingredient.quantity = quantity
-                    recipe_ingredient.save()
-                except RecipeIngredient.DoesNotExist:
-                    RecipeIngredient.objects.create(
+                instance.recipeingredient_set.all().delete()
+                recipe_ingredients = [
+                    RecipeIngredient(
                         recipe=instance,
-                        ingredient=ingredient,
-                        quantity=quantity
+                        ingredient_id=ing_data['ingredient'],
+                        quantity=ing_data['quantity']
                     )
-
-            instance.recipeingredient_set.exclude(
-                ingredient_id__in=updated_ingredient_ids
-            ).delete()
-
+                    for ing_data in ingredients_data
+                ]
+                RecipeIngredient.objects.bulk_create(recipe_ingredients)
         return instance
 
 
