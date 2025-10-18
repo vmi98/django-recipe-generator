@@ -26,13 +26,10 @@ class RecipeAPITest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: user, token, ingredients, and recipes."""
-        cls.patcher = patch(
-            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
-            return_value={"twist_ingredient": "ingredient",
-                          "reason": "reason",
-                          "how_to_use": "how_to_use"})
-        cls.mock_twist = cls.patcher.start()
-        cls.addClassCleanup(cls.patcher.stop)
+        cls.mock_celery = patch(
+            "django_recipe_generator.recipe_generator.signals.generate_ai_twist.delay"
+        ).start()
+        cls.addClassCleanup(patch.stopall)
 
         cls.user = User.objects.create_user(username='testuser',
                                             password='testpass')
@@ -110,8 +107,11 @@ class AuthAPITest(APITestCase):
 
     def test_register(self):
         """Test user registration via API endpoint."""
-        url = reverse('register')
-        data = {'username': 'testuser', 'password': 'testpass'}
+        url = reverse('rest_register')
+        data = {"username": "test",
+                "email": "user@example.com",
+                "password1": "securepassword123",
+                "password2": "securepassword123"}
 
         self.client.credentials()
 
@@ -168,13 +168,10 @@ class RecipeIngredientSerializerTest(APITestCase):
 
     def setUp(self):
         """Set up test recipe and ingredient for use in all tests."""
-        self.patcher = patch(
-            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
-            return_value={"twist_ingredient": "ingredient",
-                          "reason": "reason",
-                          "how_to_use": "how_to_use"})
-        self.mock_twist = self.patcher.start()
-        self.addClassCleanup(self.patcher.stop)
+        self.mock_celery = patch(
+            "django_recipe_generator.recipe_generator.signals.generate_ai_twist.delay"
+        ).start()
+        self.addClassCleanup(patch.stopall)
 
         self.user = User.objects.create_user(username='testuser',
                                              password='testpass')
@@ -231,13 +228,10 @@ class RecipeSerializerTest(APITestCase):
 
     def setUp(self):
         """Set up ingredient and recipe with a related RecipeIngredient."""
-        self.patcher = patch(
-            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
-            return_value={"twist_ingredient": "ingredient",
-                          "reason": "reason",
-                          "how_to_use": "how_to_use"})
-        self.mock_twist = self.patcher.start()
-        self.addClassCleanup(self.patcher.stop)
+        self.mock_celery = patch(
+            "django_recipe_generator.recipe_generator.signals.generate_ai_twist.delay"
+        ).start()
+        self.addClassCleanup(patch.stopall)
 
         self.user = User.objects.create_user(username='testuser',
                                              password='testpass')
@@ -277,10 +271,8 @@ class RecipeSerializerTest(APITestCase):
             "name": self.recipe.name,
             "instructions": self.recipe.instructions,
             "cooking_time": self.recipe.cooking_time,
-            "owner": self.user.id,
-            "elevating_twist": {"twist_ingredient": "ingredient",
-                                "reason": "reason",
-                                "how_to_use": "how_to_use"}
+            "elevating_twist": None,
+            "owner": self.user.id
         }
         self.assertEqual(serializer.data, expected_data)
 

@@ -29,13 +29,10 @@ class RecipeDetailViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients and recipes, urls."""
-        cls.patcher = patch(
-            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
-            return_value={"twist_ingredient": "ingredient",
-                          "reason": "reason",
-                          "how_to_use": "how_to_use"})
-        cls.mock_twist = cls.patcher.start()
-        cls.addClassCleanup(cls.patcher.stop)
+        cls.mock_celery = patch(
+            "django_recipe_generator.recipe_generator.signals.generate_ai_twist.delay"
+        ).start()
+        cls.addClassCleanup(patch.stopall)
 
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
@@ -161,13 +158,10 @@ class RecipeDeleteViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients and recipes, urls."""
-        cls.patcher = patch(
-            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
-            return_value={"twist_ingredient": "ingredient",
-                          "reason": "reason",
-                          "how_to_use": "how_to_use"})
-        cls.mock_twist = cls.patcher.start()
-        cls.addClassCleanup(cls.patcher.stop)
+        cls.mock_celery = patch(
+            "django_recipe_generator.recipe_generator.signals.generate_ai_twist.delay"
+        ).start()
+        cls.addClassCleanup(patch.stopall)
 
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
@@ -226,13 +220,10 @@ class RecipeCreateViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients, forms, recipe data, urls."""
-        cls.patcher = patch(
-            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
-            return_value={"twist_ingredient": "ingredient",
-                          "reason": "reason",
-                          "how_to_use": "how_to_use"})
-        cls.mock_twist = cls.patcher.start()
-        cls.addClassCleanup(cls.patcher.stop)
+        cls.mock_celery = patch(
+            "django_recipe_generator.recipe_generator.signals.generate_ai_twist.delay"
+        ).start()
+        cls.addClassCleanup(patch.stopall)
 
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
@@ -250,11 +241,9 @@ class RecipeCreateViewTests(TestCase):
             'recipeingredient_set-INITIAL_FORMS': '0',
             'recipeingredient_set-MIN_NUM_FORMS': '0',
             'recipeingredient_set-MAX_NUM_FORMS': '1000',
-            'recipeingredient_set-0-ingredient':
-                cls.ingredient1.pk,
+            'recipeingredient_set-0-ingredient': cls.ingredient1.pk,
             'recipeingredient_set-0-quantity': '200g',
-            'recipeingredient_set-1-ingredient':
-                cls.ingredient2.pk,
+            'recipeingredient_set-1-ingredient': cls.ingredient2.pk,
             'recipeingredient_set-1-quantity': '100g'}
 
     def test_view_returns_correct_template(self):
@@ -274,6 +263,7 @@ class RecipeCreateViewTests(TestCase):
         response = self.client.post(self.create_url, data=self.valid_data)
 
         recipe = Recipe.objects.get(name='test_pizza')
+
         self.assertRedirects(
             response,
             reverse('recipe_detail', kwargs={'pk': recipe.pk})
@@ -320,13 +310,10 @@ class RecipeEditViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients,recipe, forms, urls."""
-        cls.patcher = patch(
-            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
-            return_value={"twist_ingredient": "ingredient",
-                          "reason": "reason",
-                          "how_to_use": "how_to_use"})
-        cls.mock_twist = cls.patcher.start()
-        cls.addClassCleanup(cls.patcher.stop)
+        cls.mock_celery = patch(
+            "django_recipe_generator.recipe_generator.signals.generate_ai_twist.delay"
+        ).start()
+        cls.addClassCleanup(patch.stopall)
 
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
@@ -336,7 +323,7 @@ class RecipeEditViewTests(TestCase):
             name="test_pizza",
             instructions="test instructions",
             cooking_time=15,
-            owner= cls.user
+            owner=cls.user
         )
         cls.recipe.ingredients.set([cls.ingredient1, cls.ingredient2])
         cls.edit_data = {
@@ -427,13 +414,10 @@ class RecipeListViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients, recipes, urls."""
-        cls.patcher = patch(
-            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
-            return_value={"twist_ingredient": "ingredient",
-                          "reason": "reason",
-                          "how_to_use": "how_to_use"})
-        cls.mock_twist = cls.patcher.start()
-        cls.addClassCleanup(cls.patcher.stop)
+        cls.mock_celery = patch(
+            "django_recipe_generator.recipe_generator.signals.generate_ai_twist.delay"
+        ).start()
+        cls.addClassCleanup(patch.stopall)
 
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")

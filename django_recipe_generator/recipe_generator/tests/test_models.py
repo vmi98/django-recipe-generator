@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from unittest.mock import patch
 
+from django_recipe_generator.recipe_generator.tasks import generate_ai_twist
 from django_recipe_generator.recipe_generator.models import (
     Ingredient,
     Macro,
@@ -17,13 +18,10 @@ class RecipeModelTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Set up initial test data: ingredients, recipes, macro."""
-        cls.patcher = patch(
-            "django_recipe_generator.recipe_generator.models.get_unexpected_twist",
-            return_value={"twist_ingredient": "ingredient",
-                          "reason": "reason",
-                          "how_to_use": "how_to_use"})
-        cls.mock_twist = cls.patcher.start()
-        cls.addClassCleanup(cls.patcher.stop)  # automatic cleanup after all tests
+        cls.mock_celery = patch(
+            "django_recipe_generator.recipe_generator.signals.generate_ai_twist.delay"
+        ).start()
+        cls.addClassCleanup(patch.stopall)  # automatic cleanup after all tests
 
         cls.ingredient1 = Ingredient.objects.create(name="Salt")
         cls.ingredient2 = Ingredient.objects.create(name="Pepper")
@@ -55,11 +53,7 @@ class RecipeModelTests(TestCase):
     def test_model_creation(self):
         """Test that recipes are created correctly."""
         self.assertEqual(Recipe.objects.count(), 2)
-        self.assertEqual(self.recipe.elevating_twist,
-                         {"twist_ingredient": "ingredient",
-                          "reason": "reason",
-                          "how_to_use": "how_to_use"})
-        self.assertTrue(self.mock_twist.called)
+        self.assertTrue(self.mock_celery.called)
 
     def test_str_representation(self):
         """Test string representation of Recipe model."""
@@ -117,3 +111,104 @@ class RecipeModelTests(TestCase):
             exclude_ingredients=[self.ingredient1.id]
         )
         self.assertEqual(results.count(), 0)
+
+
+class AITwistTests(TestCase):
+    """Test of getting ai twist behavior."""
+    def setUp(self):
+        self.mock_twist = patch(
+            "django_recipe_generator.recipe_generator.tasks.get_unexpected_twist",
+            return_value={"twist_ingredient": "ingredient",
+                          "reason": "reason",
+                          "how_to_use": "how_to_use"}).start()
+        self.mock_celery = patch(
+            "django_recipe_generator.recipe_generator.signals.generate_ai_twist.delay"
+        ).start()
+        self.addCleanup(patch.stopall)  # automatic cleanup after all tests
+
+    @classmethod
+    def setUpTestData(cls):
+        """Set up initial test data: ingredients."""
+        cls.ingredient1 = Ingredient.objects.create(name="Salt")
+        cls.ingredient2 = Ingredient.objects.create(name="Pepper")
+        cls.ingredient3 = Ingredient.objects.create(name="Banana")
+        cls.user = User.objects.create_user(username='testuser',
+                                            password='testpass')
+
+    def test_generate_ai_twist_on_create_recipe(self):
+        recipe = Recipe.objects.create(name="test_pizza",
+                                       instructions="test instructions",
+                                       cooking_time=15,
+                                       owner=self.user)
+        recipe.ingredients.set([self.ingredient1, self.ingredient2])
+        self.mock_celery.assert_called_once_with(recipe.id)
+
+    def test_generate_ai_twist_on_name_change(self):
+        recipe = Recipe.objects.create(name="test_pizza",
+                                       instructions="test instructions",
+                                       cooking_time=15,
+                                       owner=self.user)
+        recipe.ingredients.set([self.ingredient1, self.ingredient2])
+        self.mock_celery.reset_mock()
+
+        recipe.name = "new_pizza"
+        recipe.save()
+
+        self.mock_celery.assert_called_once_with(recipe.pk)
+
+    def test_generate_ai_twist_on_ingredient_change(self):
+        recipe = Recipe.objects.create(name="test_pizza",
+                                       instructions="test instructions",
+                                       cooking_time=15,
+                                       owner=self.user)
+        recipe.ingredients.set([self.ingredient1, self.ingredient2])
+        self.mock_celery.reset_mock()
+
+        recipe.ingredients.set([self.ingredient1, self.ingredient3])
+
+        self.assertGreaterEqual(self.mock_celery.call_count, 1)  # call twice bc remove and add
+
+    def test_ai_twist_not_triggered_on_time_change(self):
+        recipe = Recipe.objects.create(name="test_pizza",
+                                       instructions="test instructions",
+                                       cooking_time=15,
+                                       owner=self.user)
+        recipe.ingredients.set([self.ingredient1, self.ingredient2])
+        self.mock_celery.reset_mock()
+
+        recipe.cooking_time = 20
+        recipe.save()
+
+        self.mock_celery.assert_not_called()
+
+    def test_generate_ai_twist_logic_success(self):
+        recipe = Recipe.objects.create(name="test_pizza",
+                                       instructions="test instructions",
+                                       cooking_time=15,
+                                       owner=self.user)
+        recipe.ingredients.set([self.ingredient1, self.ingredient2])
+        generate_ai_twist(recipe.id)
+        recipe.refresh_from_db()
+
+        self.assertEqual(recipe.ai_generation_status, "completed")
+        self.assertEqual(recipe.elevating_twist, {
+            "twist_ingredient": "ingredient",
+            "reason": "reason",
+            "how_to_use": "how_to_use"
+        })
+
+    def test_generate_ai_twist_logic_failure(self):
+        recipe = Recipe.objects.create(name="test_pizza",
+                                       instructions="test instructions",
+                                       cooking_time=15,
+                                       owner=self.user)
+        recipe.ingredients.set([self.ingredient1, self.ingredient2])
+        self.mock_twist.side_effect = Exception("AI service unavailable")
+
+        generate_ai_twist(recipe.id)
+
+        recipe.refresh_from_db()
+
+        self.assertEqual(recipe.ai_generation_status, "failed")
+        self.assertEqual(recipe.elevating_twist,
+                         "Generation error: AI service unavailable")
