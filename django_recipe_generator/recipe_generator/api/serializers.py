@@ -70,7 +70,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = '__all__'
+        exclude = ['ai_generation_status']
         read_only_fields = ['id', 'owner', 'elevating_twist', 'ai_generation_status']
 
     def to_representation(self, instance):
@@ -120,19 +120,11 @@ class RecipeSerializer(serializers.ModelSerializer):
             )
 
             # triggers AI via m2m_changed signal
-            ingredient_ids = [ing_data['ingredient'] for ing_data in ingredients_data]
-            recipe.ingredients.add(*ingredient_ids)
-
-            # Create RecipeIngredient through model objects with quantities
-            recipe_ingredients = [
-                RecipeIngredient(
-                    recipe=recipe,
-                    ingredient_id=ing_data['ingredient'],
-                    quantity=ing_data['quantity']
+            for ing_data in ingredients_data:
+                recipe.ingredients.add(
+                    ing_data['ingredient'],
+                    through_defaults={'quantity': ing_data['quantity']}
                 )
-                for ing_data in ingredients_data
-            ]
-            RecipeIngredient.objects.bulk_create(recipe_ingredients)
         return recipe
 
     def update(self, instance, validated_data):
@@ -144,22 +136,15 @@ class RecipeSerializer(serializers.ModelSerializer):
         instance.save()
 
         if ingredients_data is not None:
-            with transaction.atomic():
-                ingredient_ids = [ing_data['ingredient'] for ing_data in ingredients_data]
+            instance.ingredients.clear()
 
-                # triggers m2m_changed signal with 'post_clear' + 'post_add'
-                instance.ingredients.set(ingredient_ids)
+            for ing_data in ingredients_data:
+                instance.ingredients.add(
+                    ing_data['ingredient'],
+                    through_defaults={'quantity': ing_data['quantity']}
+                )
 
-                instance.recipeingredient_set.all().delete()
-                recipe_ingredients = [
-                    RecipeIngredient(
-                        recipe=instance,
-                        ingredient_id=ing_data['ingredient'],
-                        quantity=ing_data['quantity']
-                    )
-                    for ing_data in ingredients_data
-                ]
-                RecipeIngredient.objects.bulk_create(recipe_ingredients)
+        instance.save()
         return instance
 
 
