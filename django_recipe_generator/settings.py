@@ -273,3 +273,8 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+REDIS_PASSWORD = os.getenv('REDIS_PASSWORD', '')
+
+CELERY_BROKER_URL = f'redis://:{REDIS_PASSWORD}@redis:6379/0'
+CELERY_RESULT_BACKEND = f'redis://:{REDIS_PASSWORD}@redis:6379/0'
