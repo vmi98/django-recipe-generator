@@ -73,8 +73,16 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
             recipe = form.save(commit=False)
             recipe.owner = request.user
             recipe.save()
-            formset.instance = recipe
-            formset.save()
+
+            recipe.ingredients.clear()
+
+            for f in formset:
+                if f.cleaned_data and not f.cleaned_data.get('DELETE', False):
+                    ing = f.cleaned_data.get('ingredient')
+                    qty = f.cleaned_data.get('quantity')
+                    if ing:
+                        recipe.ingredients.add(ing, through_defaults={'quantity': qty})
+
             return redirect(reverse('recipe_detail', kwargs={'pk': recipe.pk}))
 
         return render(
@@ -149,8 +157,17 @@ class RecipeEditView(LoginRequiredMixin, OwnerOrAdminRequiredMixin, UpdateView):
         formset = context['formset']
         if formset.is_valid() and form.is_valid():
             self.object = form.save()
-            formset.instance = self.object
-            formset.save()
+
+            self.object.ingredients.clear()
+
+            for f in formset:
+                if f.cleaned_data and not f.cleaned_data.get('DELETE', False):
+                    ing = f.cleaned_data.get('ingredient')
+                    qty = f.cleaned_data.get('quantity')
+                    if ing:
+                        self.object.ingredients.add(ing, through_defaults={'quantity': qty})
+                    self.object.ingredients.add(ing, through_defaults={'quantity': qty})
+
             self.request.session['was_editing'] = True
             return redirect(reverse(
                 'recipe_detail',

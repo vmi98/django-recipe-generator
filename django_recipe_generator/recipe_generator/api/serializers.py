@@ -113,18 +113,17 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredients_data = validated_data.pop('recipeingredient_set')
         request = self.context.get('request')
 
-        with transaction.atomic():
-            recipe = Recipe.objects.create(
-                owner=request.user if request else None,
-                **validated_data
-            )
+        recipe = Recipe.objects.create(
+            owner=request.user if request else None,
+            **validated_data
+        )
 
-            # triggers AI via m2m_changed signal
-            for ing_data in ingredients_data:
-                recipe.ingredients.add(
-                    ing_data['ingredient'],
-                    through_defaults={'quantity': ing_data['quantity']}
-                )
+        # triggers AI via m2m_changed signal
+        for ing_data in ingredients_data:
+            recipe.ingredients.add(
+                ing_data['ingredient'],
+                through_defaults={'quantity': ing_data['quantity']}
+            )
         return recipe
 
     def update(self, instance, validated_data):
