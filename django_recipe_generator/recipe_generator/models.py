@@ -10,8 +10,6 @@ from django.core.validators import MinLengthValidator, MinValueValidator
 from django.db.models import Count, ExpressionWrapper, F, IntegerField, Q
 from model_utils import FieldTracker
 
-from django_recipe_generator.services.gemini_client import get_unexpected_twist
-
 
 class RecipeQuerySet(models.QuerySet):
     """Custom queryset for filtering and searching recipes."""
@@ -123,7 +121,7 @@ class Recipe(models.Model):
 
     objects = RecipeManager()
 
-    tracker = FieldTracker(fields=['name', 'ingredients'])
+    tracker = FieldTracker(fields=['name'])
 
     class Meta:
         ordering = ['id']
@@ -131,42 +129,6 @@ class Recipe(models.Model):
     def __str__(self):
         """Recipe representation."""
         return self.name
-
-    def save(self, *args, **kwargs):
-        """Save recipe and get twist from gemini if needed."""
-
-        name_changed = self.tracker.has_changed('name')
-        is_new = self._state.adding
-
-        if self.pk:  # only check after instance exists
-            ingredients_changed = self.tracker.has_changed('ingredients')
-        else:
-            ingredients_changed = False
-
-        super().save(*args, **kwargs)  # self._state.adding updated
-        need_generation = (name_changed or ingredients_changed or is_new)
-
-        if need_generation:
-            self._generate_ai_twist()
-
-    def _generate_ai_twist(self):
-        try:
-            ingredients = self.ingredients.values_list('name', flat=True)
-            generated_text = get_unexpected_twist(self.name, ingredients)
-
-            # update db
-            Recipe.objects.filter(pk=self.pk).update(
-                elevating_twist=generated_text
-            )
-            # update the instance in memory
-            self.elevating_twist = generated_text
-
-        except Exception as e:
-            error_msg = f"Generation error: {str(e)}"
-            Recipe.objects.filter(pk=self.pk).update(
-                elevating_twist=error_msg
-            )
-            self.elevating_twist = error_msg
 
 
 class RecipeIngredient(models.Model):
