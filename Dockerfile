@@ -38,4 +38,4 @@ ENTRYPOINT []
 #  0.0.0.0` to allow access from outside the container
 #CMD ["./entrypoint.sh"]
 #CMD ["uv", "run", "manage.py", "runserver", "0.0.0.0:8000"]
-CMD ["gunicorn", "django_recipe_generator.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "django_recipe_generator.wsgi:application", "--bind", "0.0.0.0:8000", "--timeout", "120"]
