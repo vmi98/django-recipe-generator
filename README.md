@@ -14,7 +14,8 @@ A Django-based web application for managing and searching recipes based on recip
 - API endpoints are secured using JWT Authentication (DRF), HTML routes are secured using Session Authentication.
 - Google OAuth 2.0 is implemented
 - Access Control: read access - open to all users, create access - restricted to authenticated users. Recipes: update/delete - only the recipe creator or admin users. Ingredients: update/delete - restricted to admin users only.
-- Gemini API integration: to each recipe gemini recommends special ingredient to elevate the dish and explain reason behaind it and how to use it (generates after saving new recipe or editing name or ingredients of existing one)
+- Gemini API integration: to each recipe gemini recommends special ingredient to elevate the dish and explain reason behaind it and how to use it (generation triggers  after saving new recipe or editing name or ingredients of existing one via Django signals)
+- Integrated Celery for distributed task processing, backed by Redis as message broker to handle slow Gemini API integration.
 
 ## Tech Stack
 
@@ -24,6 +25,7 @@ A Django-based web application for managing and searching recipes based on recip
 - PostgreSQL
 - Django ORM
 - Allauth + dj-rest-auth + simple JWT
+- Celery + Redis
 - unittest (testing)
 - Docker
 - Gunicorn (production server)
@@ -148,6 +150,8 @@ DJANGO_ALLOWED_HOSTS=example.com,www.example.com
 CLIENT_ID=client_id
 CLIENT_SECRET=secret
 CALLBACK_URL=url
+
+REDIS_PASSWORD=password
 ```
 
 ```
