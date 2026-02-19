@@ -118,6 +118,16 @@ class Recipe(models.Model):
     )
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     elevating_twist = models.JSONField(null=True, blank=True)
+    ai_generation_status = models.CharField(
+        max_length=20,
+        choices=[
+            ('pending', 'Pending'),
+            ('generating', 'Generating'),
+            ('completed', 'Completed'),
+            ('failed', 'Failed'),
+        ],
+        default='pending'
+    )
 
     objects = RecipeManager()
 

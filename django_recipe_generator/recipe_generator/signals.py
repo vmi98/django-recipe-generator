@@ -14,10 +14,12 @@ def generate_ai_twist(recipe_id):
 
         generated_text = get_unexpected_twist(recipe_name, list(ingredients))
 
-        Recipe.objects.filter(id=recipe_id).update(elevating_twist=generated_text)
+        Recipe.objects.filter(id=recipe_id).update(elevating_twist=generated_text,
+                                                   ai_generation_status='completed')
     except Exception as e:
         error_msg = f"Generation error: {str(e)}"
-        Recipe.objects.filter(id=recipe_id).update(elevating_twist=error_msg)
+        Recipe.objects.filter(id=recipe_id).update(elevating_twist=error_msg,
+                                                   ai_generation_status='failed')
 
 
 @receiver(post_save, sender=Recipe)

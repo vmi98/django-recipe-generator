@@ -70,8 +70,8 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = '__all__'
-        read_only_fields = ['id', 'owner', 'elevating_twist']
+        exclude = ['ai_generation_status']
+        read_only_fields = ['id', 'owner', 'elevating_twist', 'ai_generation_status']
 
     def to_representation(self, instance):
         """Dynamically adds matching/missing ingredient fields.
