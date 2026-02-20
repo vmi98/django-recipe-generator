@@ -1,3 +1,5 @@
+import threading
+from django.db import transaction
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from .models import Recipe, RecipeIngredient
@@ -22,16 +24,38 @@ def generate_ai_twist(recipe_id):
                                                    ai_generation_status='failed')
 
 
+def run_ai_in_background(recipe_id):
+    thread = threading.Thread(
+        target=generate_ai_twist,
+        args=(recipe_id,),
+        daemon=True
+    )
+    thread.start()
+
+
 @receiver(post_save, sender=Recipe)
 def trigger_ai_twist_on_recipe_change(sender, instance, created, **kwargs):
     """Trigger AI for name changes"""
     # hasattr safety check if not tracker(bulk oper,raw SQL updates)
     if not created and hasattr(instance, 'tracker') and instance.tracker.has_changed('name'):
-        generate_ai_twist(instance.id)
+        updated = Recipe.objects.filter(id=instance.id,
+                                        ai_generation_status__in=['completed', 'failed']
+                                        ).update(ai_generation_status='generating')
+
+        if updated:
+            transaction.on_commit(
+                lambda: run_ai_in_background(instance.id)
+            )
 
 
 @receiver(m2m_changed, sender=Recipe.ingredients.through)
 def trigger_ai_twist_on_ingredients_change(sender, instance, action, **kwargs):
     """Trigger AI when ingredients change"""
     if action in ['post_add', 'post_remove', 'post_clear']:
-        generate_ai_twist(instance.id)
+        updated = Recipe.objects.filter(id=instance.id,
+                                        ai_generation_status__in=['completed', 'failed']
+                                        ).update(ai_generation_status='generating')
+        if updated:
+            transaction.on_commit(
+                lambda: run_ai_in_background(instance.id)
+            )
